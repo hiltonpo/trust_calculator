@@ -1,0 +1,39 @@
+*
+{
+  font-family: 'Noto Sans TC',Muli,sans-serif;
+}
+html,body
+{
+  margin: 0;           
+  padding: 0;
+  overflow-x: hidden !important;
+}  
+
+.text-bold
+{
+  font-weight: 600;
+}
+
+.mb-2
+{
+  margin-top: 10px;
+  margin-bottom:10px;
+}
+
+.v-footer--fixed
+{
+  position: static !important;
+}
+
+.home-subtitle{
+  letter-spacing: .5px;
+}
+
+.slider .v-image__image--cover{
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.theme--dark.v-btn.v-btn--icon{
+  color:#00BCD4 !important;
+}

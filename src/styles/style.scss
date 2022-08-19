@@ -1,0 +1,58 @@
+.color{
+  &-1 {
+    color: #305F72;
+  }
+  &-2 {
+    color: #0B6CDB;
+  }
+  &-3 {
+    color: #A6BCD0;
+  }
+  &-4 {
+    color: #748A9D;
+  }
+}
+
+.bg-1 {
+  &-1 {
+    background: rgba(241,140,142,0.2);
+  }
+  &-2 {
+    background: rgba(208,140,241,0.2);
+  }
+  &-3 {
+    background: rgba(140,197,241,0.2);
+  }
+}
+
+
+a {
+  text-decoration: none;
+  color: #424242 !important;
+  &:hover {
+    color: #00BCD4 !important;
+  }
+}
+
+.position {
+  &-relative{
+    position:relative;
+  }
+  &-absolute{
+    position:absolute;
+  }
+}
+
+span.chip {
+  letter-spacing: 1px !important;
+}
+
+.w-100{
+  width: 100%;
+}
+.h-100 {
+  height: 100%;
+}
+.v-btn {
+  text-transform: capitalize !important;
+}

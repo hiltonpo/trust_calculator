@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta name="google" content="notranslate" />
+    <link
+    href="https://fonts.googleapis.com/css?family=Noto+Sans+TC:100,300,400,500,700,900&display=swap&subset=chinese-traditional"
+    rel="stylesheet">
+
+    <title><%= htmlWebpackPlugin.options.title %></title>
+    <link rel="canonical" href="https://roboadvisor.com.tw">
+    <meta name="keyword"
+        content="阿爾發,金融,金融科技,機器人理財, 基金理財, 理財投資, 機器人理財, 全球基金, 買基金, 債券基金, 股票基金,不動產基金,投資理財, 基金, 理財基金, 投資賺錢, 國外基金, 投顧, 投資顧問">
+    <meta name="description"
+        content="阿爾發金融科技公司成立於2017年，是一群由資深金融家與年輕科技人所共同組成的創新金融科技團隊。阿爾發研發「機器人理財平台」分析使用者行為，使用全球ETF打造專屬投資組合，並將「Behavioral finance 行為財務學」實際應用於投資流程與步驟，搭配「Chatbot 聊天機器人」來協助使用者改善投資行為，真正落實A+B+C智能投資完整解決方案，讓使用者簡單投資、享受生活。">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900">
+    <link href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" rel="stylesheet">
+  </head>
+  <body>
+    <noscript>
+      <strong><%= htmlWebpackPlugin.options.title %></strong>
+    </noscript>
+    <div id="app"></div>
+
+    <!-- built files will be auto injected -->
+  </body>
+  <script>
+    if (navigator.userAgent.indexOf("Line") > -1) {
+      if(location.search === '')
+      {
+        location.href = location.href + "?openExternalBrowser=1";
+      }else {
+        location.href = location.protocol+'//'+location.host+location.pathname + location.search  +"&openExternalBrowser=1";
+      }
+    }
+  </script>
+</html>
