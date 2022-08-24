@@ -8,7 +8,7 @@ const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin');
 module.exports = {
   lintOnSave: true,
   productionSourceMap: false,
-  publicPath: './',
+  // publicPath: './',
   configureWebpack: {
     plugins: [
       new webpack.ContextReplacementPlugin(
@@ -48,13 +48,13 @@ module.exports = {
       entry: 'src/entry/TrustCalculator.ts',
       template: 'public/index.html',
       filename: 'TrustCalculator.html',
-      title: '阿爾發-機器理財信託試算系統',
+      title: '阿爾發機器人理財',
       chunks: [
         'chunk-vendors',
         'chunk-common',
         'TrustCalculator'
       ]
-    }
+    },
   },
   transpileDependencies: [
     'vuetify'

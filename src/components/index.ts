@@ -12,6 +12,9 @@ import ChipTitle from '@/components/ChipTitle.vue';
 import MapDot from '@/components/MapDot.vue';
 import LineChartComponent from '@/components/LineChartComponent.vue';
 import ImageDialog from '@/components/ImageDialog.vue';
+
+import MainTopBar from '@/views/main/MainTopBar.vue';
+
 export default {
   install (Vue: any, options: any) {
     Vue.component('InputText', InputText);
@@ -25,5 +28,6 @@ export default {
     Vue.component('MapDot', MapDot);
     Vue.component('LineChartComponent', LineChartComponent);
     Vue.component('ImageDialog', ImageDialog);
+    Vue.component('MainTopBar', MainTopBar);
   }
 };

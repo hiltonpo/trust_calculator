@@ -8,8 +8,8 @@ Vue.use(VueRouter);
 
 const routes: Array<RouteConfig> = [
   {
-    path: '*',
-    name: 'Inital',
+    path: '/',
+    name: 'TrustCalculator',
     components: {
       TrustCalculator
     }
