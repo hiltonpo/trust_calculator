@@ -1,5 +1,5 @@
 <template>
-  <div :id="chartID" style="width: 100%; height: 450px;"></div>
+  <div :id="chartID" :style="{'width': '100%', 'height': height}"></div>
 </template>
 
 <style lang="scss" scoped>
@@ -27,10 +27,11 @@ export default class LineChart extends Vue {
   @Prop({ default: () => { return {}; } }) lineChartOption!: any;
   @Prop({ default: 0 }) tabCarousel!: any;
   @Prop({ default: '' }) chartID!: any;
+  @Prop({ default: '450px' }) height!: any;
 
   private lineChart: any;
-  private iconRetireSVG = iconRetire;
-  private mpDefaultSVG = mpDefault;
+  // private iconRetireSVG = iconRetire;
+  // private mpDefaultSVG = mpDefault;
 
   private option = {};
 
