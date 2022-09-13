@@ -15,7 +15,7 @@
                 </div>
               </div>
           </v-row>
-          <v-row class="graph justify-center pb-10">
+          <v-row class="graph justify-center pb-6">
             <LineChart
               chartID="trustLineChart"
               ref="trustLineChart"
@@ -23,16 +23,19 @@
               :lineChartOption="lineChartOption">
             </LineChart>
           </v-row>
+          <v-row class="center-text justify-center pb-4 py-4 text-h4 blue--text text--lighten-1">
+            <p v-html="textDetail"></p>
+          </v-row>
           <v-row class="justify pt-10 justify-center">
             <v-col cols="3" class="d-flex justify-end text-h5">
               <span>{{ ageRangeOption.name[0] }}</span>
               <v-text-field
               v-model="input[ageRangeOption.prop][0]"
-              class="ml-2 mt-0 pt-0 text-h5"
+              class="ml-2 mt-1 pt-0 text-h4"
               hide-details
               single-line
               type="number"
-              style="max-width:10%;"
+              style="max-width:55px;"
               >
               </v-text-field>
             </v-col>
@@ -42,28 +45,28 @@
                 v-model="input.ageRange"
                 :min="ageRangeOption.min"
                 :max="ageRangeOption.max"
-                color="blue"
+                color="brown lighten-2"
                 track-color="grey lighten-2"
                 track-fill-color="yellow darken-2"
                 >
                 </v-range-slider>
               </div>
             </v-col>
-            <v-col cols="3" class="d-flex text-h5">
+            <v-col cols="3" class="d-flex text-h4">
               <span>{{ageRangeOption.name[1]}}</span>
               <v-text-field
               v-model="input[ageRangeOption.prop][1]"
-              class="ml-2 mt-0 pt-0 text-h5"
+              class="ml-2 mt-1 pt-0 text-h4"
               hide-details
               single-line
               type="number"
-              style="max-width:10%;"
+              style="max-width:55px;"
               >
               </v-text-field>
             </v-col>
           </v-row>
           <v-row class="justify pt-10 justify-center">
-            <v-col cols="3" class="d-flex justify-end text-h5">{{ lifeOption.name }}</v-col>
+            <v-col cols="3" class="d-flex justify-end text-h4">{{ lifeOption.name }}</v-col>
             <v-col cols="6">
               <div class="slider">
                 <v-slider
@@ -72,18 +75,19 @@
                 :min="lifeOption.min"
                 :step="lifeOption.step"
                 color="yellow darken-2"
+                thumb-color="brown lighten-2"
                 :rules="[rules.retireAge]"
                 >
                 </v-slider>
               </div>
             </v-col>
-            <v-col cols="3" class="text-h5">
+            <v-col cols="3" class="text-h4">
               <span class="font-weight-black">{{ input[lifeOption.prop] }}</span>
               <span class="ml-2">{{ lifeOption.unit }}</span>
             </v-col>
           </v-row>
           <v-row  v-for="(option, index) in options" :key="index" class="justify pt-10 justify-center">
-            <v-col cols="3" class="d-flex justify-end text-h5">{{ option.name }}</v-col>
+            <v-col cols="3" class="d-flex justify-end text-h4">{{ option.name }}</v-col>
             <v-col cols="6">
               <div class="slider">
                 <v-slider
@@ -91,13 +95,15 @@
                 :max="option.max"
                 :min="option.min"
                 :step="option.step"
-                color="yellow darken-2"
+                thumb-color="brown lighten-2"
+                :color="option.prop === 'withdraw' ? 'blue-grey' : 'yellow darken-2'"
+                :track-color="option.prop === 'withdraw' ? 'grey lighten-2' : ''"
                 >
                 </v-slider>
               </div>
             </v-col>
-            <v-col cols="3" class="text-h5">
-              <span class="font-weight-black">{{ input[option.prop] }}</span>
+            <v-col cols="3" class="text-h4">
+              <span class="font-weight-black">{{ thousand(input[option.prop]) }}</span>
               <span class="ml-2">{{ option.unit }}</span>
             </v-col>
           </v-row>
@@ -125,6 +131,15 @@
   max-width: 100%;
   width: 100%;
 }
+
+.center-text {
+  margin: 0 auto;
+  max-width: 40%;
+  border: 2px solid rgb(0, 89, 255);
+  text-align: center;
+
+}
+
 // .v-slider__track-container
 ::v-deep .v-slider--horizontal .v-slider__track-container {
   height: 12px;
@@ -139,12 +154,18 @@
   height: 20px !important;
 }
 
+::v-deep .v-messages__message.message-transition-enter-to {
+  font-size: 24px;
+}
+
 
 
 </style>
 
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator';
+import { toThousand } from '@/utility/utility'
+import { template } from 'lodash-es';
 import LineChart from 'echarts/charts'
 import {
   DatasetComponent,
@@ -157,7 +178,7 @@ import * as echarts from 'echarts/core';
 import {
   CanvasRenderer
 } from 'echarts/renderers';
-import { barChartOption, orderLineChartOption, portfolioBarChartOption, portfolioLineChartOption } from '@/views/trustCalculator/echartsOptions';
+import { orderLineChartOption } from '@/views/trustCalculator/echartsOptions';
 import { Action } from 'vuex-class';
 import { number_d } from 'echarts/types/dist/shared';
 import { KeyObjectType } from 'crypto';
@@ -178,7 +199,8 @@ echarts.use([DatasetComponent, TooltipComponent, GridComponent, LegendComponent,
 export default class TrustCalculator extends Vue {
   
   //文字資料
-  private text: Array<string> = [];
+  private text: any = [];
+  private textDetail: any = [];
 
   // 圖表資料
   private lineChartOption = {};
@@ -188,6 +210,11 @@ export default class TrustCalculator extends Vue {
     retireAge: (value: any) => {
       return !(value < this.input.ageRange[1]) || '不得小於退休年齡';
     }
+  };
+
+  // 千分位
+  private thousand(val: any) {
+    return toThousand(val);
   };
 
   // 投資狀況
@@ -206,27 +233,35 @@ export default class TrustCalculator extends Vue {
   
   // 輸入參數 (給予初始預設值)
   public input = {
-    ageRange:[40, 65],
+    ageRange:[35, 65],
     lifeAge: 90,
     invMoney: 30, // 萬
     regMoney: 3000,
     deposit: 300, // 萬
-    withdraw: 22000
+    withdraw: 30000
   };
 
   // 文字動態設置
-  private textRender = (retireAge: any, assetMax: any, retireMax: any) => {
+  private textRender = (retireAge: any, assetMax: any, retireMax: any, type: any) => {
     const assetFixed = (assetMax/10000).toFixed(0)
     const retireFixed = (retireMax/10000).toFixed(0)
-    return [`${retireAge}歲時，資產預期會成長到約TWD＄ ${assetFixed} 萬`, `${retireAge}歲時，你需要的退休金目標約為TWD＄ ${retireFixed} 萬`]
+    if (type === 'right-top') {
+      return [`${retireAge}歲時，資產預期會成長到約TWD＄ ${toThousand(Number(assetFixed))} 萬`, `${retireAge}歲時，你需要的退休金目標約為TWD＄ ${toThousand(Number(retireFixed))} 萬`]
+    } 
+    if (type === 'middle') {
+      const string = `<div class="pb-3">您將會在退休時，擁有約<span class="red--text">${Number(assetFixed)}</span>萬的退休資產</div>
+      <div>如果每年提領約<span class="green--text">${(parseInt(retireFixed) / (this.input.lifeAge - retireAge)).toFixed(0)}</span>萬，將可以順利提領到<span class="green--text">${this.input.lifeAge}</span>歲</div>`
+      const complied = template(string)
+      return complied()
+    }
   }
 
   // 調整器設置
   // 現齡與退休年齡
   private ageRangeOption = {
     name: ['現在年齡', '退休年齡'],
-    min: 18,
-    max: 85,
+    min: 20,
+    max: 80,
     prop:['ageRange']
   };
 
@@ -234,7 +269,7 @@ export default class TrustCalculator extends Vue {
   private lifeOption = {
     name: '預期壽命',
     prop: 'lifeAge',  
-    max: 90,
+    max: 100,
     min: 0,
     unit: '歲',
     step: 1
@@ -245,7 +280,7 @@ export default class TrustCalculator extends Vue {
     {
       name: '單筆投入金額金額',
       prop: 'invMoney',
-      max: 100,
+      max: 1000,
       min: 0,
       unit: '萬',
       step: 1
@@ -256,15 +291,15 @@ export default class TrustCalculator extends Vue {
       max: 100000,
       min: 0,
       unit: '元',
-      step: 100
+      step: 1000
     },
     {
       name: '退休後每月提領金額',
       prop: 'withdraw',  
-      max: 100000,
+      max: 200000,
       min: 0,
       unit: '元',
-      step: 100
+      step: 1000
     },
     { 
       name: '其他退休金準備(定存)',
@@ -295,7 +330,7 @@ export default class TrustCalculator extends Vue {
     const totalDeposit = (t: number) => {                                         // 累積定存資產
         return this.input.deposit*10000*(depositRatio**year);                             
     };
-    const recrusionAssetBefore: any = (year: number, r: number) => {                   // 累積投資資產
+    const recrusionAssetBefore: any = (year: number, r: number) => {              // 累積投資資產
       const inital = this.input.invMoney*10000;                                   // 初始單筆金額
       const totalRegMoney = this.input.regMoney*12;                               // 每年定期總額
       const total = (inital + totalRegMoney)*investRatio;                         // 當年度投資資產 = (初始單筆金額+每年定期累積金額)X年化報酬率
@@ -335,6 +370,33 @@ export default class TrustCalculator extends Vue {
     return recrusionAssetAfter(year, r) <= 0 ? 0 : Math.round(recrusionAssetAfter(year, r));
   }
 
+  // 最佳解：假如總提領金額 > 退休前累積資產(市場一般情況)，則計算單筆 或 定期定額 所需要調整的金額大小
+  private optimalSolution (withdrawAll: any, assetBeforeRetire: any, year: any) {
+    const depositRatio = 1 + this.constant.Rdeposit;                              // 總定存投報率
+    const investRatio = 1 + this.constant.Rinvest.normal;                         // 總投資投報率
+    const totalDeposit = (t: number) => {                                         // 累積定存資產
+        return this.input.deposit*10000*(depositRatio**t);                             
+    };
+    if (withdrawAll > assetBeforeRetire) {
+      // 只調整單筆金額大小，定期定額設為常數
+      const deltaInv = () => {
+        return (withdrawAll - ( totalDeposit(year) + 12*this.input.regMoney*((investRatio)**(year + 1) - investRatio) / (investRatio - 1))) / (investRatio)**year;
+      };
+      // 只調整定期定額金額大小，單筆設為常數
+      const deltaReg = () => {
+        return (withdrawAll - ( totalDeposit(year) + this.input.invMoney*10000*investRatio**year)) * (investRatio - 1) / (12*((investRatio)**(year + 1) - investRatio));
+      };
+      console.log(deltaInv());
+      console.log(deltaReg());
+
+      // this.$nextTick(()=> { 
+      //   this.textDetail = this.textRender(this.input.ageRange[1], YLineData.normal[(this.input.ageRange[1] - this.input.ageRange[0])], withdrawAll, 'middle');
+      // });
+    }
+  }
+
+
+  // 構圖：將參數整合並帶入echartsOption.ts
   private setLineChartData() {
     // X軸資料(array)： 現在年齡 至 預期壽命
     const XLineData = new Array(this.input.lifeAge - this.input.ageRange[0] + 1).fill(0).map((item, index) => this.input.ageRange[0]+ index);
@@ -388,33 +450,41 @@ export default class TrustCalculator extends Vue {
       return Number(((temp()/(10**order)).toFixed(1))) * 10**order;
     }
 
-    // 目標顯示點
-    // X軸起點為[現在年齡]，終點為[預期壽命]
+    // 目標顯示點 => 顯示累計提領金額、退休前累積資產(一般情況)兩個資料點
     const markpointXY = { 
       name: '座標', 
-      assetCoord: [(this.input.ageRange[1] - this.input.ageRange[0]), afterRetireAssetData.normal.shift()],
-      withdrawCoord: [(this.input.ageRange[1] - this.input.ageRange[0]), withdrawAll]
-    }
+      assetCoord: [(this.input.ageRange[1] - this.input.ageRange[0]), beforeRetireAssetData.normal.pop()],
+      withdrawCoord: [(this.input.ageRange[1] - this.input.ageRange[0]), withdrawAll],
+      retireAge: this.input.ageRange[1]
+    };
+
+    // 文字渲染 右上角 還有 中間
+    this.$nextTick(()=> {
+      this.text = this.textRender(this.input.ageRange[1], YLineData.normal[(this.input.ageRange[1] - this.input.ageRange[0])], withdrawAll, 'right-top');
+      this.textDetail = this.textRender(this.input.ageRange[1], YLineData.normal[(this.input.ageRange[1] - this.input.ageRange[0])], withdrawAll, 'middle');
+    });
 
     // console.log(YLineData)
     // console.log(XLineData)
     // console.log(beforeRetireAssetData)
-    console.log(beforeRetireAgeData.length)
-    console.log(afterRetireAgeData.length)
+    // console.log(beforeRetireAgeData.length)
+    // console.log(afterRetireAgeData.length)
     // console.log(beforeRetireAssetData)
-    // console.log(afterRetireAssetData)
-    console.log(withdrawAll)
-    console.log(YLineData.better)
-    console.log( typeof withdrawAll)
-    console.log( maximum(YLineData.better, withdrawAll))
-    console.log(markpointXY)
+    // console.log(withdrawAll)
+    // console.log(YLineData.better)
+    // console.log( typeof withdrawAll)
+    // console.log( maximum(YLineData.better, withdrawAll))
+    // console.log(markpointXY)
+    console.log(beforeRetireAssetData.normal+ '第一個')
+    console.log(beforeRetireAssetData.normal.length)
     // console.log(YLineData)
 
     // 帶入echartOptions => 五個參數代表: 圖表檔案、標記座標(累積資產最大值)、X軸資料陣列、Y軸資料陣列、Y軸最大值
     this.lineChartOption = orderLineChartOption('graph', markpointXY, XLineData, YLineData, maximum(YLineData.better, withdrawAll))
-    this.$nextTick(()=> {
-      this.text = this.textRender(this.input.ageRange[1], beforeRetireAssetData.normal.pop(), withdrawAll);
-    });
+
+    this.optimalSolution(withdrawAll, afterRetireAssetData.normal.shift(), (this.input.ageRange[1] - this.input.ageRange[0]));
+
+
     this.chartsResize();
   }
 

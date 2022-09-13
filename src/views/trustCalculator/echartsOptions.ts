@@ -18,6 +18,7 @@ const chartColor: any = {
 // 目標規劃 圖表的 echart 設定檔
 export function orderLineChartOption (markpointSVGpath: string, markpointXY: any, XLinedata: any, YLinedata: any, max: number) {
   const [assetMarkpointX, assetMarkpointY] = markpointXY.assetCoord;
+  const { retireAge } = markpointXY;
   const lineChartOption = {
     tooltip: {
       show: true,
@@ -39,20 +40,21 @@ export function orderLineChartOption (markpointSVGpath: string, markpointXY: any
         snap: true,
         z: -1
       },
-      extraCssText:'width:450px;height:300px;',
+      extraCssText:'width:450px;max-height:350px;',
       formatter: (params: any) => {
         const colorSpan = (color: string) => `<span style="display:inline-block;margin-right:5px;border-radius:10px;width:9px;height:9px;background-color:${color}">
         </span><span style="color: ${color};">`;
-        const string = `<div class="d-flex flex-wrap justify-space-between">
+        const string = `<div class="d-flex flex-wrap justify-space-between pb-2">
           <span class="mr-2"><%= name %></span>
           <div class="d-flex flex-wrap justify-space-between" style="min-width: 100px">
             <span class="mr-1">${preffix}</span><span><% print(toThousand(value)); %></span>
           </div>
         </div>`;
         const compiled = template(string, { imports: { toThousand: toThousand } });
+        console.log(params[3].data)
         return `<div class="text-caption">
           <p class="pa-2 text-center mb-0 text-h4" style="background-color: #37406C;">
-            ${params[0].axisValueLabel} 年 累積總資產比較
+            ${params[0].axisValueLabel} 歲 累積總資產比較
           </p>
           <section class="mb-0 pa-3 text-h5">
             ${colorSpan('#00BCD4')}<strong>預計累積資產</strong></span> <br />
@@ -60,8 +62,10 @@ export function orderLineChartOption (markpointSVGpath: string, markpointXY: any
             ${compiled({ name: params[1].seriesName, value: params[1].data })}
             ${compiled({ name: params[2].seriesName, value: params[2].data })}
             <br/>
-            ${colorSpan('#FF8F00')}預計提領金額(總計)</span> <br />
-            ${compiled({ name: params[3].seriesName, value: params[3].data })}
+            <div>
+            ${params[3].data ? `${colorSpan('#FF8F00')}預計提領金額(總計)</span> <br />
+            ${compiled({ name: params[3].seriesName, value: params[3].data })}` : ''}
+            </div>
           </section>
         </div>`;
       }
@@ -79,7 +83,8 @@ export function orderLineChartOption (markpointSVGpath: string, markpointXY: any
         data: XLinedata,
         offset: 6.5,
         axisLabel: {
-          rotate: 40
+          rotate: 40,
+          fontSize: 18
         },
         axisTick: {
           show: false
@@ -91,9 +96,10 @@ export function orderLineChartOption (markpointSVGpath: string, markpointXY: any
         type: 'value',
         axisLabel: {
           formatter (params: any) {
-            return params / 1000 + ' K';
+            return params / 10000 + ' 萬';
           },
-          margin: 30
+          margin: 30,
+          fontSize: 20
         },
         splitLine: {
           lineStyle: {
@@ -142,69 +148,58 @@ export function orderLineChartOption (markpointSVGpath: string, markpointXY: any
         symbolSize: 6,
         markLine: {
           symbol: ['none', 'none'],
-          label: { show: false },
+          label: { 
+            show: true,
+            fontWeight: 'bold',
+            fontSize: '28px',
+            color:'#977C00',
+            formatter(params:any) {
+              return `退休年齡 ${retireAge} 歲`;
+            }
+
+          },
           data: [{ xAxis: assetMarkpointX }],
           lineStyle: {
             type:'dotted',
             width: 6,
-            color: '#fdc746',
+            color: '#EAC100',
+          },
+        },
+        markPoint: {
+          symbolSize: [60, 60], // 图形大小
+          data: [
+            {
+              coord: markpointXY.assetCoord,
+              symbolRotate: -50
+            }
+          ],
+          itemStyle: {
+            color: '#00BCD4',
           },
           tooltip: {
             show: true,
             trigger: 'item',
             padding: 0,
+            extraCssText:'width:450px;height:180px;',
             formatter (params: any) {
               const [year, value] = params.data.coord;
-              // console.log(params);
+              console.log(params)
               return `<div class="font-weight-medium">
-                <p class="pa-2 text-center mb-0 text-subtitle-2" style="background-color: #37406C;">
-                  計劃資訊
+                <p class="pa-2 text-center mb-0 text-h4" style="background-color: #37406C;">
+                  累積資產(市場一般情況)
                 </p>
                 <section class="pa-3">
-                <div class="d-flex justify-space-between">
-                  <span class="mr-2">目標金額</span><span>USD $ ${Number(value).toFixed(2)}</span>  
+                <div class="d-flex justify-space-between text-h5">
+                  <span class="mr-2">退休時預計累積資產</span><span>TWD $ ${toThousand(value)}</span>  
                 </div>
-                <div class="d-flex justify-space-between">
-                  <span class="mr-2">達成年份</span><span>${year} 年</span>  
+                <div class="d-flex justify-space-between text-h5">
+                  <span class="mr-2">投資期間</span><span>${year} 年</span>  
                 </div>
                 </section>
               </div>`;
             }
           }
         },
-        // markPoint: {
-        //   symbolSize: [43, 53], // 图形大小
-        //   data: [
-        //     { coord: [20, 10000000] }
-        //   ],
-        //   label: {
-        //     show: false
-        //   },
-        //   symbol: 'circle',
-        //   symbolOffset: ['0%', '0%'],
-        //   tooltip: {
-        //     show: true,
-        //     trigger: 'item',
-        //     padding: 0,
-        //     formatter (params: any) {
-        //       const [year, value] = params.data.coord;
-        //       // console.log(params);
-        //       return `<div class="font-weight-medium">
-        //         <p class="pa-2 text-center mb-0 text-subtitle-2" style="background-color: #37406C;">
-        //           計劃資訊
-        //         </p>
-        //         <section class="pa-3">
-        //         <div class="d-flex justify-space-between">
-        //           <span class="mr-2">目標金額</span><span>USD $ ${Number(value).toFixed(2)}</span>  
-        //         </div>
-        //         <div class="d-flex justify-space-between">
-        //           <span class="mr-2">達成年份</span><span>${year} 年</span>  
-        //         </div>
-        //         </section>
-        //       </div>`;
-        //     }
-        //   }
-        // },
         lineStyle: {
           color: '#00BCD4'
         },
@@ -251,31 +246,44 @@ export function orderLineChartOption (markpointSVGpath: string, markpointXY: any
           disabled: true
         },
         markPoint: {
-          symbolSize: [60, 50], // 图形大小
+          symbolSize: [60, 60], // 图形大小
           data: [
-            {coord: markpointXY.withdrawCoord}
+            {
+              coord: markpointXY.withdrawCoord,
+              symbolRotate: -50
+            }
           ],
           itemStyle: {
             color: '#9D9D9D',
           },
+          tooltip: {
+            show: true,
+            trigger: 'item',
+            padding: 0,
+            extraCssText:'width:450px;height:180px;',
+            formatter (params: any) {
+              const [year, value] = params.data.coord;
+              // console.log(params);
+              return `<div class="font-weight-medium">
+                <p class="pa-2 text-center mb-0 text-h4" style="background-color: #37406C;">
+                  提領金額
+                </p>
+                <section class="pa-3">
+                <div class="d-flex justify-space-between text-h5">
+                  <span class="mr-2">預計提領總金額約</span><span>TWD $ ${toThousand(value)}</span>  
+                </div>
+                <div class="d-flex justify-space-between text-h5">
+                  <span class="mr-2">退休年數</span><span>${year} 年</span>  
+                </div>
+                </section>
+              </div>`;
+            }
+          }
         },
         z: -2,
         data: YLinedata.withdraw,
         connectNulls:true
       }
-      // {
-      //   name: '預估投入金額',
-      //   type: 'line',
-      //   symbol: 'none',
-      //   itemStyle: {
-      //     show: '#FF8F00'
-      //   },
-      //   lineStyle: {
-      //     color: 'transparent'
-      //   },
-      //   z: -2,
-      //   data: YLinedata.invMoney
-      // }
     ]
   };
   return lineChartOption;
