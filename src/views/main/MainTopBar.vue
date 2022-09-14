@@ -40,8 +40,8 @@
         <v-app-bar-nav-icon class="hidden-md-and-up" @click="drawer = !drawer"></v-app-bar-nav-icon>
         <img class="logo" :src="logo" />
           <v-spacer class="hidden-sm-and-down"></v-spacer>
-          <v-btn class="hidden-sm-and-down">SIGN IN</v-btn>
-          <v-btn color="brown lighten-3" class="hidden-sm-and-down">JOIN</v-btn>
+          <!-- <v-btn class="hidden-sm-and-down">SIGN IN</v-btn>
+          <v-btn color="brown lighten-3" class="hidden-sm-and-down">JOIN</v-btn> -->
       </v-app-bar>
     </span>
 </template>
@@ -58,25 +58,21 @@
   }
 }
 
-
 </style>
 
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator';
 
-import alphaLogo from '@/assets/img/alpha-logo.png'
-
-
-
+import alphaLogo from '@/assets/img/alpha-logo.png';
 
 @Component({
   setup () {
     return {
       drawer: false,
-      items:[
-        {title: 'Menu'},
-        {title: 'Sign In'},
-        {title: 'Join'}
+      items: [
+        { title: 'Menu' },
+        { title: 'Sign In' },
+        { title: 'Join' }
       ],
       logo: alphaLogo
     };

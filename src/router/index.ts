@@ -3,7 +3,6 @@ import VueRouter, { RouteConfig } from 'vue-router';
 import { pathToRegexp, match, parse, compile } from 'path-to-regexp';
 import TrustCalculator from '@/views/trustCalculator/TrustCalculator.vue';
 
-
 Vue.use(VueRouter);
 
 const routes: Array<RouteConfig> = [

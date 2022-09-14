@@ -78,40 +78,57 @@ export function orderLineChartOption (markpointSVGpath: string, markpointXY: any
     },
     xAxis: [
       {
+        name:'歲數',
+        nameLocation: 'middle',
+        nameTextStyle: {
+          padding: [26, 0, 0, 0],
+          fontSize: 24,
+          fontWeight: 'bold'
+        },
         type: 'category',
         boundaryGap: true,
         data: XLinedata,
-        offset: 6.5,
+        postion: 6.5,
         axisLabel: {
           rotate: 40,
-          fontSize: 18
+          fontSize: 18,
         },
         axisTick: {
           show: false
+        },
+        axisLine: {
+          onZero: false
         }
       }
     ],
     yAxis: [
       {
+        name:'金\n額',
+        nameLocation: 'left',
+        nameTextStyle: {
+          padding: [0, 320, 0, 0],
+          fontSize: 26,
+          fontWeight: 'bold'
+        },
         type: 'value',
         axisLabel: {
           formatter (params: any) {
-            return params / 10000 + ' 萬';
+            return toThousand(params / 10000) + ' 萬';
           },
           margin: 30,
-          fontSize: 20
+          fontSize: 24,
         },
         splitLine: {
           lineStyle: {
-            color: 'rgba(160, 160, 160, 0.3)'
+            color: 'rgba(160, 160, 160, 0.5)'
           }
         },
         offset: -7,
         axisTick: {
-          show: false
+          show: false,
         },
         axisLine: {
-          show: false
+          show: false,
         },
         max: max,
         z: -1

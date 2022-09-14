@@ -22,8 +22,9 @@ export function rules (ruleName: string) {
     mail: (value: any) => /.+@.+\..+/.test(value) || '格式不正確',
     couponCode: (value: any) => (value && value.length >= 17) || '格式不正確',
     checkNumber: (value: any) => {
-      let reg = /^\d+(\.\d{1,2})?$/;
-      return reg.test(value) || '格式不正確'},
+      const reg = /^\d+(\.\d{1,2})?$/;
+      return reg.test(value) || '格式不正確';
+    },
     age: (value: any) => (value >= 0 && value <= 90) || '格式不正確'
   };
   return rule[ruleName];
@@ -93,7 +94,6 @@ export function toThousand (num: number, digits = 0) {
     return `${thousand(number)}.${float}`;
   }
 }
-
 
 /**
  * 以下兩個函式為 Echarts 升級 版本後修復 Dom 重複 init 警告所用

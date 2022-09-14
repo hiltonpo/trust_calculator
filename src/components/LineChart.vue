@@ -38,7 +38,7 @@ export default class LineChart extends Vue {
   public drawLineChart () {
     this.option = this.lineChartOption;
     renderEchartsDom(this.lineChart, this.option);
-    if (this.$route.path === '/Overview.html') {
+    if (this.$route.path === '/TrustCalculator.html') {
       forEach(['click', 'mouseover'], (event: string) => {
         this.lineChart.on(event, (params: any) => {
           if (params.componentType === 'markPoint') {
