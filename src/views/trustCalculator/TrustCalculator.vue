@@ -289,7 +289,7 @@ export default class TrustCalculator extends Vue {
       max: 1000,
       min: 0,
       unit: '萬',
-      step: 1
+      step: 5
     },
     {
       name: '定期定額投入金額',
@@ -313,7 +313,7 @@ export default class TrustCalculator extends Vue {
       max: 1000,
       min: 0,
       unit: '萬',
-      step: 1
+      step: 5
     }
   ];
 
