@@ -15,11 +15,9 @@
 <script lang="ts">
 // import * as echarts from 'echarts';
 import * as echarts from 'echarts/core';
-import { assign, forEach } from 'lodash-es';
+import { forEach } from 'lodash-es';
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 
-// import mpDefault from '@/assets/img/mp00.svg';
-// import iconRetire from '@/assets/img/plane-solid.svg';
 import { initEchartsWhenMounted, renderEchartsDom } from '@/utility/utility';
 
 @Component
@@ -30,8 +28,6 @@ export default class LineChart extends Vue {
   @Prop({ default: '450px' }) height!: any;
 
   private lineChart: any;
-  // private iconRetireSVG = iconRetire;
-  // private mpDefaultSVG = mpDefault;
 
   private option = {};
 

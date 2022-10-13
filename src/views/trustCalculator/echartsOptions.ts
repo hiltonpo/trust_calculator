@@ -4,8 +4,6 @@ import { map, template } from 'lodash-es';
 // import smileFace from '@/assets/img/smileFace.svg';
 import { toThousand } from '@/utility/utility';
 import { preffix } from '@/utility/utility';
-import 'echarts/lib/component/markPoint';
-import 'echarts/lib/component/markLine';
 
 const chartColor: any = {
   alpha: '#16b6d2',
@@ -13,7 +11,6 @@ const chartColor: any = {
   taiwan: '#F29DA7',
   grid: '#eee'
 };
-
 
 // 目標規劃 圖表的 echart 設定檔
 export function orderLineChartOption (markpointSVGpath: string, markpointXY: any, XLinedata: any, YLinedata: any, max: number) {
@@ -24,7 +21,7 @@ export function orderLineChartOption (markpointSVGpath: string, markpointXY: any
       show: true,
       trigger: 'axis',
       textStyle: {
-        color: '#fff',
+        color: '#fff'
       },
       backgroundColor: '#262F5A',
       borderColor: '#00838F',
@@ -40,7 +37,7 @@ export function orderLineChartOption (markpointSVGpath: string, markpointXY: any
         snap: true,
         z: -1
       },
-      extraCssText:'width:450px;max-height:350px;',
+      extraCssText: 'width:450px;max-height:350px;',
       formatter: (params: any) => {
         const colorSpan = (color: string) => `<span style="display:inline-block;margin-right:5px;border-radius:10px;width:9px;height:9px;background-color:${color}">
         </span><span style="color: ${color};">`;
@@ -51,7 +48,7 @@ export function orderLineChartOption (markpointSVGpath: string, markpointXY: any
           </div>
         </div>`;
         const compiled = template(string, { imports: { toThousand: toThousand } });
-        console.log(params[3].data)
+        console.log(params[3].data);
         return `<div class="text-caption">
           <p class="pa-2 text-center mb-0 text-h4" style="background-color: #37406C;">
             ${params[0].axisValueLabel} 歲 累積總資產比較
@@ -78,7 +75,7 @@ export function orderLineChartOption (markpointSVGpath: string, markpointXY: any
     },
     xAxis: [
       {
-        name:'歲數',
+        name: '歲數',
         nameLocation: 'middle',
         nameTextStyle: {
           padding: [26, 0, 0, 0],
@@ -91,7 +88,7 @@ export function orderLineChartOption (markpointSVGpath: string, markpointXY: any
         postion: 6.5,
         axisLabel: {
           rotate: 40,
-          fontSize: 18,
+          fontSize: 18
         },
         axisTick: {
           show: false
@@ -103,7 +100,7 @@ export function orderLineChartOption (markpointSVGpath: string, markpointXY: any
     ],
     yAxis: [
       {
-        name:'金\n額',
+        name: '金\n額',
         nameLocation: 'left',
         nameTextStyle: {
           padding: [0, 320, 0, 0],
@@ -116,7 +113,7 @@ export function orderLineChartOption (markpointSVGpath: string, markpointXY: any
             return toThousand(params / 10000) + ' 萬';
           },
           margin: 30,
-          fontSize: 24,
+          fontSize: 24
         },
         splitLine: {
           lineStyle: {
@@ -125,10 +122,10 @@ export function orderLineChartOption (markpointSVGpath: string, markpointXY: any
         },
         offset: -7,
         axisTick: {
-          show: false,
+          show: false
         },
         axisLine: {
-          show: false,
+          show: false
         },
         max: max,
         z: -1
@@ -165,22 +162,22 @@ export function orderLineChartOption (markpointSVGpath: string, markpointXY: any
         symbolSize: 6,
         markLine: {
           symbol: ['none', 'none'],
-          label: { 
+          label: {
             show: true,
             fontWeight: 'bold',
             fontSize: '28px',
-            color:'#977C00',
-            formatter(params:any) {
+            color: '#977C00',
+            formatter (params: any) {
               return `退休年齡 ${retireAge} 歲`;
             }
 
           },
           data: [{ xAxis: assetMarkpointX }],
           lineStyle: {
-            type:'dotted',
+            type: 'dotted',
             width: 6,
-            color: '#EAC100',
-          },
+            color: '#EAC100'
+          }
         },
         markPoint: {
           symbolSize: [60, 60], // 图形大小
@@ -191,16 +188,16 @@ export function orderLineChartOption (markpointSVGpath: string, markpointXY: any
             }
           ],
           itemStyle: {
-            color: '#00BCD4',
+            color: '#00BCD4'
           },
           tooltip: {
             show: true,
             trigger: 'item',
             padding: 0,
-            extraCssText:'width:450px;height:180px;',
+            extraCssText: 'width:450px;height:180px;',
             formatter (params: any) {
               const [year, value] = params.data.coord;
-              console.log(params)
+              console.log(params);
               return `<div class="font-weight-medium">
                 <p class="pa-2 text-center mb-0 text-h4" style="background-color: #37406C;">
                   累積資產(市場一般情況)
@@ -271,13 +268,13 @@ export function orderLineChartOption (markpointSVGpath: string, markpointXY: any
             }
           ],
           itemStyle: {
-            color: '#9D9D9D',
+            color: '#9D9D9D'
           },
           tooltip: {
             show: true,
             trigger: 'item',
             padding: 0,
-            extraCssText:'width:450px;height:180px;',
+            extraCssText: 'width:450px;height:180px;',
             formatter (params: any) {
               const [year, value] = params.data.coord;
               // console.log(params);
@@ -299,7 +296,7 @@ export function orderLineChartOption (markpointSVGpath: string, markpointXY: any
         },
         z: -2,
         data: YLinedata.withdraw,
-        connectNulls:true
+        connectNulls: true
       }
     ]
   };

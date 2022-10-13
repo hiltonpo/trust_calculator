@@ -150,7 +150,6 @@
   }
 }
 
-// .v-slider__track-container
 ::v-deep .v-slider--horizontal .v-slider__track-container {
   height: 12px;
 }
@@ -172,9 +171,8 @@
 
 <script lang="ts">
 import { Component, Vue, Watch, Prop } from 'vue-property-decorator';
-import { toThousand } from '@/utility/utility';
+import { toThousand, chartDataCalculation } from '@/utility/utility';
 import { template } from 'lodash-es';
-import LineChart from 'echarts/charts';
 import {
   DatasetComponent,
   GridComponent,
@@ -190,16 +188,7 @@ import { orderLineChartOption } from '@/views/trustCalculator/echartsOptions';
 
 echarts.use([DatasetComponent, TooltipComponent, GridComponent, LegendComponent, ToolboxComponent, CanvasRenderer]);
 
-@Component({
-  data () {
-    return {
-
-    };
-  },
-  computed: {
-
-  }
-})
+@Component
 export default class TrustCalculator extends Vue {
   // 文字資料
   private text: any = [];
@@ -256,7 +245,7 @@ export default class TrustCalculator extends Vue {
     }
     if (type === 'middle') {
       const string = `<div class="pb-3">您將會在退休時，擁有約<span class="green--text font-weight-black"> ${toThousand(Number(assetFixed))} </span>萬的退休資產</div>
-      <div>如果每年提領約<span class="green--text font-weight-black"> ${(Math.round(Number(this.input.withdraw * 12)/10000))} </span>萬，將可以順利提領到<span class="green--text font-weight-bold"> ${this.input.lifeAge} </span>歲</div>`;
+      <div>如果每年提領約<span class="green--text font-weight-black"> ${(Math.round(Number(this.input.withdraw * 12) / 10000))} </span>萬，將可以順利提領到<span class="green--text font-weight-bold"> ${this.input.lifeAge} </span>歲</div>`;
       const complied = template(string);
       return complied();
     }
@@ -330,53 +319,6 @@ export default class TrustCalculator extends Vue {
     }, 50);
   }
 
-  //  退休前資產累積  (year為投資第幾年、r為投報率=>好、普通、差)
-  private assetBeforeRetire (year: number, r: number) {
-    const depositRatio = 1 + this.constant.Rdeposit; // 總定存投報率
-    const investRatio = 1 + r; // 總投資投報率
-    const totalDeposit = (t: number) => { // 累積定存資產
-      return this.input.deposit * 10000 * (depositRatio ** year);
-    };
-    const recrusionAssetBefore: any = (year: number, r: number) => { // 累積投資資產
-      const inital = this.input.invMoney * 10000; // 初始單筆金額
-      const totalRegMoney = this.input.regMoney * 12; // 每年定期總額
-      const total = (inital + totalRegMoney) * investRatio; // 當年度投資資產 = (初始單筆金額+每年定期累積金額)X年化報酬率
-      if (year === 0) {
-        return inital;
-      } else if (year === 1) {
-        return total;
-      } else {
-        return (recrusionAssetBefore(year - 1, r) + totalRegMoney) * investRatio;
-      };
-    };
-
-    return Math.round(recrusionAssetBefore(year, r) + totalDeposit(year)); // 退休前資產累積 = 累積定存資產 + 累積投資資產
-  }
-
-  //  退休後資產累積  (year為退休第幾年、r為投報率=>好、普通、差)
-  private assetAfterRetire (year: number, r: number) {
-    const depositRatio = 1 + this.constant.Rdeposit; // 總定存投報率
-    const inflationRatio = 1 + this.constant.Rinflation; // 總通膨投報率
-    const investRatio = 1 + r; // 總投資投報率
-    const investYear = this.input.ageRange[1] - this.input.ageRange[0]; // 投資年數
-    // 總加權報酬率(退休後使用的報酬率) = 1 + (累積投資資產 X 總投資投報率 + 累積定存資產 X 總定存投報率) / 總累積資產
-    const avgRatio = 1 + (this.assetBeforeRetire(investYear, r) * r - this.input.deposit * 10000 * (depositRatio ** investYear) * investRatio + this.input.deposit * 10000 * (depositRatio ** investYear) * depositRatio) / this.assetBeforeRetire(investYear, r);
-
-    const recrusionAssetAfter: any = (year: number, r: number) => {
-      const inital = this.assetBeforeRetire(investYear, r); // 初始退休累積資產
-      const totalRegWithdraw = (t: number) => { // 每年提領金額(考慮每年通膨)
-        return this.input.withdraw * 12 * (inflationRatio ** t);
-      };
-      const total = (inital - totalRegWithdraw(0)) * avgRatio; // 當年度投資資產 = (初始單筆金額+每年定期累積金額)X年化報酬率
-      if (year < 2) {
-        return total;
-      } else {
-        return (recrusionAssetAfter(year - 1, r) - totalRegWithdraw(year - 1)) * avgRatio; // 提領後資產累積
-      }
-    };
-    return recrusionAssetAfter(year, r) <= 0 ? 0 : Math.round(recrusionAssetAfter(year, r));
-  }
-
   // 最佳解：假如總提領金額 > 退休前累積資產(市場一般情況)，則計算單筆 或 定期定額 所需要調整的金額大小
   private optimalSolution (withdrawAll: any, assetBeforeRetire: any, year: any) {
     const depositRatio = 1 + this.constant.Rdeposit; // 總定存投報率
@@ -407,42 +349,7 @@ export default class TrustCalculator extends Vue {
 
   // 構圖：將參數整合並帶入echartsOption.ts
   private setLineChartData () {
-    // X軸資料(array)： 現在年齡 至 預期壽命
-    const XLineData = new Array(this.input.lifeAge - this.input.ageRange[0] + 1).fill(0).map((item, index) => this.input.ageRange[0] + index);
-    // Y軸資料(array)： 退休前資產累積 至 退休後資產累積 (分成 較好投報率、正常投報率、較差投報率 三條折線)
-    const YLineData: Record<string, any> | any = {};
-
-    // X軸資料分成兩段： 現在年齡 至 退休年齡(含) & 退休年齡+1 至 預期壽命
-    const beforeRetireAgeData = new Array(this.input.ageRange[1] - this.input.ageRange[0] + 1).fill(0).map((item, index) => index);
-    const afterRetireAgeData = new Array(this.input.lifeAge - this.input.ageRange[1]).fill(0).map((item, index) => index + 1);
-
-    // 退休前累積資產(array)： 分成 較好投報率、正常投報率、較差投報率 三條折線
-    const beforeRetireAssetData: any = this.situation.reduce((all: any, cur: any) => {
-      all[cur] = beforeRetireAgeData.map((year, index) => { return this.assetBeforeRetire(year, this.constant.Rinvest[cur]); });
-      return all;
-    }, {});
-    // 退休後累積資產(array)： 分成 較好投報率、正常投報率、較差投報率三條折線
-    const afterRetireAssetData: any = this.situation.reduce((all: any, cur: any) => {
-      all[cur] = afterRetireAgeData.map((year, index) => { return this.assetAfterRetire(year, this.constant.Rinvest[cur]); });
-      return all;
-    }, {});
-
-    // 預計提領總金額
-    const withdrawAll: any = afterRetireAgeData.reduce((all: any, cur: any) => {
-      return Math.round(all + this.input.withdraw * 12 * ((1 + this.constant.Rinflation) ** cur));
-    }, 0);
-
-    // 將 退休前+退休後累積資產(三種報酬率)、提領金額 塞進Y軸資料
-    (function fillDataToYLine (situation, arrayFillBefore, arrayFillAfter) {
-      for (const item of situation) {
-        if (item !== 'withdraw') {
-          YLineData[item] = beforeRetireAssetData[item].concat(afterRetireAssetData[item]);
-        } else {
-          // Y軸座標起始(0)->最高點(提領總額)->終點(0)
-          YLineData[item] = [0, ...arrayFillBefore, withdrawAll, ...arrayFillAfter, 0];
-        };
-      }
-    })(this.situation, new Array(beforeRetireAgeData.length - 2).fill(''), new Array(afterRetireAgeData.length - 1).fill(''));
+    const [XLineData, YLineData, beforeRetireAssetData, afterRetireAssetData, withdrawAll] = chartDataCalculation(this.input, this.situation, this.constant);
 
     // Y軸座標最大值Maximum 動態調整 避免過大造成圖表縮小不易閱讀
     const maximum = (assetMax: any, withdrawMax: any) => {
@@ -467,20 +374,19 @@ export default class TrustCalculator extends Vue {
       retireAge: this.input.ageRange[1]
     };
 
+    // 帶入echartOptions => 五個參數代表: 圖表檔案、標記座標(累積資產最大值)、X軸資料陣列、Y軸資料陣列、Y軸最大值
+    this.lineChartOption = orderLineChartOption('graph', markpointXY, XLineData, YLineData, maximum(YLineData.better, withdrawAll));
+
     // 文字渲染 右上角 還有 中間
     this.$nextTick(() => {
       this.text = this.textRender(this.input.ageRange[1], YLineData.normal[(this.input.ageRange[1] - this.input.ageRange[0])], withdrawAll, 'right-top');
       this.textDetail = this.textRender(this.input.ageRange[1], YLineData.normal[(this.input.ageRange[1] - this.input.ageRange[0])], withdrawAll, 'middle');
     });
 
-    // console.log(YLineData)
-    console.log(XLineData)
-
-    // 帶入echartOptions => 五個參數代表: 圖表檔案、標記座標(累積資產最大值)、X軸資料陣列、Y軸資料陣列、Y軸最大值
-    this.lineChartOption = orderLineChartOption('graph', markpointXY, XLineData, YLineData, maximum(YLineData.better, withdrawAll));
-
+    // 當總退休資產小於總提領金額，提醒需要調整單筆或定期之金額
     this.optimalSolution(withdrawAll, afterRetireAssetData.normal.shift(), (this.input.ageRange[1] - this.input.ageRange[0]));
 
+    // 圖表RWD
     this.chartsResize();
   }
 

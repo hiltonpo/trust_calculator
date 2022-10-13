@@ -39,9 +39,10 @@
       <v-app-bar app color="grey lighten-4" height="80px" elevation="3">
         <v-app-bar-nav-icon class="hidden-md-and-up" @click="drawer = !drawer"></v-app-bar-nav-icon>
         <img class="logo" :src="logo" />
-          <v-spacer class="hidden-sm-and-down"></v-spacer>
-          <!-- <v-btn class="hidden-sm-and-down">SIGN IN</v-btn>
-          <v-btn color="brown lighten-3" class="hidden-sm-and-down">JOIN</v-btn> -->
+        <div class="ml-10 text-h6">信託試算工具</div>
+        <v-spacer class="hidden-sm-and-down"></v-spacer>
+        <!-- <v-btn class="hidden-sm-and-down">SIGN IN</v-btn>
+        <v-btn color="brown lighten-3" class="hidden-sm-and-down">JOIN</v-btn> -->
       </v-app-bar>
     </span>
 </template>
