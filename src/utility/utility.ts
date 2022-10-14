@@ -2,6 +2,122 @@ import Cookies from 'js-cookie';
 import { forEach, cloneDeep, random } from 'lodash-es';
 import * as crypto from 'crypto';
 
+export function setCookie (cookieName: string, cookieObj: any) {
+  const cookieExpiresDay: any = {
+    Login: {
+      email: {
+        expires: 365 * 10 // days
+      },
+      rememberEmail: {
+        expires: 365 * 10
+      }
+    },
+    user: {
+      userName: {
+        expires: 1 / 24
+      }
+    },
+    api: {
+      token: {
+        expires: 1 / 24
+      },
+      loginToken: {
+        expires: 1 / 24
+      },
+      sinopacToken: {
+        expires: 1 / 24
+      }
+    },
+    investDiagnosis: {
+      userAge: {
+        expires: 3
+      },
+      questions: {
+        expires: 3
+      },
+      reload: {
+        expires: 1 / 24
+      },
+      hasNoTickerId: {
+        expires: 1 / 24
+      },
+      selectionAuto: {
+        expires: 1 / 24
+      }
+    },
+    google: {
+      googleUserName: {
+        expires: 1 / 24
+      },
+      gmail: {
+        expires: 1 / 24
+      },
+      googleId: {
+        expires: 1 / 24
+      }
+    },
+    yahoo: {
+      yahooData: {
+        expires: 1 / 24
+      },
+      yahooAction: {
+        expires: 1 / 24
+      },
+      errResponse: {
+        expires: 1 / 24
+      },
+      keepSearch: {
+        expires: 1 / 24
+      }
+    },
+    register: {
+      data: {
+        expires: 1 / 24
+      }
+    },
+    source: {
+      camp: {
+        expires: 1 / 24
+      },
+      ABtest: {
+        expires: 1 / 24
+      }
+    }
+  };
+
+  forEach(cookieExpiresDay[cookieName], (expiresDayObj: any, key: string) => {
+    if (cookieObj[key] !== undefined) {
+      Cookies.set(key, cookieObj[key], expiresDayObj);
+    }
+  });
+}
+
+export function getCookie (name: string) {
+  const cookieName: any = {
+    Login: ['email', 'rememberEmail', 'rememberEmail'],
+    user: ['userName'],
+    api: ['token', 'loginToken', 'sinopacToken'],
+    investDiagnosis: ['userAge', 'questions', 'reload', 'hasNoTickerId', 'selectionAuto', 'hasNoTickerId', 'selectionAuto'],
+    google: ['googleUserName', 'gmail', 'googleId'],
+    yahoo: ['yahooData', 'yahooAction', 'errResponse', 'keepSearch'],
+    register: ['data'],
+    source: ['camp', 'ABtest']
+  };
+
+  const data: any = {};
+  for (const nameItem of cookieName[name]) {
+    data[nameItem] = Cookies.get(nameItem);
+  }
+
+  return data;
+}
+
+export function removeCookie (name: Array<string>) {
+  const cookieClear = name.map((item: string) => {
+    return Cookies.remove(item);
+  });
+}
+
 export function rules (ruleName: string) {
   const rule: any = {
     required: (value: any) => !!value || '此欄位必填',
