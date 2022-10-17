@@ -2,29 +2,22 @@ import Vue from 'vue';
 import VueRouter, { RouteConfig } from 'vue-router';
 import { pathToRegexp, match, parse, compile } from 'path-to-regexp';
 import InputPortfolio from '@/views/finTech/InputPortfolio.vue';
-import InputResult from '@/views/trustCalculator/InputResult.vue';
+import InputResult from '@/views/finTech/InputResult.vue';
 
 
 Vue.use(VueRouter);
 
 const routes: Array<RouteConfig> = [
   {
-    path: '*',
-    name: 'Inital',
-    components: {
-      InputPortfolio
-    }
-  },
-  {
     path: '/InputPortfolio',
-    name: 'Inital',
+    name: 'InputPortfolio',
     components: {
       InputPortfolio
     }
   },
   {
     path: '/InputResult',
-    name: 'Inital',
+    name: 'InputResult',
     components: {
       InputResult
     }
@@ -33,7 +26,8 @@ const routes: Array<RouteConfig> = [
 
 const router = new VueRouter({
   mode: 'history',
-  routes
-});
+  routes: routes
+})
+
 
 export default router;

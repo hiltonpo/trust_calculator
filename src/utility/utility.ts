@@ -121,16 +121,11 @@ export function removeCookie (name: Array<string>) {
 export function rules (ruleName: string) {
   const rule: any = {
     required: (value: any) => !!value || '此欄位必填',
-    cellphone: (value: any) => {
-      const patt = /[0][9][0-9]{8}/g;
-      return (patt.test(value) && value.length === 10) || '格式不正確';
-    },
-    mail: (value: any) => /.+@.+\..+/.test(value) || '格式不正確',
-    couponCode: (value: any) => (value && value.length >= 17) || '格式不正確',
     checkNumber: (value: any) => {
       let reg = /^\d+(\.\d{1,2})?$/;
       return reg.test(value) || '格式不正確'},
-    age: (value: any) => (value >= 0 && value <= 90) || '格式不正確'
+    age: (value: any) => (value >= 0 && value <= 90) || '格式不正確',
+    noneZero: (value: any) => (Number(value) > 0) || '不得為零',
   };
   return rule[ruleName];
 }

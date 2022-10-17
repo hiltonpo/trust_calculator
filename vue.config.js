@@ -43,19 +43,19 @@ module.exports = {
       chunkFilename: 'css/[name].[chunkhash:8].css'
     }
   },
-  pages: {
-    TrustCalculator: {
-      entry: 'src/entry/TrustCalculator.ts',
-      template: 'public/index.html',
-      filename: 'TrustCalculator.html',
-      title: '阿爾發-機器理財信託試算系統',
-      chunks: [
-        'chunk-vendors',
-        'chunk-common',
-        'TrustCalculator'
-      ]
-    }
-  },
+  // pages: {
+  //   InputResult: {
+  //     entry: 'src/main.ts',
+  //     template: 'public/index.html',
+  //     filename: 'InputResult.html',
+  //     title: '阿爾發-機器理財信託試算系統',
+  //     chunks: [
+  //       'chunk-vendors',
+  //       'chunk-common',
+  //       'TrustCalculator'
+  //     ]
+  //   }
+  // },
   transpileDependencies: [
     'vuetify'
   ]

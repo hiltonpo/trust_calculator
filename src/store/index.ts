@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import TrustCalculator from '@/store/TrustCalculator';
+import FinTech from '@/store/Fintech';
 
 Vue.use(Vuex);
 
@@ -14,6 +14,6 @@ export default new Vuex.Store({
 
   },
   modules: {
-    TrustCalculator
+    FinTech
   }
 });
