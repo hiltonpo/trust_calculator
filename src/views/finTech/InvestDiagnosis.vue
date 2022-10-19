@@ -68,7 +68,6 @@ import imgCl from '@/assets/img/investDiagnosis/coverLogo.png';
 import imgHi from '@/assets/img/investDiagnosis/logo_home_img.png';
 import imghp from '@/assets/img/investDiagnosis/mobile_home_img.png';
 
-
 @Component
 export default class InvestDiagnosis extends Vue {
   private imgCl = imgCl;

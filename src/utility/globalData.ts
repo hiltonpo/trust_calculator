@@ -1,5 +1,5 @@
 const optionList = [
-  { id: '2330', name: '台積電', buy: '411.5', reserve: '200', classes: '半導體'},
+  { id: '2330', name: '台積電', buy: '411.5', reserve: '200', classes: '半導體' },
   { id: '6770', name: '力積電', buy: '28.35', reserve: '3500', classes: '半導體' },
   { id: '2454', name: '聯發科', buy: '562', reserve: '200', classes: '半導體' },
   { id: '2303', name: '聯電', buy: '38.05', reserve: '2600', classes: '半導體' },
@@ -24,8 +24,8 @@ const optionList = [
   { id: '00885', name: '富邦越南', buy: '12.55', reserve: '8000', classes: 'ETF' },
   { id: '00646', name: '元大S&P 500', buy: '36.09', reserve: '2800', classes: 'ETF' },
   { id: '0056', name: '元大高股息', buy: '25.89', reserve: '3900', classes: 'ETF' },
-  { id: '00881', name: '國泰台灣5G+', buy: '12.76', reserve: '7800', classes: 'ETF' },
-]
+  { id: '00881', name: '國泰台灣5G+', buy: '12.76', reserve: '7800', classes: 'ETF' }
+];
 
 const yahooList = [
   { id: '00878', name: '國泰永續高股息', buy: '15.8', reserve: '10100' },
@@ -37,8 +37,8 @@ const yahooList = [
   { id: '2812', name: '台中商銀', buy: '12.85', reserve: '5400' },
   { id: '3231', name: '緯創', buy: '26.55', reserve: '2600' },
   { id: '00881', name: '國泰5G+', buy: '12.76', reserve: '5500' },
-  { id: '2317', name: '鴻海', buy: '105', reserve: '700' },
-]
+  { id: '2317', name: '鴻海', buy: '105', reserve: '700' }
+];
 
 const fundList = [
   { id: '', name: '安聯收益成長基金-AT累積類股(美元)', buy: '19.56', reserve: '160' },
@@ -48,8 +48,8 @@ const fundList = [
   { id: '', name: 'NN(L)新興市場債券基金X股美元', buy: '275.66', reserve: '10' },
   { id: '', name: '安聯台灣大壩基金-A類型-新臺幣', buy: '48.77', reserve: '2050' },
   { id: '', name: '野村優質基金-累積類型新臺幣計價', buy: '66.73', reserve: '1500' },
-  { id: '', name: '安聯台灣智慧基金', buy: '62.75', reserve: '1590' },
-]
+  { id: '', name: '安聯台灣智慧基金', buy: '62.75', reserve: '1590' }
+];
 
 const USList = [
   { id: '', name: 'AAPL', buy: '142.99', reserve: '70' },
@@ -61,29 +61,28 @@ const USList = [
   { id: '', name: 'QQQ', buy: '268.82', reserve: '37' },
   { id: '', name: 'MSFT', buy: '234.24', reserve: '43' },
   { id: '', name: 'BA', buy: '132.4', reserve: '76' },
-  { id: '', name: 'DIS', buy: '96.64', reserve: '103' },
-]
+  { id: '', name: 'DIS', buy: '96.64', reserve: '103' }
+];
 
-
-function render(list: any) {
-  const stockId = list.reduce((cur: any, stockItem: any)=> {
+function render (list: any) {
+  const stockId = list.reduce((cur: any, stockItem: any) => {
     const { id, name } = stockItem;
-    return cur.concat(id+' '+name);
+    return cur.concat(id + ' ' + name);
   }, []);
 
-  const buy = list.reduce((cur: any, stockItem: any)=> {
+  const buy = list.reduce((cur: any, stockItem: any) => {
     const { buy } = stockItem;
     return cur.concat(buy);
   }, []);
 
-  const reserve = list.reduce((cur: any, stockItem: any)=> {
+  const reserve = list.reduce((cur: any, stockItem: any) => {
     const { reserve } = stockItem;
     return cur.concat(reserve);
   }, []);
-  
+
   // 自選投組多一個產業類別
   if (Object.getOwnPropertyNames(list[0]).includes('classes')) {
-    const classes = list.reduce((cur: any, stockItem: any)=> {
+    const classes = list.reduce((cur: any, stockItem: any) => {
       const { classes } = stockItem;
       return cur.concat(classes);
     }, []);
@@ -94,7 +93,7 @@ function render(list: any) {
   return [stockId, buy, reserve];
 }
 
-export function stockData(type: any) {
+export function stockData (type: any) {
   if (type === 'option') {
     return render(optionList);
   } else if (type === 'yahoo') {
@@ -108,10 +107,10 @@ export function stockData(type: any) {
   };
 }
 
-export function optionHealthCheck(rowData: any) {
-  const classAll = rowData.reduce((cur: any, stockItem: any)=> {
+export function optionHealthCheck (rowData: any) {
+  const classAll = rowData.reduce((cur: any, stockItem: any) => {
     const { classes } = stockItem;
     return cur.concat(classes);
-  }, [])
+  }, []);
   console.log(classAll);
 }

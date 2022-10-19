@@ -65,7 +65,7 @@ class ApiClient {
       url: './PHCC/PHCB_Result',
       data: data,
       headers: {
-        Authorization: `Bearer JWT_token`,
+        Authorization: 'Bearer JWT_token',
         ...this.header
       }
     });

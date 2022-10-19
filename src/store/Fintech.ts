@@ -4,10 +4,10 @@ export default
 {
   state: {
     type: 'option',
-    portfolioAll:[],
+    portfolioAll: []
   },
   mutations: {
-    setPortfolioAll(state: any, stock: any) {
+    setPortfolioAll (state: any, stock: any) {
       state.portfolioAll.push(stock);
     },
     delAllPortfolio (state: any) {
@@ -22,12 +22,12 @@ export default
 
       state.portfolioAll = temp;
     },
-    setType(state: any, type: any) {
+    setType (state: any, type: any) {
       state.type = type;
     }
   },
   getters: {
-    getPortfolioAll(state: any) {
+    getPortfolioAll (state: any) {
       return state.portfolioAll;
     },
     getPortfolioStock (state: any) {
@@ -42,12 +42,12 @@ export default
     getPortfolioLength (state: any) {
       return state.portfolioAll.length;
     },
-    getType(state: any) {
+    getType (state: any) {
       return state.type;
     }
   },
   actions: {
-    loadPortfolioAll({state, commit}: any, stock: any) {
+    loadPortfolioAll ({ state, commit }: any, stock: any) {
       commit('setPortfolioAll', stock);
     },
     delAllPortfolio ({ commit }: any) {
