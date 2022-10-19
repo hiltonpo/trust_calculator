@@ -146,8 +146,8 @@ import router from '@/router';
 
 @Component
 export default class InputPortfolio extends Vue {
-  @Action('loadPortfolioAll') loadPortfolioAll!: (stock: any) => void;
-  @Getter('getPortfolioAll') getPortfolioAll!: any;
+  @Action('loadPortfolio') loadPortfolio!: (stock: any) => void;
+  @Getter('getPortfolio') getPortfolio!: any;
   @Getter('getType') getType!: any;
 
   private decoAlpha = decoAlpha
@@ -174,9 +174,9 @@ export default class InputPortfolio extends Vue {
   private classes = ''
 
   // 監聽標的總數
-  @Watch('getPortfolioAll')
+  @Watch('getPortfolio')
   private updatePortfolioAll () {
-    const portfolioAllId = this.getPortfolioAll.map((item: any) => {
+    const portfolioAllId = this.getPortfolio.map((item: any) => {
         return item.id;
     });
     return portfolioAllId;
@@ -226,7 +226,9 @@ export default class InputPortfolio extends Vue {
     });
     this.buy = stockData(this.getType)[1][index];
     this.reserve = stockData(this.getType)[2][index];
-    this.classes = stockData(this.getType)[3][index];
+    if (this.getType === 'option') {
+      this.classes = stockData(this.getType)[3][index];
+    }
   }
 
   // @Watch('fundNumber')
@@ -245,20 +247,24 @@ export default class InputPortfolio extends Vue {
   private addStock () {
     const form: any = this.$refs.stockForm;
     if (form.validate()) {
-      this.loadPortfolioAll({
-        id: this.stockNumber,
-        type: 'stock',
-        buy: this.buy,
-        reserve: this.reserve,
-        classes: this.classes,
-      })
+      if (this.getType === 'option') {
+        this.loadPortfolio({
+          id: this.stockNumber,
+          type: 'stock',
+          buy: this.buy,
+          reserve: this.reserve,
+          classes: this.classes,
+        })
 
-      this.stockNumber = '';
-      this.buy = '';
-      this.reserve = '';
-      this.classes = ''
-      this.addedDialog = true;
-      this.dialogMsg = '已新增';
+        this.stockNumber = '';
+        this.buy = '';
+        this.reserve = '';
+        this.classes = ''
+        this.addedDialog = true;
+        this.dialogMsg = '已新增';
+      } else if (this.getType === 'US') {
+        
+      }
     }
   }
 

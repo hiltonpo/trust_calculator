@@ -11,6 +11,8 @@
     </div>
     <div class="divider my-8 my-md-10"></div>
 
+    <!-- 台股表 -->
+    <div v-if="getType === 'yahoo' || getType === 'option'">
     <p class="text-h6 pink--text text--lighten-2 mb-1">
       台股
     </p>
@@ -87,6 +89,7 @@
               </tr>
             </tbody>
             <v-btn
+              v-if="getType === 'option'"
               class="white pink--text text--lighten-2"
               x-small
               depressed
@@ -97,7 +100,10 @@
         </v-simple-table>
       </v-form>
     </div>
+    </div>
 
+    <!-- 基金表 -->
+    <div v-if="getType === 'fund' || getType === 'option'">
     <p class="text-h6 amber--text text--accent-3 mb-1">
       基金
     </p>
@@ -114,81 +120,30 @@
                   成本／幣別
                 </th>
                 <th class="text-center">
-                  股數
-                </th>
-                <th class="text-center">
+                  單位數
                 </th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="(value , key) in getPortfolioFund" :key="key" class="amber lighten-5">
-                <td v-if="(updateModeId.index === key) && (updateModeId.type === value.type)" class="text-left">
-                  <v-autocomplete
-                    :rules="inputRule.id"
-                    v-model="value.id"
-                    :items="getFunds">
-                    {{ value.id }}
-                  </v-autocomplete>
-                </td>
-                <td v-else class="text-left"><i class="fas fa-square mr-2 amber--text text--accent-3"></i>{{ value.id }}</td>
-
-                <td v-if="(updateModeId.index === key) && (updateModeId.type === value.type)" class="text-center">
-                  <v-text-field v-model="value.buy"></v-text-field>
-                </td>
-                <td v-else class="text-center">{{ value.buy }}／{{ value.currency }}</td>
-
-                <td v-if="(updateModeId.index === key) && (updateModeId.type === value.type)" class="text-center">
-                  <v-text-field v-model="value.reserve"></v-text-field>
-                </td>
-                <td v-else class="text-center">{{ value.reserve }}</td>
-                <td class="text-center">
-                  <v-btn
-                    :disabled="uniqle()"
-                    v-show="(updateModeId.index !== key) || (updateModeId.type !== value.type) "
-                    class="white"
-                    x-small
-                    depressed
-                    @click="del({id: value.id, type: value.type})">
-                    <i class="fas fa-minus"></i>
-                  </v-btn>
-                  &emsp;
-                  <v-btn
-                    :disabled="uniqle()"
-                    v-show="(updateModeId.index !== key) || (updateModeId.type !== value.type) "
-                    class="white"
-                    x-small
-                    depressed
-                    @click.stop="updateMode(key, value.type, value.id, value.buy, value.reserve)">
-                    <i class="fas fa-pen"></i>
-                  </v-btn>
-                  &emsp;
-                  <v-btn
-                    v-show="(updateModeId.index === key) && (updateModeId.type === value.type)"
-                    class="white"
-                    x-small
-                    depressed
-                    @click="updateDone(key, value.id)">
-                    <i class="fas fa-check"></i>
-                  </v-btn>
-                </td>
+                <td class="text-left"><i class="fas fa-square mr-2 amber--text text--accent-3"></i>{{ value.id }}</td>
+                <td class="text-center">{{ value.buy }}／{{ value.currency }}</td>
+                <td class="text-center">{{ value.reserve }}</td>
+                <td class="text-center"></td>
               </tr>
             </tbody>
-            <v-btn
-              class="white amber--text text--accent-3"
-              x-small
-              depressed
-              @click="autoSelect">
-              <i class="fas fa-plus"> 新增</i>
-            </v-btn>
           </template>
         </v-simple-table>
       </v-form>
     </div>
-
+    </div>
+    
+    <!-- 美股表 -->
+    <div v-if="getType === 'US' || getType === 'option'">
     <p class="text-h6 green--text text--darken-1 mb-1">
       美股
     </p>
-    <div>
+    <div style="margin-bottom: 100px;">
       <v-form ref="stockUSAForm">
         <v-simple-table dense>
           <template v-slot:default>
@@ -209,65 +164,17 @@
             </thead>
             <tbody>
               <tr v-for="(value , key) in getPortfolioStockUSA" :key="key" class="green lighten-5">
-                <td v-if="(updateModeId.index === key) && (updateModeId.type === value.type)" class="text-left">
-                  <v-autocomplete
-                    :rules="inputRule.id"
-                    v-model="value.id"
-                    :items="getStockUSA">
-                  </v-autocomplete>
-                </td>
-                <td v-else class="text-left"><i class="fas fa-square mr-2 green--text text--darken-1"></i>{{ value.id }}</td>
-                <td v-if="(updateModeId.index === key) && (updateModeId.type === value.type)" class="text-center">
-                  <v-text-field v-model="value.buy"></v-text-field>
-                </td>
-                <td v-else class="text-center">{{ value.buy }}／美元</td>
-                <td v-if="(updateModeId.index === key) && (updateModeId.type === value.type)" class="text-center">
-                  <v-text-field v-model="value.reserve"></v-text-field>
-                </td>
-                <td v-else class="text-center">{{ value.reserve }}</td>
+                <td class="text-left"><i class="fas fa-square mr-2 green--text text--darken-1"></i>{{ value.id }}</td>
+                <td class="text-center">{{ value.buy }}／美元</td>
+                <td class="text-center">{{ value.reserve }}</td>
                 <td class="text-center">
-                  <v-btn
-                    :disabled="uniqle()"
-                    v-show="(updateModeId.index !== key) || (updateModeId.type !== value.type) "
-                    class="white"
-                    x-small
-                    depressed
-                    @click="del({id: value.id , type: value.type})">
-                    <i class="fas fa-minus"></i>
-                  </v-btn>
-                  &emsp;
-                  <v-btn
-                    :disabled="uniqle()"
-                    v-show="(updateModeId.index !== key) || (updateModeId.type !== value.type) "
-                    class="white"
-                    x-small
-                    depressed
-                    @click.stop="updateMode(key, value.type, value.id)"
-                    >
-                    <i class="fas fa-pen"></i>
-                  </v-btn>
-                  &emsp;
-                  <v-btn
-                    v-show="(updateModeId.index === key) && (updateModeId.type === value.type)"
-                    class="white"
-                    x-small
-                    depressed
-                    @click="updateDone(key, value.id)">
-                    <i class="fas fa-check"></i>
-                  </v-btn>
                 </td>
               </tr>
             </tbody>
-            <v-btn
-              class="white green--text text--darken-1"
-              x-small
-              depressed
-              @click="autoSelect">
-              <i class="fas fa-plus"> 新增</i>
-            </v-btn>
           </template>
         </v-simple-table>
       </v-form>
+    </div>
     </div>
 
     <template v-if="AnalysisState">
@@ -283,51 +190,38 @@
         </p>
       </div>
     </template>
-    <div class="d-flex align-center justify-end mt-16 mb-4 position-relative" style="z-index: 2">
-      <!-- <v-checkbox v-model="agree" color="cyan"></v-checkbox>
-      <label class="text-subtitle-2">我已閱讀並同意</label>
-      <v-btn
-        class="white--text text-subtitle-2 ml-3"
-        rounded depressed outlined color="cyan"
-        href="./Terms.html" target="_blank"
-      >
-        使用者條款
-      </v-btn> -->
-
-      <!-- 刪掉全部投組 垃圾桶 -->
-      <v-btn
-        class="pa-0 position-relative" style="min-width: auto; z-index: 1"
-        small
-        depressed
-        color="white"
-        @click="showDialog('clearAllPortfolio')">
-        <v-icon color="grey darken-1">fas fa-trash</v-icon>
-      </v-btn>
-
-      <!-- <span class="cursor: pointer;" @click="showDialog('clearAllPortfolio')">
-        <i class="fas fa-trash" style="transform: scale(1.5); margin-bottom:10px"></i>
-      </span> -->
+    <div>
+      <v-row>
+        <v-col cols="12" sm="6" lg="6">
+          <v-btn
+            class="mt-2"
+            color="black"
+            width="100%"
+            large
+            depressed
+            outlined
+            :disabled="permission()"
+            @click="back"
+            :loading="show">
+            上一步
+          </v-btn>
+        </v-col>
+        <v-col cols="12" sm="6" lg="6">
+          <v-btn
+            class="mt-2"
+            color="black"
+            width="100%"
+            large
+            depressed
+            outlined
+            :disabled="permission()"
+            @click="healthCheck"
+            :loading="show">
+            下一步
+          </v-btn>
+        </v-col>
+      </v-row>
     </div>
-    <v-btn
-      class="white--text mt-2"
-      color="cyan lighten-2"
-      width="100%"
-      large
-      depressed
-      :disabled="permission()"
-      @click="healthCheck"
-      :loading="show">
-      確認送出
-    </v-btn>
-          <CommonDialog
-      ref="clearAllPortfolio"
-      title="提醒"
-      :YesOrNo="false"
-      :text="'確定要刪除全部標的嗎？'"
-      nextBtnText="全部刪除"
-      @correct="clearAllPortfolio"
-      >
-      </CommonDialog>
     <!-- <v-btn
       class="deep-purple--text text--accent-4 font-weight-bold mt-4 mb-6 text-capitalize"
       color="deep-purple accent-4"
@@ -384,15 +278,17 @@ import { Component, Vue, Watch } from 'vue-property-decorator';
 import { Action, Getter, Mutation } from 'vuex-class';
 
 import { getCookie, removeCookie, rules, setCookie } from '@/utility/utility';
-import { stockData, optionHealthCheck } from '@/utility/globalData';
+import { stockData, lunchBoxType } from '@/utility/globalData';
 import router from '@/router';
 
 @Component
 export default class InputResult extends Vue {
-  @Action('delAllPortfolio') delAllPortfolio!: () => void;
   @Action('delPortfolio') delPortfolio!: (params: any) => void;
+  @Action('loadPortfolio') loadPortfolio!: (stock: any) => void;
 
-  @Getter('getPortfolioAll') getPortfolioAll!: any;
+  @Mutation('setLunchBoxType') setLunchBoxType!: (type: any) => void;
+
+  @Getter('getPortfolio') getPortfolio!: any;
   @Getter('getPortfolioStock') getPortfolioStock!: any;
   @Getter('getPortfolioFund') getPortfolioFund!: any;
   @Getter('getPortfolioStockUSA') getPortfolioStockUSA!: any;
@@ -407,6 +303,12 @@ export default class InputResult extends Vue {
     type: null,
     id: null,
   };
+  // 選擇出現哪種列表 台股、美股、基金、或全部
+  private showType(type: any) {
+    if (type === 'yahoo') {
+      return 
+    }
+  }
 
   private getStock = [];
   private getBuy = [];
@@ -414,9 +316,9 @@ export default class InputResult extends Vue {
   private getClass = [];
 
     // 監聽標的總數
-  @Watch('getPortfolioAll')
+  @Watch('getPortfolio')
   private updatePortfolioAll () {
-    const portfolioAllId = this.getPortfolioAll.map((item: any) => {
+    const portfolioAllId = this.getPortfolio.map((item: any) => {
       return item.id;
     });
     return portfolioAllId;
@@ -433,9 +335,9 @@ export default class InputResult extends Vue {
     const stockIndex = this.getStock.findIndex((item: any) => {
       return item === idRenew;
     });
-    this.getPortfolioAll[updateMode.index].buy = this.getBuy[stockIndex];
-    this.getPortfolioAll[updateMode.index].reserve = this.getReserve[stockIndex];
-    this.getPortfolioAll[updateMode.index].classes = this.getClass[stockIndex];
+    this.getPortfolio[updateMode.index].buy = this.getBuy[stockIndex];
+    this.getPortfolio[updateMode.index].reserve = this.getReserve[stockIndex];
+    this.getPortfolio[updateMode.index].classes = this.getClass[stockIndex];
   }
 
   // 自訂義 標的重複檢查
@@ -463,11 +365,6 @@ export default class InputResult extends Vue {
   // 跳出刪除標的對話窗
   private showDialog (refsName: any) {
     this.$refs[refsName].showDialog();
-  }
-
-  // 刪除所有標的
-  private clearAllPortfolio () {
-    this.delAllPortfolio();
   }
   
   // 開始健檢disabled condition
@@ -521,7 +418,11 @@ export default class InputResult extends Vue {
   }
 
   private healthCheck() {
-    optionHealthCheck(this.getPortfolioAll)
+    console.log(lunchBoxType(this.getType, this.getClass))
+  }
+
+  private back() {
+    router.push('./InputPortfolio');
   }
 
   // 確認當前修改標的
@@ -536,7 +437,10 @@ export default class InputResult extends Vue {
 
   private created() {
     this.renderData()
-    console.log(this.getPortfolioAll)
+    this.loadPortfolio(stockData(this.getType))
+
+    console.log(this.getPortfolio)
+    console.log(this.getPortfolioStockUSA)
   }
 }
 </script>

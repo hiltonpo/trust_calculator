@@ -1,32 +1,6 @@
 <template>
   <v-app>
-    <v-row class="pa-0 ma-0">
-        <v-main class="grey lighten-4 pb-16">
-          <v-container class="v-container" fluid>
-              <v-card
-                class="container mx-auto rounded-xl pa-5 px-md-5 px-4 white white"
-                elevation="2"
-                style="overflow: hidden;"
-              >
-                <!-- loading -->
-                <template v-if="getReportLoading === true">
-                  <div class="text-center bgProgress d-flex flex-column justify-center align-center">
-                    <v-progress-circular
-                      :size="100"
-                      :width="10"
-                      color="white"
-                      indeterminate>
-                    </v-progress-circular>
-                    <p class="text-h6 white--text text--lighten-1 my-4">
-                      請稍候
-                    </p>
-                  </div>
-                </template>
-
-              </v-card>
-          </v-container>
-      </v-main>
-    </v-row>
+    1234556
   </v-app>
 </template>
 <style lang="scss" scoped>
