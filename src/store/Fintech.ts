@@ -5,12 +5,12 @@ export default
 {
   state: {
     type: 'fund', // yahoo fund US option
-    portfolio:[],
+    portfolio: [],
     lunchBoxType: '',
-    resultType:''
+    resultType: ''
   },
   mutations: {
-    setPortfolio(state: any, stock: any) {
+    setPortfolio (state: any, stock: any) {
       if (state.type === 'option') {
         state.portfolio.push(stock);
       } else {
@@ -29,13 +29,13 @@ export default
     setType (state: any, type: any) {
       state.type = type;
     },
-    setLunchBoxType(state: any, type: any) {
+    setLunchBoxType (state: any, type: any) {
       state.lunchBoxType = type;
     }
   },
   getters: {
     // 投組全部資料
-    getPortfolio(state: any) {
+    getPortfolio (state: any) {
       return state.portfolio;
     },
     // 投組內幾檔股票
@@ -55,16 +55,16 @@ export default
       return filter(state.portfolio, { type: 'USAstock' });
     },
     // 哪種投組 yahoo、基金、美股或自選
-    getType(state: any) {
+    getType (state: any) {
       return state.type;
     },
     // 哪種風屬 決定領哪種類型的便當 => R1積極型、R2穩健型、R3保守型
-    getLunchBoxType(state: any) {
+    getLunchBoxType (state: any) {
       return state.lunchBoxType;
     }
   },
   actions: {
-    loadPortfolio({state, commit}: any, stock: any) {
+    loadPortfolio ({ state, commit }: any, stock: any) {
       commit('setPortfolio', stock);
     },
     delPortfolio ({ commit }: any, data: any) {

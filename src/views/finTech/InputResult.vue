@@ -11,35 +11,21 @@
     </div>
     <div class="divider my-8 my-md-10"></div>
 
-    <!-- 台股表 -->
-    <div v-if="getType === 'yahoo' || getType === 'option'">
-      <section>
+    <section>
         <v-row class="ma-0 text-center">
-          <v-col class="text-h6 white--text mb-1 pink lighten-3">台股</v-col>
+          <v-col v-if="getType === 'yahoo' || getType === 'option'" class="text-h6 white--text mb-1 pink lighten-3">台股</v-col>
+          <v-col v-if="getType === 'fund' || getType === 'option'" class="text-h6 white--text mb-1 amber accent-3">基金</v-col>
+          <v-col v-if="getType === 'US' || getType === 'option'" class="text-h6 white--text mb-1 green darken-1">美股</v-col>
           <v-col>成本／幣別</v-col>
           <v-col>股數</v-col>
         </v-row>
       </section>
-    
+    <!-- 台股表 -->
+    <div v-if="getType === 'yahoo' || getType === 'option'">
       <div>
         <v-form ref="stockForm">
           <v-simple-table dense class="mb-10">
             <template v-slot:default>
-              <!-- <thead>
-                <tr>
-                  <th class="text-center">
-                    代號
-                  </th>
-                  <th class="text-center">
-                    成本／幣別
-                  </th>
-                  <th class="text-center">
-                      股數
-                  </th>
-                  <th class="text-center">
-                  </th>
-                </tr>
-              </thead> -->
               <tbody>
                 <tr v-for="(value , key) in getPortfolioStock" :key="key" class="pink lighten-5">
                   <td v-if="(updateModeId.index === key) && (updateModeId.type === value.type)" class="text-left">
@@ -107,87 +93,69 @@
       </div>
     </div>
 
-
     <!-- 基金表 -->
     <div v-if="getType === 'fund' || getType === 'option'">
-    <p class="text-h6 amber--text text--accent-3 mb-1">
-      基金
-    </p>
-    <section>
-      <v-row class="ma-0 text-center">
-        <v-col class="text-h6 white--text mb-1 pink lighten-3">台股</v-col>
-        <v-col>成本／幣別</v-col>
-        <v-col>股數</v-col>
-      </v-row>
-    </section>
-    <div>
-      <v-form ref="fundForm">
-        <v-simple-table dense class="mb-10">
-          <template v-slot:default>
-            <thead>
-              <tr>
-                <th class="text-center">
-                  代號
-                </th>
-                <th class="text-center">
-                  成本／幣別
-                </th>
-                <th class="text-center">
-                  單位數
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(value , key) in getPortfolioFund" :key="key" class="amber lighten-5">
-                <td class="text-left"><i class="fas fa-square mr-2 amber--text text--accent-3"></i>{{ value.id }}</td>
-                <td class="text-center">{{ value.buy }}／{{ value.currency }}</td>
-                <td class="text-center">{{ value.reserve }}</td>
-                <td class="text-center"></td>
-              </tr>
-            </tbody>
-          </template>
-        </v-simple-table>
-      </v-form>
+      <div>
+        <v-form ref="fundForm">
+          <v-simple-table dense class="mb-10">
+            <template v-slot:default>
+              <thead>
+                <tr>
+                  <th class="text-center">
+                    代號
+                  </th>
+                  <th class="text-center">
+                    成本／幣別
+                  </th>
+                  <th class="text-center">
+                    單位數
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(value , key) in getPortfolioFund" :key="key" class="amber lighten-5">
+                  <td class="text-left"><i class="fas fa-square mr-2 amber--text text--accent-3"></i>{{ value.id }}</td>
+                  <td class="text-center">{{ value.buy }}／{{ value.currency }}</td>
+                  <td class="text-center">{{ value.reserve }}</td>
+                </tr>
+              </tbody>
+            </template>
+          </v-simple-table>
+        </v-form>
+      </div>
     </div>
-    </div>
-    
+
     <!-- 美股表 -->
     <div v-if="getType === 'US' || getType === 'option'">
-    <p class="text-h6 green--text text--darken-1 mb-1">
-      美股
-    </p>
-    <div style="margin-bottom: 100px;">
-      <v-form ref="stockUSAForm">
-        <v-simple-table dense>
-          <template v-slot:default>
-            <thead>
-              <tr>
-                <th class="text-center">
-                  代號
-                </th>
-                <th class="text-center">
-                  成本／幣別
-                </th>
-                <th class="text-center">
-                  股數
-                </th>
-                <th class="text-center">
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(value , key) in getPortfolioStockUSA" :key="key" class="green lighten-5">
-                <td class="text-left"><i class="fas fa-square mr-2 green--text text--darken-1"></i>{{ value.id }}</td>
-                <td class="text-center">{{ value.buy }}／美元</td>
-                <td class="text-center">{{ value.reserve }}</td>
-                <td class="text-center">
-                </td>
-              </tr>
-            </tbody>
-          </template>
-        </v-simple-table>
-      </v-form>
-    </div>
+
+      <div style="margin-bottom: 100px;">
+        <v-form ref="stockUSAForm">
+          <v-simple-table dense>
+            <template v-slot:default>
+              <thead>
+                <tr>
+                  <th class="text-center">
+                    代號
+                  </th>
+                  <th class="text-center">
+                    成本／幣別
+                  </th>
+                  <th class="text-center">
+                    股數
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(value , key) in getPortfolioStockUSA" :key="key" class="green lighten-5">
+                  <td class="text-left"><i class="fas fa-square mr-2 green--text text--darken-1"></i>{{ value.id }}</td>
+                  <td class="text-center">{{ value.buy }}／美元</td>
+                  <td class="text-center">{{ value.reserve }}</td>
+                </tr>
+              </tbody>
+            </template>
+          </v-simple-table>
+        </v-form>
+      </div>
     </div>
 
     <template v-if="AnalysisState">
@@ -235,17 +203,6 @@
         </v-col>
       </v-row>
     </div>
-    <!-- <v-btn
-      class="deep-purple--text text--accent-4 font-weight-bold mt-4 mb-6 text-capitalize"
-      color="deep-purple accent-4"
-      width="100%"
-      large
-      depressed
-      outlined
-      @click="resetYahooPortfolio"
-      :loading="show">
-      <span>同步 Yahoo 股市</span>
-    </v-btn> -->
   </div>
 </template>
 
@@ -300,6 +257,7 @@ export default class InputResult extends Vue {
   @Action('delPortfolio') delPortfolio!: (params: any) => void;
   @Action('loadPortfolio') loadPortfolio!: (stock: any) => void;
 
+  @Mutation('setType') setType!: (type: any) => void;
   @Mutation('setLunchBoxType') setLunchBoxType!: (type: any) => void;
 
   @Getter('getPortfolio') getPortfolio!: any;
@@ -309,6 +267,7 @@ export default class InputResult extends Vue {
   @Getter('getPortfolioLength') getPortfolioLength!: any;
   @Getter('getType') getType!: any;
 
+  private stockType = '';
   private AnalysisState = false;
   private nonUpdateError = false;
   private show = false;
@@ -317,10 +276,11 @@ export default class InputResult extends Vue {
     type: null,
     id: null
   };
+
   // 選擇出現哪種列表 台股、美股、基金、或全部
-  private showType(type: any) {
+  private showType (type: any) {
     if (type === 'yahoo') {
-      return 
+
     }
   }
 
@@ -329,7 +289,7 @@ export default class InputResult extends Vue {
   private getReserve = [];
   private getClass = [];
 
-    // 監聽標的總數
+  // 監聽標的總數
   @Watch('getPortfolio')
   private updatePortfolioAll () {
     const portfolioAllId = this.getPortfolio.map((item: any) => {
@@ -380,7 +340,7 @@ export default class InputResult extends Vue {
   private showDialog (refsName: any) {
     this.$refs[refsName].showDialog();
   }
-  
+
   // 開始健檢disabled condition
   private permission () {
     if (this.getPortfolioLength !== 0 && !this.updateModeId.id) {
@@ -431,30 +391,38 @@ export default class InputResult extends Vue {
     // console.log(this.getPortfolioAll);
   }
 
-  private healthCheck() {
-    console.log(lunchBoxType(this.getType, this.getClass))
+  private healthCheck () {
+    console.log(lunchBoxType(this.getType, this.getClass));
   }
 
-  private back() {
+  private back () {
     router.push('./InputPortfolio');
   }
 
   // 確認當前修改標的
   // 在修改階段下 設定當下修改標的id 避免手賤點到其他標的按鈕
   private uniqle () {
-    if (!this.updateModeId.id) {
-      return false;
-    } else {
-      return true;
-    }
+    // if (!this.updateModeId.id) {
+    //   return false;
+    // } else {
+    //   return true;
+    // }
+    return Boolean(this.updateModeId.id);
   }
 
-  private created() {
-    this.renderData()
-    this.loadPortfolio(stockData(this.getType))
+  private created () {
+    this.stockType = 'US';
+    this.switchPortfoliosType();
+  }
 
-    console.log(this.getPortfolio)
-    console.log(this.getPortfolioStockUSA)
+  @Watch('stockType')
+  private switchPortfoliosType () {
+    this.setType(this.stockType);
+    this.renderData();
+    this.loadPortfolio(stockData(this.stockType));
+
+    console.log(this.getPortfolio);
+    console.log(this.getPortfolioStockUSA);
   }
 }
 </script>

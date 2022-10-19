@@ -176,7 +176,7 @@ export default class InputPortfolio extends Vue {
   @Watch('getPortfolio')
   private updatePortfolioAll () {
     const portfolioAllId = this.getPortfolio.map((item: any) => {
-        return item.id;
+      return item.id;
     });
     return portfolioAllId;
   }
@@ -250,13 +250,13 @@ export default class InputPortfolio extends Vue {
           type: 'stock',
           buy: this.buy,
           reserve: this.reserve,
-          classes: this.classes,
-        })
+          classes: this.classes
+        });
 
         this.stockNumber = '';
         this.buy = '';
         this.reserve = '';
-        this.classes = ''
+        this.classes = '';
         this.addedDialog = true;
         this.dialogMsg = '已新增';
       }
