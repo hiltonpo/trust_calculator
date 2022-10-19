@@ -32,6 +32,7 @@
   width: 100vh;
   height: 100vh;
   background: url(~@/assets/img/investDiagnosis/bg_home.png) no-repeat;
+  overflow: hidden;
 }
 .home {
   &-logo {
@@ -45,7 +46,7 @@
   }
 }
 .nextStep {
-  width: 57vh;
+  width: 100%;
   height: 12vh !important;
   font-size: 100px;
   font-weight: 600;
