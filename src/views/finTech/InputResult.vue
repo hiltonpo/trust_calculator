@@ -4,21 +4,25 @@
       <v-icon class="blue-grey--text text--darken-3" @click="back" small>fas fa-arrow-left</v-icon>
     </div> -->
     <div class="text-center">
-      <h2 class="cyan--text text--lighten-1 font-weight-bold">
+      <h2 class="text-h2 font-weight-bold">
         投資組合確認
       </h2>
 
     </div>
     <div class="divider my-8 my-md-10"></div>
 
-    <p class="text-h6 pink--text text--lighten-2 mb-1">
-      台股
-    </p>
+    <section>
+      <v-row class="ma-0 text-center">
+        <v-col class="text-h6 white--text mb-1 pink lighten-3">台股</v-col>
+        <v-col>成本／幣別</v-col>
+        <v-col>股數</v-col>
+      </v-row>
+    </section>
     <div>
       <v-form ref="stockForm">
         <v-simple-table dense class="mb-10">
           <template v-slot:default>
-            <thead>
+            <!-- <thead>
               <tr>
                 <th class="text-center">
                   代號
@@ -32,7 +36,7 @@
                 <th class="text-center">
                 </th>
               </tr>
-            </thead>
+            </thead> -->
             <tbody>
               <tr v-for="(value , key) in getPortfolioStock" :key="key" class="pink lighten-5">
                 <td v-if="(updateModeId.index === key) && (updateModeId.type === value.type)" class="text-left">
@@ -101,6 +105,13 @@
     <p class="text-h6 amber--text text--accent-3 mb-1">
       基金
     </p>
+    <section>
+      <v-row class="ma-0 text-center">
+        <v-col class="text-h6 white--text mb-1 pink lighten-3">台股</v-col>
+        <v-col>成本／幣別</v-col>
+        <v-col>股數</v-col>
+      </v-row>
+    </section>
     <div>
       <v-form ref="fundForm">
         <v-simple-table dense class="mb-10">
