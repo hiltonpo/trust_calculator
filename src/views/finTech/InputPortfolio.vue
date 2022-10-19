@@ -90,7 +90,7 @@
         @click="next">
         下一步
       </v-btn>
-    
+
       <!-- <v-row v-if="getSelect === 1">
         <p class="font-weight-light mt-6">
           ＊若您不清楚投資基金的ISIN代碼，可以透過以下連結查詢:<br>
@@ -143,7 +143,6 @@ import { stockData } from '@/utility/globalData';
 import decoAlpha from '@/assets/img/alpha-5.png';
 import router from '@/router';
 
-
 @Component
 export default class InputPortfolio extends Vue {
   @Action('loadPortfolio') loadPortfolio!: (stock: any) => void;
@@ -159,7 +158,7 @@ export default class InputPortfolio extends Vue {
     {
       text: '台股 / ETF',
       value: 1
-    },
+    }
   ];
 
   private getStock = [];
@@ -181,20 +180,19 @@ export default class InputPortfolio extends Vue {
     });
     return portfolioAllId;
   }
-  
+
   // 渲染資料，避免DOM抓取不到
-  private renderData() {
+  private renderData () {
     this.getStock = stockData(this.getType)[0];
     this.getBuy = stockData(this.getType)[1];
     this.getReserve = stockData(this.getType)[2];
-    
+
     // 自選投組多一個產業類別
     if (this.getType === 'option') {
       this.getClass = stockData(this.getType)[3];
     }
   }
 
-  
   // 自訂義 標的重複檢查
   private checkRepeat = (id: string) => {
     const total = new Set(this.updatePortfolioAll());
@@ -206,13 +204,12 @@ export default class InputPortfolio extends Vue {
   }
 
   private inputRule = {
-    id: [rules('required'), this.checkRepeat],
+    id: [rules('required'), this.checkRepeat]
   };
-  
 
   // 先行在created渲染，否則抓不到資料
   private created () {
-    this.renderData()
+    this.renderData();
   }
 
   private back () {
@@ -220,7 +217,7 @@ export default class InputPortfolio extends Vue {
   }
 
   @Watch('stockNumber')
-  private setBuyAndReserve() {
+  private setBuyAndReserve () {
     const index = stockData(this.getType)[0].findIndex((item: any) => {
       return item === this.stockNumber;
     });
@@ -262,14 +259,12 @@ export default class InputPortfolio extends Vue {
         this.classes = ''
         this.addedDialog = true;
         this.dialogMsg = '已新增';
-      } else if (this.getType === 'US') {
-        
       }
     }
   }
 
-  private next() {
-    router.push('/InputResult')
+  private next () {
+    router.push('/InputResult');
   }
 
   // /**

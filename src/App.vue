@@ -1,6 +1,6 @@
 <template>
     <v-app>
-        <!-- <InvestDiagnosis></InvestDiagnosis> -->
+        <InvestDiagnosis v-if="key === 0"></InvestDiagnosis>
         <InputPortfolio v-if="key === 1"></InputPortfolio>
         <InputResult v-if="key === 2"></InputResult>
     </v-app>
@@ -12,30 +12,29 @@
 
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator';
-import InvestDiagnosis from '@/views/finTech/InvestDiagnosis.vue'
-import InputPortfolio from '@/views/finTech/InputPortfolio.vue'
-import InputResult from '@/views/finTech/InputResult.vue'
+import InvestDiagnosis from '@/views/finTech/InvestDiagnosis.vue';
+import InputPortfolio from '@/views/finTech/InputPortfolio.vue';
+import InputResult from '@/views/finTech/InputResult.vue';
 
-Vue.component('InvestDiagnosis', InvestDiagnosis)
-Vue.component('InputPortfolio', InputPortfolio)
-Vue.component('InputResult', InputResult)
+Vue.component('InvestDiagnosis', InvestDiagnosis);
+Vue.component('InputPortfolio', InputPortfolio);
+Vue.component('InputResult', InputResult);
 
 @Component
 export default class App extends Vue {
+    private key = 2
 
-    private key = 0
-
-    private created() {
-        this.changeComponent();
+    private created () {
+      this.changeComponent();
     }
 
     @Watch('$route.name')
-    private changeComponent() {
-        if (this.$route.name === 'InputPortfolio') {
-            this.key = 1;
-        } else if (this.$route.name === 'InputResult') {
-            this.key = 2
-        }
+    private changeComponent () {
+      if (this.$route.name === 'InputPortfolio') {
+        this.key = 1;
+      } else if (this.$route.name === 'InputResult') {
+        this.key = 2;
+      }
     }
 }
 </script>

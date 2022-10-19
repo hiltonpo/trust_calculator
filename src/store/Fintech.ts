@@ -26,7 +26,7 @@ export default
 
       state.portfolio = temp;
     },
-    setType(state: any, type: any) {
+    setType (state: any, type: any) {
       state.type = type;
     },
     setLunchBoxType(state: any, type: any) {

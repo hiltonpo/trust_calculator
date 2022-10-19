@@ -240,6 +240,7 @@
 
 .main {
   width: 90%;
+  height: 100vh;
   @media screen and (max-width: 414px) {
     width: 98%;
   }
@@ -301,7 +302,7 @@ export default class InputResult extends Vue {
   private updateModeId = {
     index: null,
     type: null,
-    id: null,
+    id: null
   };
   // 選擇出現哪種列表 台股、美股、基金、或全部
   private showType(type: any) {
@@ -324,14 +325,14 @@ export default class InputResult extends Vue {
     return portfolioAllId;
   }
 
-  private renderData() {
-    this.getStock = stockData(this.getType)[0]
-    this.getBuy = stockData(this.getType)[1]
-    this.getReserve = stockData(this.getType)[2]
-    this.getClass = stockData(this.getType)[3]
+  private renderData () {
+    this.getStock = stockData(this.getType)[0];
+    this.getBuy = stockData(this.getType)[1];
+    this.getReserve = stockData(this.getType)[2];
+    this.getClass = stockData(this.getType)[3];
   }
 
-  private change(idRenew: any, updateMode: any) {
+  private change (idRenew: any, updateMode: any) {
     const stockIndex = this.getStock.findIndex((item: any) => {
       return item === idRenew;
     });
@@ -359,7 +360,7 @@ export default class InputResult extends Vue {
   }
 
   private inputRule = {
-    id: [rules('required'), this.checkRepeat],
+    id: [rules('required'), this.checkRepeat]
   };
 
   // 跳出刪除標的對話窗
@@ -369,7 +370,7 @@ export default class InputResult extends Vue {
   
   // 開始健檢disabled condition
   private permission () {
-    if (this.getPortfolioLength !== 0  && !this.updateModeId.id) {
+    if (this.getPortfolioLength !== 0 && !this.updateModeId.id) {
       return false;
     } else {
       return true;
@@ -392,7 +393,7 @@ export default class InputResult extends Vue {
     this.updateModeId = {
       index: index,
       type: type,
-      id: id,
+      id: id
     };
   }
 

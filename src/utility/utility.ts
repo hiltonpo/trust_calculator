@@ -122,10 +122,11 @@ export function rules (ruleName: string) {
   const rule: any = {
     required: (value: any) => !!value || '此欄位必填',
     checkNumber: (value: any) => {
-      let reg = /^\d+(\.\d{1,2})?$/;
-      return reg.test(value) || '格式不正確'},
+      const reg = /^\d+(\.\d{1,2})?$/;
+      return reg.test(value) || '格式不正確';
+    },
     age: (value: any) => (value >= 0 && value <= 90) || '格式不正確',
-    noneZero: (value: any) => (Number(value) > 0) || '不得為零',
+    noneZero: (value: any) => (Number(value) > 0) || '不得為零'
   };
   return rule[ruleName];
 }

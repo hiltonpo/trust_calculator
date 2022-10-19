@@ -72,19 +72,19 @@ function render(list: any) {
     return cur.concat(id);
   }, []);
 
-  const buy = list.reduce((cur: any, stockItem: any)=> {
+  const buy = list.reduce((cur: any, stockItem: any) => {
     const { buy } = stockItem;
     return cur.concat(buy);
   }, []);
 
-  const reserve = list.reduce((cur: any, stockItem: any)=> {
+  const reserve = list.reduce((cur: any, stockItem: any) => {
     const { reserve } = stockItem;
     return cur.concat(reserve);
   }, []);
-  
+
   // 自選投組多一個產業類別
   if (Object.getOwnPropertyNames(list[0]).includes('classes')) {
-    const classes = list.reduce((cur: any, stockItem: any)=> {
+    const classes = list.reduce((cur: any, stockItem: any) => {
       const { classes } = stockItem;
       return cur.concat(classes);
     }, []);
