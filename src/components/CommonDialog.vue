@@ -1,7 +1,7 @@
 <template>
   <v-dialog v-model="show" :width="width">
-    <div class="white position-relative">
-      <div class="dialog-close position-absolute">
+    <div class="white position-relative" style="overflow: hidden;">
+      <div class="dialog-close position-absolute" style="top:15px; right: 10px;">
         <v-icon @click="cancel" color="white" large>far fa-times-circle</v-icon>
       </div>
       <v-card-title class="white--text d-flex justify-center text-h6 cyan">

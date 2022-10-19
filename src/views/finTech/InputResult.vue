@@ -39,18 +39,19 @@
                   <v-autocomplete
                     :rules="inputRule.id"
                     v-model="value.id"
-                    :items="getStockTW">
+                    @change="change(value.id, updateModeId)"
+                    :items="getStock">
                   </v-autocomplete>
                 </td>
                 <td v-else class="text-left"><i class="fas fa-square pink--text text--lighten-2 mr-2"></i>{{ value.id }}</td>
 
                 <td v-if="(updateModeId.index === key) && (updateModeId.type === value.type)" class="text-center">
-                  <v-text-field v-model="value.buy"></v-text-field>
+                  <v-text-field :value="value.buy" :disabled="true"></v-text-field>
                 </td>
                 <td v-else class="text-center">{{ value.buy }}／新台幣</td>
 
                 <td v-if="(updateModeId.index === key) && (updateModeId.type === value.type)" class="text-center">
-                  <v-text-field v-model="value.reserve"></v-text-field>
+                  <v-text-field v-model="value.reserve" :disabled="true"></v-text-field>
                 </td>
                 <td v-else class="text-center">{{ value.reserve }}</td>
                 <td class="text-center">
@@ -89,7 +90,7 @@
               class="white pink--text text--lighten-2"
               x-small
               depressed
-              @click="autoSelect(0)">
+              @click="autoSelect">
               <i class="fas fa-plus"> 新增</i>
             </v-btn>
           </template>
@@ -157,7 +158,7 @@
                     class="white"
                     x-small
                     depressed
-                    @click.stop="updateMode(key, value.type, value.id)">
+                    @click.stop="updateMode(key, value.type, value.id, value.buy, value.reserve)">
                     <i class="fas fa-pen"></i>
                   </v-btn>
                   &emsp;
@@ -176,7 +177,7 @@
               class="white amber--text text--accent-3"
               x-small
               depressed
-              @click="autoSelect(1)">
+              @click="autoSelect">
               <i class="fas fa-plus"> 新增</i>
             </v-btn>
           </template>
@@ -241,6 +242,7 @@
                     class="white"
                     x-small
                     depressed
+                    @click.stop="updateMode(key, value.type, value.id)"
                     >
                     <i class="fas fa-pen"></i>
                   </v-btn>
@@ -260,7 +262,7 @@
               class="white green--text text--darken-1"
               x-small
               depressed
-              @click="autoSelect(2)">
+              @click="autoSelect">
               <i class="fas fa-plus"> 新增</i>
             </v-btn>
           </template>
@@ -305,15 +307,6 @@
       <!-- <span class="cursor: pointer;" @click="showDialog('clearAllPortfolio')">
         <i class="fas fa-trash" style="transform: scale(1.5); margin-bottom:10px"></i>
       </span> -->
-      <CommonDialog
-      ref="clearAllPortfolio"
-      title="提醒"
-      :YesOrNo="false"
-      :text="'確定要刪除全部標的嗎？'"
-      nextBtnText="全部刪除"
-      @correct="clearAllPortfolio"
-      >
-      </CommonDialog>
     </div>
     <v-btn
       class="white--text mt-2"
@@ -322,10 +315,19 @@
       large
       depressed
       :disabled="permission()"
-     
+      @click="healthCheck"
       :loading="show">
       確認送出
     </v-btn>
+          <CommonDialog
+      ref="clearAllPortfolio"
+      title="提醒"
+      :YesOrNo="false"
+      :text="'確定要刪除全部標的嗎？'"
+      nextBtnText="全部刪除"
+      @correct="clearAllPortfolio"
+      >
+      </CommonDialog>
     <!-- <v-btn
       class="deep-purple--text text--accent-4 font-weight-bold mt-4 mb-6 text-capitalize"
       color="deep-purple accent-4"
@@ -382,24 +384,86 @@ import { Component, Vue, Watch } from 'vue-property-decorator';
 import { Action, Getter, Mutation } from 'vuex-class';
 
 import { getCookie, removeCookie, rules, setCookie } from '@/utility/utility';
+import { stockData, optionHealthCheck } from '@/utility/globalData';
+import router from '@/router';
 
 @Component
 export default class InputResult extends Vue {
   @Action('delAllPortfolio') delAllPortfolio!: () => void;
+  @Action('delPortfolio') delPortfolio!: (params: any) => void;
 
   @Getter('getPortfolioAll') getPortfolioAll!: any;
   @Getter('getPortfolioStock') getPortfolioStock!: any;
   @Getter('getPortfolioFund') getPortfolioFund!: any;
   @Getter('getPortfolioStockUSA') getPortfolioStockUSA!: any;
   @Getter('getPortfolioLength') getPortfolioLength!: any;
+  @Getter('getType') getType!: any;
 
   private AnalysisState = false;
+  private nonUpdateError = false;
   private show = false;
   private updateModeId = {
     index: null,
     type: null,
-    id: null
+    id: null,
   };
+
+  private getStock = [];
+  private getBuy = [];
+  private getReserve = [];
+  private getClass = [];
+
+    // 監聽標的總數
+  @Watch('getPortfolioAll')
+  private updatePortfolioAll () {
+    const portfolioAllId = this.getPortfolioAll.map((item: any) => {
+      return item.id;
+    });
+    return portfolioAllId;
+  }
+
+  private renderData() {
+    this.getStock = stockData(this.getType)[0]
+    this.getBuy = stockData(this.getType)[1]
+    this.getReserve = stockData(this.getType)[2]
+    this.getClass = stockData(this.getType)[3]
+  }
+
+  private change(idRenew: any, updateMode: any) {
+    const stockIndex = this.getStock.findIndex((item: any) => {
+      return item === idRenew;
+    });
+    this.getPortfolioAll[updateMode.index].buy = this.getBuy[stockIndex];
+    this.getPortfolioAll[updateMode.index].reserve = this.getReserve[stockIndex];
+    this.getPortfolioAll[updateMode.index].classes = this.getClass[stockIndex];
+  }
+
+  // 自訂義 標的重複檢查
+  private checkRepeat = (id: string) => {
+    const total = new Set(this.updatePortfolioAll());
+    const result = new Set();
+    // 先剔除set裡重複標的(去除v-model雙向綁定功能)
+    total.forEach((item: any) => {
+      if (!result.has(item)) {
+        result.add(item);
+      };
+    });
+    // 若資料長度不一樣 則表示有選取到重複的標的
+    if (result.size !== this.updatePortfolioAll().length) {
+      return '標的不得重複';
+    } else {
+      return true;
+    }
+  }
+
+  private inputRule = {
+    id: [rules('required'), this.checkRepeat],
+  };
+
+  // 跳出刪除標的對話窗
+  private showDialog (refsName: any) {
+    this.$refs[refsName].showDialog();
+  }
 
   // 刪除所有標的
   private clearAllPortfolio () {
@@ -412,7 +476,52 @@ export default class InputResult extends Vue {
       return false;
     } else {
       return true;
-    }
+    };
+  }
+
+  // 點擊新增標的，進入InputPortfolio自動帶入標的種類
+  private autoSelect () {
+    router.push('./InputPortfolio');
+  }
+
+  // 刪除功能
+  private del (data: any) {
+    this.delPortfolio(data);
+  }
+
+  // 開啟修改功能
+  private updateMode (index: any, type: any, id: any, buy: any, reserve: any) {
+    this.nonUpdateError = true;
+    this.updateModeId = {
+      index: index,
+      type: type,
+      id: id,
+    };
+  }
+
+  // 關閉修改功能
+  private updateDone (index: any, id: any) {
+    this.nonUpdateError = false;
+    // 台股 美股 基金必須一起綁定驗證
+    if (this.$refs.stockForm.validate() && this.$refs.fundForm.validate() && this.$refs.stockUSAForm.validate()) {
+      this.$nextTick(() => {
+        this.updateModeId = {
+          index: null,
+          type: null,
+          id: null
+        };
+      });
+      // 基金的幣值需隨種類不同而更動
+      if (this.updateModeId.type === 'fund') {
+        const ID = id.split(' ')[0];
+        this.getPortfolioFund[index].currency = this.getFundsCurrency[this.getFunds.indexOf(ID)];
+      };
+    };
+    console.log(this.getPortfolioAll);
+  }
+
+  private healthCheck() {
+    optionHealthCheck(this.getPortfolioAll)
   }
 
   // 確認當前修改標的
@@ -426,6 +535,7 @@ export default class InputResult extends Vue {
   }
 
   private created() {
+    this.renderData()
     console.log(this.getPortfolioAll)
   }
 }

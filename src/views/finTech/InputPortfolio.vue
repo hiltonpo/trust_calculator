@@ -28,7 +28,6 @@
               outlined
               filled
               rounded
-              :rules="inputRule.id"
               :items="items"
               v-model="select"
             ></v-select>
@@ -149,11 +148,12 @@ import router from '@/router';
 export default class InputPortfolio extends Vue {
   @Action('loadPortfolioAll') loadPortfolioAll!: (stock: any) => void;
   @Getter('getPortfolioAll') getPortfolioAll!: any;
+  @Getter('getType') getType!: any;
 
   private decoAlpha = decoAlpha
   private addedDialog = false;
   private dialogMsg = '';
-  private select = 0;
+  private select = 1;
 
   private items = [
     {
@@ -162,19 +162,42 @@ export default class InputPortfolio extends Vue {
     },
   ];
 
-  private getStock = stockData()[0]
-  private getBuy = stockData()[1]
-  private getReserve = stockData()[2]
+  private getStock = [];
+  private getBuy = [];
+  private getReserve = [];
+  private getClass = [];
 
   // 選擇的股票代號
   private stockNumber = '';
   private buy = '';
   private reserve = '';
+  private classes = ''
+
+  // 監聽標的總數
+  @Watch('getPortfolioAll')
+  private updatePortfolioAll () {
+    const portfolioAllId = this.getPortfolioAll.map((item: any) => {
+        return item.id;
+    });
+    return portfolioAllId;
+  }
+  
+  // 渲染資料，避免DOM抓取不到
+  private renderData() {
+    this.getStock = stockData(this.getType)[0];
+    this.getBuy = stockData(this.getType)[1];
+    this.getReserve = stockData(this.getType)[2];
+    
+    // 自選投組多一個產業類別
+    if (this.getType === 'option') {
+      this.getClass = stockData(this.getType)[3];
+    }
+  }
 
   
   // 自訂義 標的重複檢查
   private checkRepeat = (id: string) => {
-    const total = new Set(this.getPortfolioAll);
+    const total = new Set(this.updatePortfolioAll());
     if (total.has(id)) {
       return '標的不得重複';
     } else {
@@ -185,9 +208,11 @@ export default class InputPortfolio extends Vue {
   private inputRule = {
     id: [rules('required'), this.checkRepeat],
   };
+  
 
+  // 先行在created渲染，否則抓不到資料
   private created () {
-    
+    this.renderData()
   }
 
   private back () {
@@ -196,11 +221,12 @@ export default class InputPortfolio extends Vue {
 
   @Watch('stockNumber')
   private setBuyAndReserve() {
-    const index = stockData()[0].findIndex((item: any) => {
+    const index = stockData(this.getType)[0].findIndex((item: any) => {
       return item === this.stockNumber;
     });
-    this.buy = stockData()[1][index];
-    this.reserve = stockData()[2][index];
+    this.buy = stockData(this.getType)[1][index];
+    this.reserve = stockData(this.getType)[2][index];
+    this.classes = stockData(this.getType)[3][index];
   }
 
   // @Watch('fundNumber')
@@ -211,12 +237,6 @@ export default class InputPortfolio extends Vue {
   // @Watch('select')
   // private selectChange () {
   //   this.setSelect(this.select);
-  // }
-
-  // // 監聽標的總數
-  // @Watch('getPortfolioAll')
-  // private updatePortfolioAll () {
-  //   return this.getPortfolioAll;
   // }
 
   // /**
@@ -230,12 +250,13 @@ export default class InputPortfolio extends Vue {
         type: 'stock',
         buy: this.buy,
         reserve: this.reserve,
-        currency: 'NTD'
+        classes: this.classes,
       })
 
       this.stockNumber = '';
       this.buy = '';
       this.reserve = '';
+      this.classes = ''
       this.addedDialog = true;
       this.dialogMsg = '已新增';
     }
