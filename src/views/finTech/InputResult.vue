@@ -452,7 +452,7 @@ export default class InputResult extends Vue {
   }
 
   private created () {
-    this.stockType = 'US';
+    this.stockType = 'option';
     this.switchPortfoliosType();
   }
 
