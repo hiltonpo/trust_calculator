@@ -42,14 +42,14 @@ const yahooList = [
 ];
 // 基金投組
 const fundList = [
-  { id: '安聯收益成長基金-AT累積類股(美元)', buy: '19.56', reserve: '160', type: 'fund' },
-  { id: '聯博全球高收益債券基金-TA類型(美元)', buy: '7.94', reserve: '400', type: 'fund' },
-  { id: '聯博-美國收益基金A股美元', buy: '6.26', reserve: '500', type: 'fund' },
-  { id: '摩根投資基金-環球高收益債券基金-JPM環球高收益債券(美元)-A股(累計)', buy: '179.15', reserve: '20', type: 'fund' },
-  { id: 'NN(L)新興市場債券基金X股美元', buy: '275.66', reserve: '10', type: 'fund' },
-  { id: '安聯台灣大壩基金-A類型-新臺幣', buy: '48.77', reserve: '2050', type: 'fund' },
-  { id: '野村優質基金-累積類型新臺幣計價', buy: '66.73', reserve: '1500', type: 'fund' },
-  { id: '安聯台灣智慧基金', buy: '62.75', reserve: '1590' }
+  { id: '安聯收益成長基金 AT累積類股(美元)', buy: '19.56', reserve: '160', type: 'fund' },
+  { id: '聯博全球高收益債券基金 TA類型(美元)', buy: '7.94', reserve: '400', type: 'fund' },
+  { id: '聯博 美國收益基金A股(美元)', buy: '6.26', reserve: '500', type: 'fund' },
+  { id: '環球高收益債券基金 JPM環球高收益債券(美元)', buy: '179.15', reserve: '20', type: 'fund' },
+  { id: 'NN(L)新興市場 債券基金X股(美元)', buy: '275.66', reserve: '10', type: 'fund' },
+  { id: '安聯台灣大壩基金 A類型(新臺幣)', buy: '48.77', reserve: '2050', type: 'fund' },
+  { id: '野村優質基金 累積類型(新臺幣)', buy: '66.73', reserve: '1500', type: 'fund' },
+  { id: '安聯台灣智慧基金(新臺幣)', buy: '62.75', reserve: '1590' }
 ];
 // 美股投組
 const USList = [
@@ -62,7 +62,8 @@ const USList = [
   { id: 'QQQ', buy: '268.82', reserve: '37', type: 'USAstock' },
   { id: 'MSFT', buy: '234.24', reserve: '43', type: 'USAstock' },
   { id: 'BA', buy: '132.4', reserve: '76', type: 'USAstock' },
-  { id: 'DIS', buy: '96.64', reserve: '103', type: 'USAstock' }
+  { id: 'DIS', buy: '96.64', reserve: '103', type: 'USAstock' },
+  
 ];
 
 // 處理資料，將投組按屬性整理成陣列

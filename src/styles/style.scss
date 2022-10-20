@@ -56,3 +56,13 @@ span.chip {
 .v-btn {
   text-transform: capitalize !important;
 }
+
+@for $i from 1 through 10 {
+  .w-#{$i*10} {
+    width: calc(10%*#{$i}) !important;
+  }
+  
+  .h-#{$i*10} {
+    height: calc(10%*#{$i});
+  }
+}
