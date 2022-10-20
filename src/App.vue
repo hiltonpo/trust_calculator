@@ -1,8 +1,10 @@
 <template>
     <v-app class="main">
+      <transition name="fade" mode="out-in">
         <InvestDiagnosis v-if="key === 0"></InvestDiagnosis>
         <InputPortfolio v-if="key === 1"></InputPortfolio>
         <InputResult v-if="key === 2"></InputResult>
+      </transition>
     </v-app>
 </template>
 

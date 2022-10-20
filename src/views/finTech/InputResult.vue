@@ -17,22 +17,11 @@
       <!-- 類別標籤 -->
       <nav>
         <v-row class="ma-0 text-center" style="border-bottom: 2px solid black;">
-          <v-col v-if="getType === 'yahoo'"
-            class="text-h4 font-weight-bold px-0 py-5 white--text pink lighten-2">
-            Yahoo 股市熱門台股組合
+          <v-col 
+            class="text-h4 font-weight-bold px-0 py-5 white--text" :class="targetType.color">
+            {{ targetType.title }}
           </v-col>
-          <v-col v-if="getType === 'fund'"
-            class="text-h4 font-weight-bold px-0 py-5 white--text amber accent-3">
-            台灣人最愛基金組合
-          </v-col>
-          <v-col v-if="getType === 'US'"
-            class="text-h4 font-weight-bold px-0 py-5 white--text green darken-1">
-            精選國外標的美股組合
-          </v-col>
-          <v-col v-if="getType === 'option'"
-            class="text-h4 font-weight-bold px-0 py-5 white--text cyan">
-            我有自己想法體驗自選組合
-          </v-col>
+
           <v-col class="text-table font-weight-bold d-flex align-center justify-end" cols="3">
             <span v-if="getType === 'yahoo' || getType === 'option'">成本／新台幣</span>
             <span v-if="getType === 'fund'">成本</span>
@@ -44,12 +33,12 @@
           <v-col v-if="getType === 'option'" cols="1"></v-col>
         </v-row>
       </nav>
-      <!-- 台股表 -->
+      <!-- 台股表 Yahoo / 自選 -->
       <div v-if="getType === 'yahoo' || getType === 'option'">
         <div>
           <v-form ref="stockForm">
-            <v-simple-table dense class="mb-10 pa-5"
-              :class="[ getType === 'yahoo' ? 'pink lighten-5' : 'cyan lighten-5' ]">
+            <v-simple-table dense class="pa-5"
+              :class="[ getType === 'yahoo' ? 'pink lighten-5' : 'light-blue lighten-5' ]">
               <template v-slot:default>
                 <tbody>
                   <tr v-for="(value , key) in getPortfolioStock" :key="key">
@@ -127,6 +116,14 @@
                 </v-btn> -->
               </template>
             </v-simple-table>
+            <div class="w-100 light-blue lighten-5 pa-10 pt-0">
+              <router-link to="/InputPortfolio">
+                <v-btn class="white text-h4 font-weight-bold overwrite border-cyan d-block"
+                  color="cyan" height="4.5vh" width="100%" rounded outlined x-large>
+                  + 繼續新增標的
+                </v-btn>
+              </router-link>
+            </div>
           </v-form>
         </div>
       </div>
@@ -169,7 +166,7 @@
                 <tbody>
                   <tr v-for="(value , key) in getPortfolioStockUSA" :key="key" class="green lighten-5">
                     <td style="width: 26px">
-                      <div class="d-inline-block green darken-1 d-flex align-center text-h6 justify-center font-weight-bold white--text cube">
+                      <div class="d-inline-block green darken-1 d-flex align-center justify-center font-weight-bold white--text cube">
                         {{ key }}
                       </div>
                     </td>
@@ -288,8 +285,10 @@ button.white.v-btn.v-btn--depressed.theme--light.v-size--x-small {
   background: none !important;
 }
 
+$--cube-base: 3.6vw;
 .cube {
-  height: 30px; width: 30px;
+  height: $--cube-base; width: $--cube-base;
+  font-size: 1.5rem !important;
 }
 
 .v-data-table {
@@ -311,6 +310,8 @@ import { Action, Getter, Mutation } from 'vuex-class';
 import { getCookie, removeCookie, rules, setCookie } from '@/utility/utility';
 import { stockData, lunchBoxType } from '@/utility/globalData';
 import router from '@/router';
+import { filter } from 'lodash-es';
+
 import FintechHeader from '@/components/FintechHeader.vue';
 import FintechDialog from '@/components/FintechDialog.vue';
 Vue.component('FintechHeader', FintechHeader);
@@ -343,6 +344,13 @@ export default class InputResult extends Vue {
   private AnalysisState = false;
   private nonUpdateError = false;
   private show = false;
+  private typeRoot: any = [
+    { type: 'yahoo', color: 'pink lighten-2', title: 'Yahoo 股市熱門台股組合' },
+    { type: 'fund', color: 'amber accent-3', title: '台灣人最愛基金組合' },
+    { type: 'US', color: 'green darken-1', title: '精選國外標的美股組合' },
+    { type: 'option', color: 'cyan', title: '我有自己想法體驗自選組合' }
+  ]
+  private targetType = {};
   private updateModeId = {
     index: null,
     type: null,
@@ -498,6 +506,7 @@ export default class InputResult extends Vue {
     this.setType(this.stockType);
     this.renderData();
     this.loadPortfolio(stockData(this.stockType));
+    this.targetType = filter(this.typeRoot, [ 'type', this.getType ])[0];
 
     console.log(this.getPortfolio);
     console.log(this.getPortfolioStockUSA);
