@@ -30,7 +30,7 @@
             精選國外標的美股組合
           </v-col>
           <v-col v-if="getType === 'option'"
-            class="text-h4 font-weight-bold px-0 py-5 white--text pink lighten-2">
+            class="text-h4 font-weight-bold px-0 py-5 white--text cyan">
             我有自己想法體驗自選組合
           </v-col>
           <v-col class="text-table font-weight-bold d-flex align-center justify-end" cols="3">
@@ -38,34 +38,46 @@
             <span v-if="getType === 'fund'">成本</span>
             <span v-if="getType === 'US'">成本／美元</span>
           </v-col>
-          <v-col class="text-table font-weight-bold d-flex align-center justify-end px-8" cols="3">
+          <v-col class="text-table font-weight-bold d-flex align-center justify-end px-8" cols="2">
             股數
           </v-col>
+          <v-col v-if="getType === 'option'" cols="1"></v-col>
         </v-row>
       </nav>
       <!-- 台股表 -->
       <div v-if="getType === 'yahoo' || getType === 'option'">
         <div>
           <v-form ref="stockForm">
-            <v-simple-table dense class="mb-10 pa-5 pink lighten-5">
+            <v-simple-table dense class="mb-10 pa-5"
+              :class="[ getType === 'yahoo' ? 'pink lighten-5' : 'cyan lighten-5' ]">
               <template v-slot:default>
                 <tbody>
                   <tr v-for="(value , key) in getPortfolioStock" :key="key">
                     <td style="width: 26px">
-                      <div class="d-inline-block pink lighten-2 d-flex align-center text-h6 justify-center font-weight-bold white--text cube">
-                        {{ key }}
+                      <div class="d-inline-block d-flex align-center text-h6 justify-center font-weight-bold white--text cube"
+                      :class="[ getType === 'yahoo' ? 'pink lighten-2' : 'cyan' ]">
+                        {{ key + 1 }}
                       </div>
                     </td>
-                    <td class="text-left w-50 font-weight-bold"
+                    <td v-if="(updateModeId.index === key) && (updateModeId.type === value.type)" class="text-left w-40">
+                      <v-autocomplete color="#7166F9" item-color="deep-purple" outlined rounded
+                        :rules="inputRule.id"
+                        :items="getStock"
+                        v-model="value.id"
+                        @change="change(value.id, updateModeId)">
+                      </v-autocomplete>
+                    </td>
+                    <td v-else  class="text-left w-50 font-weight-bold"
                       v-html="value.id.split(' ').join('<br />')">
                     </td>
 
-                    <td v-if="(updateModeId.index === key) && (updateModeId.type === value.type)" class="text-right font-weight-bold">
+
+                    <td v-if="(updateModeId.index === key) && (updateModeId.type === value.type)" class="text-right font-weight-bold w-30">
                       <v-text-field :value="value.buy" :disabled="true"></v-text-field>
                     </td>
                     <td v-else class="text-right font-weight-bold">$ {{ Number(value.buy).toFixed(2) }}</td>
 
-                    <td v-if="(updateModeId.index === key) && (updateModeId.type === value.type)" class="text-right font-weight-bold">
+                    <td v-if="(updateModeId.index === key) && (updateModeId.type === value.type)" class="text-right font-weight-bold w-20">
                       <v-text-field v-model="value.reserve" :disabled="true"></v-text-field>
                     </td>
                     <td v-else class="text-right font-weight-bold">{{ value.reserve }}</td>
@@ -75,32 +87,32 @@
                         :disabled="uniqle()"
                         v-show="(updateModeId.index !== key) || (updateModeId.type !== value.type)"
                         class="white"
-                        height="40"
+                        height="38" width="66"
                         x-small
                         depressed
                         @click="del({id: value.id , type: value.type})">
-                        <v-icon small>fas fa-minus</v-icon>
+                        <v-icon>fas fa-minus</v-icon>
                       </v-btn>
                       &emsp;
                       <v-btn
                         :disabled="uniqle()"
                         v-show="(updateModeId.index !== key) || (updateModeId.type !== value.type)"
                         class="white"
-                        height="40"
+                        height="38" width="66"
                         x-small
                         depressed
                         @click.stop="updateMode(key, value.type, value.id)">
-                        <v-icon small>fas fa-pencil-alt</v-icon>
+                        <v-icon>fas fa-pencil-alt</v-icon>
                       </v-btn>
                       &emsp;
                       <v-btn
                         v-show="(updateModeId.index === key) && (updateModeId.type === value.type)"
                         class="white"
-                        height="40"
+                        height="38" width="66"
                         x-small
                         depressed
                         @click="updateDone(key, value.id)">
-                        <v-icon small>fas fa-check</v-icon>
+                        <v-icon>fas fa-check</v-icon>
                       </v-btn>
                     </td>
                   </tr>
@@ -215,6 +227,9 @@
         :loading="show">
         <span class="text-h3 font-weight-bold">確定</span>
       </v-btn>
+
+      <FintechDialog :dialog="deleteDialog"  icon="fas fa-check-circle" dialogContent="標的已刪除">
+      </FintechDialog>
     </div>
   </div>
 </template>
@@ -222,7 +237,7 @@
 <style lang="scss" scoped>
 
 .main {
-  width: 88%;
+  width: 90%;
   height: calc(90vh - 200px);
 }
 
@@ -253,6 +268,16 @@ $--font-size: 2rem;
   border-bottom: 0;
 }
 
+::v-deep .v-autocomplete:not(.v-input--is-disabled).v-select.v-text-field input,
+::v-deep .v-input--is-disabled:not(.v-input--is-readonly) {
+  font-size: $--font-size;
+  font-weight: 600;
+}
+
+::v-deep .v-input input {
+  max-height: 6vh;
+}
+
 .bgProgress {
   background: rgba(0, 172, 193, 0.7);
   position: absolute;
@@ -271,6 +296,10 @@ button.white.v-btn.v-btn--depressed.theme--light.v-size--x-small {
   overflow-y: scroll;
   max-height: 68vh;
 }
+
+::v-deep .theme--light.v-data-table > .v-data-table__wrapper > table > tbody > tr:hover:not(.v-data-table__expanded__content):not(.v-data-table__empty-wrapper) {
+  background: unset;
+}
 </style>
 
 <script lang="ts">
@@ -283,7 +312,9 @@ import { getCookie, removeCookie, rules, setCookie } from '@/utility/utility';
 import { stockData, lunchBoxType } from '@/utility/globalData';
 import router from '@/router';
 import FintechHeader from '@/components/FintechHeader.vue';
+import FintechDialog from '@/components/FintechDialog.vue';
 Vue.component('FintechHeader', FintechHeader);
+Vue.component('FintechDialog', FintechDialog);
 
 
 @Component({
@@ -329,6 +360,8 @@ export default class InputResult extends Vue {
   private getBuy = [];
   private getReserve = [];
   private getClass = [];
+
+  private deleteDialog = false;
 
   // 監聽標的總數
   @Watch('getPortfolio')
@@ -399,6 +432,10 @@ export default class InputResult extends Vue {
   // 刪除功能
   private del (data: any) {
     this.delPortfolio(data);
+    this.deleteDialog = true;
+    setTimeout(() => {
+      // this.deleteDialog = false;
+    }, 1300)
   }
 
   // 開啟修改功能
