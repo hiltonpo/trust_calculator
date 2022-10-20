@@ -1,20 +1,12 @@
 <template>
-  <v-card
-    class="mx-auto rounded-xl pa-5 px-md-5 px-4 white white"
-    elevation="3"
-    style="overflow: hidden;"
-  >
   <div class="main mx-auto pa-0 pa-md-6 py-6">
     <!--  <div>
       <v-icon class="blue-grey--text text--darken-3" @click="back" small>fas fa-arrow-left</v-icon>
     </div> -->
     <div class="text-center">
-      <h2 class="cyan--text text--lighten-1 font-weight-bold">
+      <h2 class="font-weight-bold maintitle">
         投資標的輸入
       </h2>
-      <p class="text-h6">
-        <small class="text-subtitle-1 blue-grey--text text--lighten-1">若有搜尋不到的標的，可能因該檔投資標的成立日期小於6個月，或資料不完整喔！</small>
-      </p>
     </div>
     <div class="divider my-8 my-md-10 mb-8 mb-md-14"></div>
 
@@ -22,49 +14,59 @@
       <div>
         <v-form ref="stockForm" style="width:100%;">
           <v-row class="justify-center">
-            <v-select
+            <v-text-field
+              class="kind rounded-pill"
               background-color="white"
               color="cyan" item-color="cyan"
               outlined
+              disabled
               filled
-              rounded
-              :items="items"
+              height="164"
               v-model="select"
-            ></v-select>
+            ></v-text-field>
             <v-col cols="12" class="pa-0">
-              <p>股票代號</p>
+              <p class="subtitle my-6">股票代號</p>
               <v-autocomplete
+                class="stock rounded-pill"
                 background-color="white"
                 color="cyan" item-color="cyan"
                 outlined filled rounded
-                placeholder="ex. 2330"
+                placeholder="ex. 2330 台積電"
                 validate-on-blur
-                :rules="inputRule.id"
+                height="164"
                 v-model="stockNumber"
-                :items="select === items[0].value ? getStock: ['']">
+                :rules="inputRule.id"
+                :menu-props="{ maxHeight: 600 }"
+                :items="getStock">
               </v-autocomplete>
 
             </v-col>
-            <v-col cols="12" sm="6" class="pa-0 pr-sm-3">
-              <p class="mb-3">買進成本 (新台幣)</p>
+            <v-col cols="12" class="pa-0">
+              <p class="subtitle mt-6 mb-8">買進成本</p>
               <v-text-field
+                class="buy rounded-pill"
                 background-color="white"
-                color="cyan" item-color="cyan"
-                outlined filled rounded
+                color="black" item-color="cyan"
+                outlined 
+                filled
+                dense 
                 validate-on-blur
-                placeholder="ex. 679"
+                height="164"
                 :disabled="true"
                 v-model="buy">
               </v-text-field>
             </v-col>
-            <v-col cols="12" sm="6" class="pa-0 pl-sm-3">
-              <p class="mb-3">持有股數 (股)</p>
+            <v-col cols="12" class="pa-0">
+              <p class="subtitle mt-6 mb-8">持有股數</p>
               <v-text-field
+                class="reserve rounded-pill"
                 background-color="white"
-                color="cyan" item-color="cyan"
-                outlined filled rounded
+                color="success" item-color="cyan"
+                outlined 
+                filled 
+                rounded
                 validate-on-blur
-                placeholder="ex. 1000"
+                height="164"
                 :disabled="true"
                 v-model="reserve">
               </v-text-field>
@@ -121,17 +123,71 @@
       </v-card>
     </v-dialog>
   </div>
-  </v-card>
 </template>
 <style lang="scss" scoped>
+$rounded: (
+  0: 0,
+  'sm': $border-radius-root / 2,
+  null: $border-radius-root,
+  'lg': $border-radius-root * 2,
+  'xl': $border-radius-root * 6,
+  'pill': 9999px,
+  'circle': 50%
+);
 
 .main {
   width: 90%;
   @media screen and (max-width: 414px) {
     width: 95%;
   }
+
+  .maintitle {
+  font-size: 60px; 
+  margin-bottom:120px;
+  }
+
+  .subtitle {
+    font-size: 35px;
+  }
 }
 
+
+::v-deep input#input {
+    &-7, &-10, &-15, &-18 {
+      font-weight: 700;
+      font-size: 35px;
+      max-height: 100px;
+      margin-left: 85px;
+      color: #4E4E4E !important;
+    }
+  }
+
+.kind ::v-deep fieldset, .buy ::v-deep fieldset, .reserve ::v-deep fieldset{
+  color: #F2F3F3 !important;
+  background: #EFEFEF;
+}
+
+.stock ::v-deep fieldset {
+  border: 3px solid #707070;
+}
+
+::v-deep i.v-icon.v-icon {
+  position: absolute;
+  font-size: 86px !important;
+  top: 25%;
+  right: 4%;
+}
+
+::v-deep .v-list-item__title {
+  padding: 20px;
+  font-size: 35px;
+  font-weight: 500;
+}
+
+::v-deep .v-messages__message {
+  font-size: 35px;
+  padding: 30px;
+}
 </style>
 
 <script lang="ts">
@@ -152,14 +208,7 @@ export default class InputPortfolio extends Vue {
   private decoAlpha = decoAlpha
   private addedDialog = false;
   private dialogMsg = '';
-  private select = 1;
-
-  private items = [
-    {
-      text: '台股 / ETF',
-      value: 1
-    }
-  ];
+  private select = '台股 / ETF';
 
   private getStock = [];
   private getBuy = [];
@@ -228,16 +277,6 @@ export default class InputPortfolio extends Vue {
     }
   }
 
-  // @Watch('fundNumber')
-  // private setCurrency () {
-  //   this.fundCurrency = this.getFundsCurrency[this.getFunds.indexOf(this.fundNumber)];
-  // }
-
-  // @Watch('select')
-  // private selectChange () {
-  //   this.setSelect(this.select);
-  // }
-
   // /**
   //  * 台股輸入
   //  */
@@ -266,62 +305,6 @@ export default class InputPortfolio extends Vue {
   private next () {
     router.push('/InputResult');
   }
-
-  // /**
-  //  * 美股輸入
-  //  */
-  // private addStockUSA () {
-  //   const form: any = this.$refs.stockForm;
-  //   if (form.validate()) {
-  //     if (this.getPortfolioLength < 50) {
-  //       this.addingPortfolio({
-  //         id: String(this.stockUSANumber),
-  //         type: 'USAstock',
-  //         buy: Number(this.USAbuy),
-  //         reserve: Number(this.USAreserve),
-  //         currency: 'USD'
-  //       });
-
-  //       this.stockUSANumber = '';
-  //       this.USAbuy = '';
-  //       this.USAreserve = '';
-
-  //       this.addedDialog = true;
-  //       this.dialogMsg = '已新增';
-  //     } else {
-  //       this.addedDialog = true;
-  //       this.dialogMsg = '無法新增超過 50 筆資料';
-  //     }
-  //   }
-  // }
-
-  // /**
-  //  * 基金輸入
-  //  */
-  // private addFund () {
-  //   const form: any = this.$refs.fundForm;
-  //   if (form.validate()) {
-  //     if (this.getPortfolioLength < 50) {
-  //       this.addingPortfolio({
-  //         id: String(this.fundNumber),
-  //         type: 'fund',
-  //         buy: Number(this.fundBuy),
-  //         reserve: Number(this.fundReserve),
-  //         currency: this.fundCurrency
-  //       });
-
-  //       this.fundNumber = '';
-  //       this.fundBuy = '';
-  //       this.fundReserve = '';
-
-  //       this.addedDialog = true;
-  //       this.dialogMsg = '已新增';
-  //     } else {
-  //       this.addedDialog = true;
-  //       this.dialogMsg = '無法新增超過 50 筆資料';
-  //     }
-  //   }
-  // }
 
   private cancel () {
     this.addedDialog = false;
