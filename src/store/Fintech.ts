@@ -4,7 +4,7 @@ import { stockData } from '@/utility/globalData';
 export default
 {
   state: {
-    type: 'fund', // yahoo fund US option
+    type: 'option', // yahoo fund US option
     portfolio: [],
     lunchBoxType: '',
     resultType: ''

@@ -133,7 +133,47 @@ export function optionLunchBoxType (rowClassData: any) {
   }
 }
 
+// 自選投組有七種子組合，有七種結果
+// A4: 半
+// A5: 金
+// A6: ETF
+// A7: 半+金
+// A8: 半+ETF
+// A9: 金+ETF
+// A10: 半+金+ETF
+export function optionResultType (rowClassData: any) {
+  const classAll = rowClassData.reduce((cur: any, stockItem: any) => {
+    const { classes } = stockItem;
+    return cur.concat(classes);
+  }, []);
+  const classAllSet = new Set(classAll);
+  
+  // A4: 半
+  if (classAllSet.has('半導體') && !classAllSet.has('金融') && !classAllSet.has('ETF')) {
+    return 'A4'
+  // A5: 金
+  } else if (!classAllSet.has('半導體') && classAllSet.has('金融') && !classAllSet.has('ETF')) {
+    return 'A5';
+  // A6: ETF
+  } else if (!classAllSet.has('半導體') && !classAllSet.has('金融') && classAllSet.has('ETF')) {
+    return 'A6';
+  // A7: 半+金
+  } else if (classAllSet.has('半導體') && classAllSet.has('金融') && !classAllSet.has('ETF')) {
+    return 'A7';
+  // A8: 半+ETF
+  } else if (classAllSet.has('半導體') && !classAllSet.has('金融') && classAllSet.has('ETF')) {
+    return 'A8';
+  // A9: 金+ETF
+  } else if (!classAllSet.has('半導體') && classAllSet.has('金融') && classAllSet.has('ETF')) {
+    return 'A9';
+  // A10: 半+金+ETF
+  } else if (classAllSet.has('半導體') && classAllSet.has('金融') && classAllSet.has('ETF')) {
+    return 'A10';
+  };
+}
+
 // 其他三種投組所分配的風屬
+// 風屬：R1=>積極  R2=>穩健  R3=>保守
 export function lunchBoxType (type: any, rowData: any) {
   if (type === 'US') {
     return 'R1';
@@ -143,6 +183,22 @@ export function lunchBoxType (type: any, rowData: any) {
     return 'R3';
   } else if (type === 'option') {
     return optionLunchBoxType(rowData);
+  } else {
+    return null;
+  }
+}
+
+// 其他三種投組所分配的結果 
+// A1:美股、A2:yahoo、A3:基金、A4~10為自選投組
+export function resultType (type: any, rowData: any) {
+  if (type === 'US') {
+    return 'A1';
+  } else if (type === 'yahoo') {
+    return 'A2';
+  } else if (type === 'fund') {
+    return 'A3';
+  } else if (type === 'option') {
+    return optionResultType(rowData);
   } else {
     return null;
   }

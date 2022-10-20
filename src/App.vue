@@ -1,5 +1,5 @@
 <template>
-    <v-app>
+    <v-app class="main">
         <InvestDiagnosis v-if="key === 0"></InvestDiagnosis>
         <InputPortfolio v-if="key === 1"></InputPortfolio>
         <InputResult v-if="key === 2"></InputResult>
@@ -7,6 +7,9 @@
 </template>
 
 <style lang="scss" scoped>
+.main {
+  background: #F9F8F8;;
+}
 
 </style>
 
