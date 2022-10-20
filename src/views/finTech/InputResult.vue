@@ -1,162 +1,179 @@
 <template>
-  <div class="main mx-auto pa-0 pa-md-6 py-6">
-    <!-- <div>
-      <v-icon class="blue-grey--text text--darken-3" @click="back" small>fas fa-arrow-left</v-icon>
-    </div> -->
-    <div class="text-center">
-      <h2 class="text-h2 font-weight-bold">
-        投資組合確認
-      </h2>
+  <div class="grey lighten-5 h-100">
 
-    </div>
-    <div class="divider my-8 my-md-10"></div>
+    <FintechHeader></FintechHeader>
+    <section class="main mx-auto py-12">
+      <!-- <div>
+        <v-icon class="blue-grey--text text--darken-3" @click="back" small>fas fa-arrow-left</v-icon>
+      </div> -->
+      <div class="text-center py-6">
+        <h2 class="text-h2 font-weight-bold">
+          投資組合確認
+        </h2>
 
-    <section>
-        <v-row class="ma-0 text-center">
-          <v-col v-if="getType === 'yahoo' || getType === 'option'" class="text-h6 white--text mb-1 pink lighten-3">台股</v-col>
-          <v-col v-if="getType === 'fund' || getType === 'option'" class="text-h6 white--text mb-1 amber accent-3">基金</v-col>
-          <v-col v-if="getType === 'US' || getType === 'option'" class="text-h6 white--text mb-1 green darken-1">美股</v-col>
-          <v-col>成本／幣別</v-col>
-          <v-col>股數</v-col>
+      </div>
+      <div class="divider my-8 my-md-10"></div>
+
+      <!-- 類別標籤 -->
+      <nav>
+        <v-row class="ma-0 text-center" style="border-bottom: 2px solid black;">
+          <v-col v-if="getType === 'yahoo'"
+            class="text-h4 font-weight-bold px-0 py-5 white--text pink lighten-2">
+            Yahoo 股市熱門台股組合
+          </v-col>
+          <v-col v-if="getType === 'fund'"
+            class="text-h4 font-weight-bold px-0 py-5 white--text amber accent-3">
+            台灣人最愛基金組合
+          </v-col>
+          <v-col v-if="getType === 'US'"
+            class="text-h4 font-weight-bold px-0 py-5 white--text green darken-1">
+            精選國外標的美股組合
+          </v-col>
+          <v-col v-if="getType === 'option'"
+            class="text-h4 font-weight-bold px-0 py-5 white--text pink lighten-2">
+            我有自己想法體驗自選組合
+          </v-col>
+          <v-col class="text-table font-weight-bold d-flex align-center justify-end" cols="3">
+            <span v-if="getType === 'yahoo' || getType === 'option'">成本／新台幣</span>
+            <span v-if="getType === 'fund'">成本</span>
+            <span v-if="getType === 'US'">成本／美元</span>
+          </v-col>
+          <v-col class="text-table font-weight-bold d-flex align-center justify-end px-8" cols="3">
+            股數
+          </v-col>
         </v-row>
-      </section>
-    <!-- 台股表 -->
-    <div v-if="getType === 'yahoo' || getType === 'option'">
-      <div>
-        <v-form ref="stockForm">
-          <v-simple-table dense class="mb-10">
-            <template v-slot:default>
-              <tbody>
-                <tr v-for="(value , key) in getPortfolioStock" :key="key" class="pink lighten-5">
-                  <td v-if="(updateModeId.index === key) && (updateModeId.type === value.type)" class="text-left">
-                    <v-autocomplete
-                      :rules="inputRule.id"
-                      v-model="value.id"
-                      @change="change(value.id, updateModeId)"
-                      :items="getStock">
-                    </v-autocomplete>
-                  </td>
-                  <td v-else class="text-left"><i class="fas fa-square pink--text text--lighten-2 mr-2"></i>{{ value.id }}</td>
+      </nav>
+      <!-- 台股表 -->
+      <div v-if="getType === 'yahoo' || getType === 'option'">
+        <div>
+          <v-form ref="stockForm">
+            <v-simple-table dense class="mb-10 pa-5 pink lighten-5">
+              <template v-slot:default>
+                <tbody>
+                  <tr v-for="(value , key) in getPortfolioStock" :key="key">
+                    <td style="width: 26px">
+                      <div class="d-inline-block pink lighten-2 d-flex align-center text-h6 justify-center font-weight-bold white--text cube">
+                        {{ key }}
+                      </div>
+                    </td>
+                    <td class="text-left w-50 font-weight-bold"
+                      v-html="value.id.split(' ').join('<br />')">
+                    </td>
 
-                  <td v-if="(updateModeId.index === key) && (updateModeId.type === value.type)" class="text-center">
-                    <v-text-field :value="value.buy" :disabled="true"></v-text-field>
-                  </td>
-                  <td v-else class="text-center">{{ value.buy }}／新台幣</td>
+                    <td v-if="(updateModeId.index === key) && (updateModeId.type === value.type)" class="text-right font-weight-bold">
+                      <v-text-field :value="value.buy" :disabled="true"></v-text-field>
+                    </td>
+                    <td v-else class="text-right font-weight-bold">$ {{ Number(value.buy).toFixed(2) }}</td>
 
-                  <td v-if="(updateModeId.index === key) && (updateModeId.type === value.type)" class="text-center">
-                    <v-text-field v-model="value.reserve" :disabled="true"></v-text-field>
-                  </td>
-                  <td v-else class="text-center">{{ value.reserve }}</td>
-                  <td class="text-center">
-                    <v-btn
-                      :disabled="uniqle()"
-                      v-show="(updateModeId.index !== key) || (updateModeId.type !== value.type)"
-                      class="white"
-                      x-small
-                      depressed
-                      @click="del({id: value.id , type: value.type})">
-                      <i class="fas fa-minus"></i>
-                    </v-btn>
-                    &emsp;
-                    <v-btn
-                      :disabled="uniqle()"
-                      v-show="(updateModeId.index !== key) || (updateModeId.type !== value.type)"
-                      class="white"
-                      x-small
-                      depressed
-                      @click.stop="updateMode(key, value.type, value.id)">
-                      <i class="fas fa-pencil-alt"></i>
-                    </v-btn>
-                    &emsp;
-                    <v-btn
-                      v-show="(updateModeId.index === key) && (updateModeId.type === value.type)"
-                      class="white"
-                      x-small
-                      depressed
-                      @click="updateDone(key, value.id)">
-                      <i class="fas fa-check"></i>
-                    </v-btn>
-                  </td>
-                </tr>
-              </tbody>
-              <v-btn
-                v-if="getType === 'option'"
-                class="white pink--text text--lighten-2"
-                x-small
-                depressed
-                @click="autoSelect">
-                <i class="fas fa-plus"> 新增</i>
-              </v-btn>
-            </template>
-          </v-simple-table>
-        </v-form>
+                    <td v-if="(updateModeId.index === key) && (updateModeId.type === value.type)" class="text-right font-weight-bold">
+                      <v-text-field v-model="value.reserve" :disabled="true"></v-text-field>
+                    </td>
+                    <td v-else class="text-right font-weight-bold">{{ value.reserve }}</td>
+
+                    <td v-if="getType === 'option'" class="text-center px-0" style="width: 10vw">
+                      <v-btn
+                        :disabled="uniqle()"
+                        v-show="(updateModeId.index !== key) || (updateModeId.type !== value.type)"
+                        class="white"
+                        height="40"
+                        x-small
+                        depressed
+                        @click="del({id: value.id , type: value.type})">
+                        <v-icon small>fas fa-minus</v-icon>
+                      </v-btn>
+                      &emsp;
+                      <v-btn
+                        :disabled="uniqle()"
+                        v-show="(updateModeId.index !== key) || (updateModeId.type !== value.type)"
+                        class="white"
+                        height="40"
+                        x-small
+                        depressed
+                        @click.stop="updateMode(key, value.type, value.id)">
+                        <v-icon small>fas fa-pencil-alt</v-icon>
+                      </v-btn>
+                      &emsp;
+                      <v-btn
+                        v-show="(updateModeId.index === key) && (updateModeId.type === value.type)"
+                        class="white"
+                        height="40"
+                        x-small
+                        depressed
+                        @click="updateDone(key, value.id)">
+                        <v-icon small>fas fa-check</v-icon>
+                      </v-btn>
+                    </td>
+                  </tr>
+                </tbody>
+                <!-- <v-btn
+                  v-if="getType === 'option'"
+                  class="white pink--text text--lighten-2"
+                  x-small
+                  depressed
+                  @click="autoSelect">
+                  <v-icon>fas fa-plus</v-icon>
+                </v-btn> -->
+              </template>
+            </v-simple-table>
+          </v-form>
+        </div>
       </div>
-    </div>
 
-    <!-- 基金表 -->
-    <div v-if="getType === 'fund' || getType === 'option'">
-      <div>
-        <v-form ref="fundForm">
-          <v-simple-table dense class="mb-10">
-            <template v-slot:default>
-              <thead>
-                <tr>
-                  <th class="text-center">
-                    代號
-                  </th>
-                  <th class="text-center">
-                    成本／幣別
-                  </th>
-                  <th class="text-center">
-                    單位數
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="(value , key) in getPortfolioFund" :key="key" class="amber lighten-5">
-                  <td class="text-left"><i class="fas fa-square mr-2 amber--text text--accent-3"></i>{{ value.id }}</td>
-                  <td class="text-center">{{ value.buy }}／{{ value.currency }}</td>
-                  <td class="text-center">{{ value.reserve }}</td>
-                </tr>
-              </tbody>
-            </template>
-          </v-simple-table>
-        </v-form>
+      <!-- 基金表 -->
+      <div v-if="getType === 'fund'">
+        <div>
+          <v-form ref="fundForm">
+            <v-simple-table dense class="mb-10 pa-5 amber lighten-5">
+              <template v-slot:default>
+                <tbody>
+                  <tr v-for="(value , key) in getPortfolioFund" :key="key" class="amber lighten-5">
+                    <td style="width: 26px">
+                      <div class="d-inline-block amber accent-3 d-flex align-center text-subtitle-1 justify-center font-weight-bold white--text cube">
+                        {{ key }}
+                      </div>
+                    </td>
+                    <td class="text-left w-50 font-weight-bold"
+                      v-html="value.id.split(' ').join('<br />')">
+                    </td>
+                    <td class="text-right font-weight-bold">
+                      $ {{ Number(value.buy).toFixed(2) }}
+                    </td>
+                    <td class="text-right font-weight-bold">{{ value.reserve }}</td>
+                  </tr>
+                </tbody>
+              </template>
+            </v-simple-table>
+          </v-form>
+        </div>
       </div>
-    </div>
 
-    <!-- 美股表 -->
-    <div v-if="getType === 'US' || getType === 'option'">
+      <!-- 美股表 -->
+      <div v-if="getType === 'US'">
 
-      <div style="margin-bottom: 100px;">
-        <v-form ref="stockUSAForm">
-          <v-simple-table dense>
-            <template v-slot:default>
-              <thead>
-                <tr>
-                  <th class="text-center">
-                    代號
-                  </th>
-                  <th class="text-center">
-                    成本／幣別
-                  </th>
-                  <th class="text-center">
-                    股數
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="(value , key) in getPortfolioStockUSA" :key="key" class="green lighten-5">
-                  <td class="text-left"><i class="fas fa-square mr-2 green--text text--darken-1"></i>{{ value.id }}</td>
-                  <td class="text-center">{{ value.buy }}／美元</td>
-                  <td class="text-center">{{ value.reserve }}</td>
-                </tr>
-              </tbody>
-            </template>
-          </v-simple-table>
-        </v-form>
+        <div style="margin-bottom: 100px;">
+          <v-form ref="stockUSAForm">
+            <v-simple-table dense class="mb-10 pa-5 green lighten-5">
+              <template v-slot:default>
+                <tbody>
+                  <tr v-for="(value , key) in getPortfolioStockUSA" :key="key" class="green lighten-5">
+                    <td style="width: 26px">
+                      <div class="d-inline-block green darken-1 d-flex align-center text-h6 justify-center font-weight-bold white--text cube">
+                        {{ key }}
+                      </div>
+                    </td>
+                    <td class="text-left w-50 font-weight-bold"
+                      v-html="value.id">
+                    </td>
+                    <td class="text-right font-weight-bold">$ {{ Number(value.buy).toFixed(2) }}</td>
+                    <td class="text-right font-weight-bold">{{ value.reserve }}</td>
+                  </tr>
+                </tbody>
+              </template>
+            </v-simple-table>
+          </v-form>
+        </div>
       </div>
-    </div>
+    </section>
 
     <template v-if="AnalysisState">
       <div class="text-center bgProgress d-flex flex-column justify-center align-center" style="z-index: 5">
@@ -171,37 +188,33 @@
         </p>
       </div>
     </template>
-    <div>
-      <v-row>
-        <v-col cols="12" sm="6" lg="6">
-          <v-btn
-            class="mt-2"
-            color="black"
-            width="100%"
-            large
-            depressed
-            outlined
-            :disabled="permission()"
-            @click="back"
-            :loading="show">
-            上一步
-          </v-btn>
-        </v-col>
-        <v-col cols="12" sm="6" lg="6">
-          <v-btn
-            class="mt-2"
-            color="black"
-            width="100%"
-            large
-            depressed
-            outlined
-            :disabled="permission()"
-            @click="healthCheck"
-            :loading="show">
-            下一步
-          </v-btn>
-        </v-col>
-      </v-row>
+    <div class="d-flex justify-center">
+      <v-btn
+        class="mt-2 rounded-xl ma-6"
+        color="#7166F9"
+        style="border: 3px solid #7166F9"
+        width="34%"
+        height="5vh"
+        large
+        depressed
+        outlined
+        :disabled="permission()"
+        @click="back"
+        :loading="show">
+        <span class="text-h3 font-weight-bold">返回</span>
+      </v-btn>
+      <v-btn
+        class="mt-2 rounded-xl ma-6 white--text"
+        color="#7166F9"
+        width="34%"
+        height="5vh"
+        large
+        depressed
+        :disabled="permission()"
+        @click="healthCheck"
+        :loading="show">
+        <span class="text-h3 font-weight-bold">確定</span>
+      </v-btn>
     </div>
   </div>
 </template>
@@ -209,28 +222,37 @@
 <style lang="scss" scoped>
 
 .main {
-  width: 90%;
-  height: 100vh;
-  @media screen and (max-width: 414px) {
-    width: 98%;
-  }
+  width: 88%;
+  height: calc(90vh - 200px);
+}
+
+header {
+  height: 10vh;
+  background: url(~@/assets/img/header_bg_p3.png);
+  background-size: cover;
 }
 .del {
   cursor: pointer;
 }
 th, td {
   width: 25vw;
-  // border-right:1px solid rgba(225, 245, 254, 0.5);
-  @media screen and (max-width: 768px) {
-    padding: 2vw 1vw !important;
-    &:nth-last-child(1) {
-      width: 2vw;
-    }
-    &:first-child {
-      width: 50vw;
-    }
-  }
 }
+$--font-size: 2rem;
+.text-table {
+  font-size: $--font-size;
+}
+.v-data-table > .v-data-table__wrapper > table > tbody > tr > td,
+.v-data-table > .v-data-table__wrapper > table > thead > tr > td,
+.v-data-table > .v-data-table__wrapper > table > tfoot > tr > td {
+  font-size: $--font-size;
+  height: 6vh;
+}
+
+.theme--light.v-data-table > .v-data-table__wrapper > table > tbody > tr:not(:last-child) > td:not(.v-data-table__mobile-row),
+.theme--light.v-data-table > .v-data-table__wrapper > table > tbody > tr:not(:last-child) > th:not(.v-data-table__mobile-row) {
+  border-bottom: 0;
+}
+
 .bgProgress {
   background: rgba(0, 172, 193, 0.7);
   position: absolute;
@@ -239,6 +261,15 @@ th, td {
 }
 button.white.v-btn.v-btn--depressed.theme--light.v-size--x-small {
   background: none !important;
+}
+
+.cube {
+  height: 30px; width: 30px;
+}
+
+.v-data-table {
+  overflow-y: scroll;
+  max-height: 68vh;
 }
 </style>
 
@@ -251,8 +282,18 @@ import { Action, Getter, Mutation } from 'vuex-class';
 import { getCookie, removeCookie, rules, setCookie } from '@/utility/utility';
 import { stockData, lunchBoxType } from '@/utility/globalData';
 import router from '@/router';
+import FintechHeader from '@/components/FintechHeader.vue';
+Vue.component('FintechHeader', FintechHeader);
 
-@Component
+
+@Component({
+  data () {
+    return {
+      headerTitle: require('@/assets/img/logo_header_left.png'),
+      headerLogo: require('@/assets/img/alpha-white.svg')
+    }
+  }
+})
 export default class InputResult extends Vue {
   @Action('delPortfolio') delPortfolio!: (params: any) => void;
   @Action('loadPortfolio') loadPortfolio!: (stock: any) => void;
@@ -351,9 +392,9 @@ export default class InputResult extends Vue {
   }
 
   // 點擊新增標的，進入InputPortfolio自動帶入標的種類
-  private autoSelect () {
-    router.push('./InputPortfolio');
-  }
+  // private autoSelect () {
+  //   router.push('./InputPortfolio');
+  // }
 
   // 刪除功能
   private del (data: any) {
