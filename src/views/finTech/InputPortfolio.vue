@@ -123,25 +123,8 @@
     </div>
 
     <!-- popup -->
-    <v-dialog v-model="addedDialog" max-width="350">
-      <v-card class="text-center white py-10 position-relative">
-        <v-icon
-          color="grey lighten-1"
-          style="position:absolute; top: 12px; right: 12px;"
-          @click="cancel" large
-        >
-          fas fa-times-circle
-        </v-icon>
-        <v-card-text class="pt-5 pb-0">
-          <p class="text-h6 font-weight-bold pa-4">
-            {{ dialogMsg }}
-          </p>
-        </v-card-text>
-        <div class="d-table mx-auto">
-          <v-img :src="decoAlpha" width="200"></v-img>
-        </div>
-      </v-card>
-    </v-dialog>
+    <FintechDialog :dialog="deleteDialog"  icon="fas fa-check-circle" dialogContent="標的已新增">
+    </FintechDialog>
   </div>
 </template>
 <style lang="scss" scoped>
@@ -239,15 +222,16 @@ button.mt-16.rounded-xl.v-btn.v-btn--outlined.theme--light.v-size--large {
 
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator';
-import { Action, Getter, Mutation } from 'vuex-class';
+import { Action, Getter } from 'vuex-class';
 import { rules } from '@/utility/utility';
 import { stockData } from '@/utility/globalData';
 
-import decoAlpha from '@/assets/img/alpha-5.png';
 import router from '@/router';
 
 import FintechHeader from '@/components/FintechHeader.vue';
+import FintechDialog from '@/components/FintechDialog.vue';
 Vue.component('FintechHeader', FintechHeader);
+Vue.component('FintechDialog', FintechDialog);
 
 
 @Component
@@ -256,10 +240,8 @@ export default class InputPortfolio extends Vue {
   @Getter('getPortfolio') getPortfolio!: any;
   @Getter('getType') getType!: any;
 
-  private decoAlpha = decoAlpha
-  private addedDialog = false;
   private show = false;
-  private dialogMsg = '';
+  private deleteDialog = false;
   private select = '台股 / ETF';
 
   private getStock = [];
@@ -318,6 +300,10 @@ export default class InputPortfolio extends Vue {
     this.$router.push('./InvestDiagnosis.html');
   }
 
+  private next () {
+    router.push('/InputResult');
+  }
+
   @Watch('stockNumber')
   private setBuyAndReserve () {
     const index = stockData(this.getType)[0].findIndex((item: any) => {
@@ -349,19 +335,12 @@ export default class InputPortfolio extends Vue {
         this.buy = '';
         this.reserve = '';
         this.classes = '';
-        this.addedDialog = true;
-        this.dialogMsg = '已新增';
+        this.deleteDialog = true;
+        setTimeout(() => {
+          this.deleteDialog = false;
+        }, 1300)
       }
     }
-  }
-
-  private next () {
-    router.push('/InputResult');
-  }
-
-  private cancel () {
-    this.addedDialog = false;
-    this.dialogMsg = '';
   }
 }
 </script>

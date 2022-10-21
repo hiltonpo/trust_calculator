@@ -311,12 +311,11 @@ $--cube-base: 3.6vw;
 
 <script lang="ts">
 
-import { forEach } from 'lodash-es';
 import { Component, Vue, Watch } from 'vue-property-decorator';
 import { Action, Getter, Mutation } from 'vuex-class';
 
-import { getCookie, removeCookie, rules, setCookie } from '@/utility/utility';
-import { stockData, lunchBoxType } from '@/utility/globalData';
+import { rules } from '@/utility/utility';
+import { stockData, lunchBoxType, resultType } from '@/utility/globalData';
 import router from '@/router';
 import { filter } from 'lodash-es';
 
@@ -341,6 +340,7 @@ export default class InputResult extends Vue {
 
   @Mutation('setType') setType!: (type: any) => void;
   @Mutation('setLunchBoxType') setLunchBoxType!: (type: any) => void;
+  @Mutation('setResultType') setResultType!: (type: any) => void;
 
   @Getter('getPortfolio') getPortfolio!: any;
   @Getter('getPortfolioStock') getPortfolioStock!: any;
@@ -386,6 +386,7 @@ export default class InputResult extends Vue {
     const portfolioAllId = this.getPortfolio.map((item: any) => {
       return item.id;
     });
+    console.log(this.getPortfolio)
     return portfolioAllId;
   }
 
@@ -397,7 +398,7 @@ export default class InputResult extends Vue {
   }
 
   private change (idRenew: any, updateMode: any) {
-    console.log(updateIndex);
+
     const stockIndex = this.getStock.findIndex((item: any) => {
       return item === idRenew;
     });
@@ -427,11 +428,6 @@ export default class InputResult extends Vue {
   private inputRule = {
     id: [rules('required'), this.checkRepeat]
   };
-
-  // 跳出刪除標的對話窗
-  private showDialog (refsName: any) {
-    this.$refs[refsName].showDialog();
-  }
 
   // 開始健檢disabled condition
   private permission () {
@@ -469,8 +465,6 @@ export default class InputResult extends Vue {
   // 關閉修改功能
   private updateDone (index: any, id: any) {
     this.nonUpdateError = false;
-    // 台股 美股 基金必須一起綁定驗證
-    // if (this.$refs.stockForm.validate() && this.$refs.fundForm.validate() && this.$refs.stockUSAForm.validate()) {
     if (this.$refs.stockForm.validate()) {
       this.$nextTick(() => {
         this.updateModeId = {
@@ -479,17 +473,18 @@ export default class InputResult extends Vue {
           id: null
         };
       });
-      // 基金的幣值需隨種類不同而更動
-      // if (this.updateModeId.type === 'fund') {
-      //   const ID = id.split(' ')[0];
-      //   this.getPortfolioFund[index].currency = this.getFundsCurrency[this.getFunds.indexOf(ID)];
-      // };
     };
-    // console.log(this.getPortfolioAll);
   }
-
+  
+  // 進行健檢 output兩個值
+  // 1. lunchBoxType得到[哪種便當盒] R1:積極型、R2:穩健型、R3:保守型
+  // 2. resultType得到[哪種報告分析圖] A1:美股、A2:yahoo、A3:基金、A4~10為自選投組 (A4:半、A5:金、A6:ETF、A7:半+金、A8:半+ETF、A9:金+ETF、A10:半+金+ETF)
   private healthCheck () {
-    console.log(lunchBoxType(this.getType, this.getClass));
+    this.setLunchBoxType(lunchBoxType(this.getType, this.getPortfolio));
+    this.setResultType(resultType(this.getType, this.getPortfolio));
+
+    console.log(lunchBoxType(this.getType, this.getPortfolio));
+    console.log(resultType(this.getType, this.getPortfolio));
   }
 
   private back () {
@@ -499,11 +494,6 @@ export default class InputResult extends Vue {
   // 確認當前修改標的
   // 在修改階段下 設定當下修改標的id 避免手賤點到其他標的按鈕
   private uniqle () {
-    // if (!this.updateModeId.id) {
-    //   return false;
-    // } else {
-    //   return true;
-    // }
     return Boolean(this.updateModeId.id);
   }
 
@@ -516,9 +506,12 @@ export default class InputResult extends Vue {
   private switchPortfoliosType () {
     this.setType(this.stockType);
     this.renderData();
-    this.loadPortfolio(stockData(this.stockType));
+    // this.loadPortfolio(stockData(this.stockType));
+    
+    if (this.getType !== 'option') {
+      this.loadPortfolio(stockData(this.stockType));
+    }
     this.targetType = filter(this.typeRoot, [ 'type', this.getType ])[0];
-
     console.log(this.getPortfolio);
     console.log(this.getPortfolioStockUSA);
   }
