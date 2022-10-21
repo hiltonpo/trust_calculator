@@ -19,16 +19,16 @@
 
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator';
-import InvestDiagnosis from '@/views/finTech/InvestDiagnosis.vue'
-import InputPortfolio from '@/views/finTech/InputPortfolio.vue'
-import InputResult from '@/views/finTech/InputResult.vue'
+import InvestDiagnosis from '@/views/finTech/InvestDiagnosis.vue';
+import InputPortfolio from '@/views/finTech/InputPortfolio.vue';
+import InputResult from '@/views/finTech/InputResult.vue';
 import ChoosePortfolio from '@/views/finTech/ChoosePortfolio.vue';
 import { findKey } from 'lodash-es';
 
-Vue.component('InvestDiagnosis', InvestDiagnosis)
-Vue.component('InputPortfolio', InputPortfolio)
-Vue.component('InputResult', InputResult)
-Vue.component('ChoosePortfolio', ChoosePortfolio)
+Vue.component('InvestDiagnosis', InvestDiagnosis);
+Vue.component('InputPortfolio', InputPortfolio);
+Vue.component('InputResult', InputResult);
+Vue.component('ChoosePortfolio', ChoosePortfolio);
 
 @Component
 export default class App extends Vue {
@@ -46,7 +46,7 @@ export default class App extends Vue {
 
     @Watch('$route.name')
     private changeComponent () {
-      this.key = Number(findKey(this.routes, (item: any) =>  item === this.$route.name)) || 0;
+      this.key = Number(findKey(this.routes, (item: any) => item === this.$route.name)) || 0;
     }
 }
 </script>

@@ -7,35 +7,35 @@
     <div class="text-center" style="margin-top: 60px">
       <h2 class="font-weight-bold maintitle">
         投資標的輸入
-        <p class="maintitle-2">展覽僅開放體驗 
-          <span class="maintitle-3">台股/ETF</span> 
+        <p class="maintitle-2">展覽僅開放體驗
+          <span class="maintitle-3">台股/ETF</span>
           版部分標的 <br> 完整功能可至官網使用
         </p>
       </h2>
     </div>
-    <div class="input-field">
+    <div class="input-field" style="width:80%; margin: 0 auto">
       <div>
-        <v-form ref="stockForm" style="width:90%; margin: 0 auto">
+        <v-form ref="stockForm">
           <v-row class="justify-center">
             <v-text-field
               class="kind rounded-pill"
               background-color="white"
-              color="cyan" item-color="cyan"
+              color="deep-purple" item-color="cyan"
               outlined
               disabled
               filled
-              height="164"
+              height="150"
               v-model="select"
             ></v-text-field>
             <v-col cols="12" class="pa-0">
-              <p class="subtitle my-6">股票代號</p>
+              <p class="subtitle">股票代號</p>
               <v-autocomplete
                 class="stock rounded-pill"
                 background-color="white"
-                color="cyan" item-color="cyan"
+                color="deep-purple" item-color="deep-purple"
                 outlined filled rounded
                 placeholder="ex. 2330 台積電"
-                height="164"
+                height="150"
                 v-model="stockNumber"
                 :rules="stockNumber ? inputRule.id : [false]"
                 :menu-props="{ maxHeight: 430 }"
@@ -44,66 +44,68 @@
 
             </v-col>
             <v-col cols="12" class="pa-0">
-              <p class="subtitle mt-6 mb-8">買進成本</p>
+              <p class="subtitle mb-8">買進成本</p>
               <v-text-field
                 class="buy rounded-pill"
                 background-color="white"
-                color="black" item-color="cyan"
-                outlined 
+                color="black" item-color="deep-purple"
+                outlined
                 filled
-                dense 
-                height="164"
+                dense
+                height="150"
                 :disabled="true"
                 :prefix="buy ? '$' : ''"
                 v-model="buy">
               </v-text-field>
             </v-col>
             <v-col cols="12" class="pa-0">
-              <p class="subtitle mt-6 mb-8">持有股數</p>
+              <p class="subtitle mb-8">持有股數</p>
               <v-text-field
                 class="reserve rounded-pill"
                 background-color="white"
-                color="success" item-color="cyan"
-                outlined 
-                filled 
+                color="success" item-color="deep-purple"
+                outlined
+                filled
                 rounded
-                height="164"
+                height="150"
                 :disabled="true"
                 v-model="reserve">
               </v-text-field>
             </v-col>
           </v-row>
         </v-form>
-        <div class="d-flex justify-center">
+        <div class="d-flex justify-center" style="margin: 0 -8px">
           <v-btn
             class="my-12 rounded-xl addText"
-            width="90%"
+            width="100%"
             height="5vh"
             :style="addAble() ? {border: '3px solid #7166F9', background:'#E7E5FF'} : ''"
             large
             depressed
             :disabled="!addAble()"
             @click="addStock">
-            <span class="text-h3 font-weight-bold">新增標的</span> 
+            <span class="text-h3 font-weight-bold">新增標的</span>
           </v-btn>
         </div>
       </div>
-      <div class="d-flex justify-center" style="width:90%; margin:0 auto">
+      <div class="d-flex justify-center">
         <v-divider class="mb-16"></v-divider>
       </div>
-      <div class="d-flex justify-center">
-        <v-btn
-          class="mt-2 rounded-xl ma-6"
-          color="#7166F9"
-          style="border: 3px solid #7166F9"
-          width="34%"
-          height="5vh"
-          large
-          depressed
-          outlined
-          :loading="show">
-          <span class="text-h3 font-weight-bold">返回</span>
-        </v-btn>
+      <div class="d-flex justify-center mb-10">
+          <v-btn
+            class="mt-2 rounded-xl ma-6"
+            color="#7166F9"
+            style="border: 3px solid #7166F9"
+            width="34%"
+            height="5vh"
+            large
+            depressed
+            outlined
+            :loading="show"
+            @click="toChoosePortfolio">
+            <span class="text-h3 font-weight-bold">返回</span>
+          </v-btn>
+
         <v-btn
           class="mt-2 rounded-xl ma-6 white--text"
           color="#7166F9"
@@ -153,9 +155,9 @@ $rounded: (
       margin-top:32px;
     }
     &-3 {
-      
-      background:#7166F9; 
-      color:#FFFFFF; 
+
+      background:#7166F9;
+      color:#FFFFFF;
       padding:0px 13px 5px 14px;
       border-radius: 10px;
     }
@@ -172,7 +174,7 @@ $rounded: (
   font-size: 40px;
   max-height: 100px;
   margin-left: 85px;
-  color: #4E4E4E !important;   
+  color: #4E4E4E !important;
 }
 
 ::v-deep .v-input.buy input {
@@ -234,7 +236,6 @@ import FintechDialog from '@/components/FintechDialog.vue';
 Vue.component('FintechHeader', FintechHeader);
 Vue.component('FintechDialog', FintechDialog);
 
-
 @Component
 export default class InputPortfolio extends Vue {
   @Action('loadPortfolio') loadPortfolio!: (stock: any) => void;
@@ -294,7 +295,7 @@ export default class InputPortfolio extends Vue {
   // 先行在created渲染，否則抓不到資料
   private created () {
     this.renderData();
-    this.addAble()
+    this.addAble();
   }
 
   private back () {
@@ -306,7 +307,7 @@ export default class InputPortfolio extends Vue {
   }
 
   @Watch('stockNumber')
-  private addAble() {
+  private addAble () {
     return this.inputRule.id[0](this.stockNumber) === true && this.inputRule.id[1](this.stockNumber) === true;
   }
 
@@ -344,9 +345,13 @@ export default class InputPortfolio extends Vue {
         this.deleteDialog = true;
         setTimeout(() => {
           this.deleteDialog = false;
-        }, 1300)
+        }, 1300);
       }
     }
+  }
+
+  private toChoosePortfolio () {
+    this.$router.push('/ChoosePortfolio');
   }
 }
 </script>

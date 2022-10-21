@@ -29,16 +29,16 @@ const optionList = [
 ];
 // yahoo投組
 const yahooList = [
-  { id: '00878 國泰永續高股息', buy: '15.8', reserve: '10100', type: 'stock' },
-  { id: '0050 元大台50', buy: '101.3', reserve: '1500', type: 'stock' },
-  { id: '0056 元大高股息', buy: '25.89', reserve: '5400', type: 'stock' },
+  { id: '0050 元大台50', buy: '101.3', reserve: '800', type: 'stock' },
+  { id: '0056 元大高股息', buy: '25.89', reserve: '3900', type: 'stock' },
+  { id: '00878 國泰永續高股息', buy: '15.8', reserve: '7700', type: 'stock' },
+  { id: '00881 國泰台灣5G+', buy: '12.76', reserve: '4600', type: 'stock' },
+  { id: '2002 中鋼', buy: '26.9', reserve: '3000', type: 'stock' },
+  { id: '2303 聯華電', buy: '39.3', reserve: '1900', type: 'stock' },
+  { id: '2317 鴻海', buy: '105', reserve: '800', type: 'stock' },
   { id: '2330 台積電', buy: '411.5', reserve: '300', type: 'stock' },
-  { id: '2002 中鋼', buy: '26.9', reserve: '3700', type: 'stock' },
-  { id: '2886 兆豐金', buy: '29.8', reserve: '2700', type: 'stock' },
-  { id: '2812 台中商銀', buy: '12.85', reserve: '5400', type: 'stock' },
-  { id: '3231 緯創', buy: '26.55', reserve: '2600', type: 'stock' },
-  { id: '00881 國泰5G+', buy: '12.76', reserve: '5500', type: 'stock' },
-  { id: '2317 鴻海', buy: '105', reserve: '700', type: 'stock' }
+  { id: '2881 富邦金', buy: '49.65', reserve: '1200', type: 'stock' },
+  { id: '2884 玉山金', buy: '23', reserve: '2700', type: 'stock' }
 ];
 // 基金投組
 const fundList = [
@@ -62,8 +62,8 @@ const USList = [
   { id: 'QQQ', buy: '268.82', reserve: '37', type: 'USAstock' },
   { id: 'MSFT', buy: '234.24', reserve: '43', type: 'USAstock' },
   { id: 'BA', buy: '132.4', reserve: '76', type: 'USAstock' },
-  { id: 'DIS', buy: '96.64', reserve: '103', type: 'USAstock' },
-  
+  { id: 'DIS', buy: '96.64', reserve: '103', type: 'USAstock' }
+
 ];
 
 // 處理資料，將投組按屬性整理成陣列
@@ -147,10 +147,10 @@ export function optionResultType (rowClassData: any) {
     return cur.concat(classes);
   }, []);
   const classAllSet = new Set(classAll);
-  
+
   // A4: 半
   if (classAllSet.has('半導體') && !classAllSet.has('金融') && !classAllSet.has('ETF')) {
-    return 'A4'
+    return 'A4';
   // A5: 金
   } else if (!classAllSet.has('半導體') && classAllSet.has('金融') && !classAllSet.has('ETF')) {
     return 'A5';
@@ -188,7 +188,7 @@ export function lunchBoxType (type: any, rowData: any) {
   }
 }
 
-// 其他三種投組所分配的結果 
+// 其他三種投組所分配的結果
 // A1:美股、A2:yahoo、A3:基金、A4~10為自選投組
 export function resultType (type: any, rowData: any) {
   if (type === 'US') {
