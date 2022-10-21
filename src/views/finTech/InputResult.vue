@@ -299,6 +299,14 @@ $--cube-base: 3.6vw;
 ::v-deep .theme--light.v-data-table > .v-data-table__wrapper > table > tbody > tr:hover:not(.v-data-table__expanded__content):not(.v-data-table__empty-wrapper) {
   background: unset;
 }
+
+::v-deep .v-list-item__title {
+  font-size: 2rem;
+  font-weight: bold;
+}
+::v-deep .v-list-item__content {
+  padding: 30px 0;
+}
 </style>
 
 <script lang="ts">
@@ -314,6 +322,7 @@ import { filter } from 'lodash-es';
 
 import FintechHeader from '@/components/FintechHeader.vue';
 import FintechDialog from '@/components/FintechDialog.vue';
+
 Vue.component('FintechHeader', FintechHeader);
 Vue.component('FintechDialog', FintechDialog);
 
@@ -388,6 +397,7 @@ export default class InputResult extends Vue {
   }
 
   private change (idRenew: any, updateMode: any) {
+    console.log(updateIndex);
     const stockIndex = this.getStock.findIndex((item: any) => {
       return item === idRenew;
     });
@@ -460,7 +470,8 @@ export default class InputResult extends Vue {
   private updateDone (index: any, id: any) {
     this.nonUpdateError = false;
     // 台股 美股 基金必須一起綁定驗證
-    if (this.$refs.stockForm.validate() && this.$refs.fundForm.validate() && this.$refs.stockUSAForm.validate()) {
+    // if (this.$refs.stockForm.validate() && this.$refs.fundForm.validate() && this.$refs.stockUSAForm.validate()) {
+    if (this.$refs.stockForm.validate()) {
       this.$nextTick(() => {
         this.updateModeId = {
           index: null,
@@ -469,10 +480,10 @@ export default class InputResult extends Vue {
         };
       });
       // 基金的幣值需隨種類不同而更動
-      if (this.updateModeId.type === 'fund') {
-        const ID = id.split(' ')[0];
-        this.getPortfolioFund[index].currency = this.getFundsCurrency[this.getFunds.indexOf(ID)];
-      };
+      // if (this.updateModeId.type === 'fund') {
+      //   const ID = id.split(' ')[0];
+      //   this.getPortfolioFund[index].currency = this.getFundsCurrency[this.getFunds.indexOf(ID)];
+      // };
     };
     // console.log(this.getPortfolioAll);
   }
