@@ -1,11 +1,4 @@
 <template>
-<<<<<<< HEAD
-    <v-app>
-        <!-- <InvestDiagnosis v-if="key === 0"></InvestDiagnosis> -->
-        <InvestDiagnosis></InvestDiagnosis>
-        <!-- <InputPortfolio v-if="key === 1"></InputPortfolio> -->
-        <!-- <InputResult v-if="key === 2"></InputResult> -->
-=======
     <v-app class="main">
       <transition name="fade" mode="out-in">
         <!-- <InvestDiagnosis v-if="key === 0"></InvestDiagnosis>
@@ -14,7 +7,6 @@
         <InputResult v-if="key === 3"></InputResult> -->
         <component :is="routes[key]"></component>
       </transition>
->>>>>>> 1e9b10fadb466305d7755f7c0ab00f4bf5dbda94
     </v-app>
 </template>
 
