@@ -26,7 +26,7 @@
 }
 
 .v-dialog__content {
-  align-items: flex-start;
+  // align-items: flex-start;
   padding: 8.8vh 0;
 }
 
