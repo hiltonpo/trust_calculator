@@ -1,8 +1,9 @@
 <template>
     <v-app>
-        <InvestDiagnosis v-if="key === 0"></InvestDiagnosis>
-        <InputPortfolio v-if="key === 1"></InputPortfolio>
-        <InputResult v-if="key === 2"></InputResult>
+        <!-- <InvestDiagnosis v-if="key === 0"></InvestDiagnosis> -->
+        <InvestDiagnosis></InvestDiagnosis>
+        <!-- <InputPortfolio v-if="key === 1"></InputPortfolio> -->
+        <!-- <InputResult v-if="key === 2"></InputResult> -->
     </v-app>
 </template>
 
