@@ -35,11 +35,10 @@
                 color="cyan" item-color="cyan"
                 outlined filled rounded
                 placeholder="ex. 2330 台積電"
-                validate-on-blur
                 height="164"
                 v-model="stockNumber"
-                :rules="inputRule.id"
-                :menu-props="{ maxHeight: 600 }"
+                :rules="stockNumber ? inputRule.id: [false]"
+                :menu-props="{ maxHeight: 430 }"
                 :items="getStock">
               </v-autocomplete>
 
@@ -53,7 +52,6 @@
                 outlined 
                 filled
                 dense 
-                validate-on-blur
                 height="164"
                 :disabled="true"
                 :prefix="buy ? '$' : ''"
@@ -69,7 +67,6 @@
                 outlined 
                 filled 
                 rounded
-                validate-on-blur
                 height="164"
                 :disabled="true"
                 v-model="reserve">
@@ -77,16 +74,15 @@
             </v-col>
           </v-row>
         </v-form>
-        <div class="d-flex justify-center">
+        <div class="d-flex justify-center" >
           <v-btn
-            class="my-12 rounded-xl"
-            color="#7166F9"
-            outlined
+            class="my-12 rounded-xl addText"
             width="90%"
             height="5vh"
-            style="border: 3px solid #7166F9; background:#E7E5FF"
+            :style="addAble() ? {border: '3px solid #7166F9', background:'#E7E5FF'}: ''"
             large
             depressed
+            :disabled="!addAble()"
             @click="addStock">
             <span class="text-h3 font-weight-bold">新增標的</span> 
           </v-btn>
@@ -138,6 +134,10 @@ $rounded: (
   'circle': 50%
 );
 
+.addText {
+  color: #7166F9;
+}
+
 .main {
   @media screen and (max-width: 414px) {
     width: 95%;
@@ -169,7 +169,7 @@ $rounded: (
 
 ::v-deep .v-input input {
   font-weight: 700;
-  font-size: 35px;
+  font-size: 40px;
   max-height: 100px;
   margin-left: 85px;
   color: #4E4E4E !important;   
@@ -180,7 +180,8 @@ $rounded: (
 }
 ::v-deep .buy.v-input--is-label-active .v-text-field__prefix {
   display: block;
-  font-size: 35px;
+  color: black !important;
+  font-size: 40px;
   margin-left: 85px;
 }
 
@@ -293,7 +294,7 @@ export default class InputPortfolio extends Vue {
   // 先行在created渲染，否則抓不到資料
   private created () {
     this.renderData();
-    console.log(this.getStock)
+    this.addAble()
   }
 
   private back () {
@@ -302,6 +303,11 @@ export default class InputPortfolio extends Vue {
 
   private next () {
     router.push('/InputResult');
+  }
+
+  @Watch('stockNumber')
+  private addAble () {
+    return this.inputRule.id[0](this.stockNumber) === true && this.inputRule.id[1](this.stockNumber) === true
   }
 
   @Watch('stockNumber')
@@ -321,6 +327,7 @@ export default class InputPortfolio extends Vue {
   //  */
   private addStock () {
     const form: any = this.$refs.stockForm;
+    console.log(form.validate())
     if (form.validate()) {
       if (this.getType === 'option') {
         this.loadPortfolio({
@@ -336,9 +343,9 @@ export default class InputPortfolio extends Vue {
         this.reserve = '';
         this.classes = '';
         this.deleteDialog = true;
-        setTimeout(() => {
-          this.deleteDialog = false;
-        }, 1300)
+        // setTimeout(() => {
+        //   this.deleteDialog = false;
+        // }, 1300)
       }
     }
   }
