@@ -3,6 +3,7 @@ import VueRouter, { RouteConfig } from 'vue-router';
 import { pathToRegexp, match, parse, compile } from 'path-to-regexp';
 import InputPortfolio from '@/views/finTech/InputPortfolio.vue';
 import InputResult from '@/views/finTech/InputResult.vue';
+import ChoosePortfolio from '@/views/finTech/ChoosePortfolio.vue';
 
 
 Vue.use(VueRouter);
@@ -20,6 +21,13 @@ const routes: Array<RouteConfig> = [
     name: 'InputResult',
     components: {
       InputResult
+    }
+  },
+  {
+    path: '/ChoosePortfolio',
+    name: 'ChoosePortfolio',
+    components: {
+      ChoosePortfolio
     }
   },
 ];

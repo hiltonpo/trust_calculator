@@ -3,7 +3,7 @@ import { clone, cloneDeep, filter, forEach, map, remove } from 'lodash-es';
 export default
 {
   state: {
-    type: 'option',
+    type: '',
     portfolioAll:[],
   },
   mutations: {

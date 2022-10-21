@@ -1,8 +1,9 @@
 <template>
     <v-app>
         <!-- <InvestDiagnosis></InvestDiagnosis> -->
-        <InputPortfolio v-if="key === 1"></InputPortfolio>
-        <InputResult v-if="key === 2"></InputResult>
+        <!-- <InputPortfolio v-if="key === 1"></InputPortfolio>
+        <InputResult v-if="key === 2"></InputResult> -->
+        <ChoosePortfolio></ChoosePortfolio>
     </v-app>
 </template>
 
@@ -15,10 +16,12 @@ import { Component, Vue, Watch } from 'vue-property-decorator';
 import InvestDiagnosis from '@/views/finTech/InvestDiagnosis.vue'
 import InputPortfolio from '@/views/finTech/InputPortfolio.vue'
 import InputResult from '@/views/finTech/InputResult.vue'
+import ChoosePortfolio from '@/views/finTech/ChoosePortfolio.vue';
 
 Vue.component('InvestDiagnosis', InvestDiagnosis)
 Vue.component('InputPortfolio', InputPortfolio)
 Vue.component('InputResult', InputResult)
+Vue.component('ChoosePortfolio', ChoosePortfolio)
 
 @Component
 export default class App extends Vue {
