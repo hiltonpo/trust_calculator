@@ -1,13 +1,18 @@
 <template>
-    <v-app>
-        <!-- <InvestDiagnosis></InvestDiagnosis> -->
-        <!-- <InputPortfolio v-if="key === 1"></InputPortfolio>
-        <InputResult v-if="key === 2"></InputResult> -->
-        <ChoosePortfolio></ChoosePortfolio>
+    <v-app class="main">
+      <transition name="fade" mode="out-in">
+        <InvestDiagnosis v-if="key === 0"></InvestDiagnosis>
+        <InputPortfolio v-if="key === 1"></InputPortfolio>
+        <InputResult v-if="key === 2"></InputResult>
+      </transition>
+      <ChoosePortfolio></ChoosePortfolio>
     </v-app>
 </template>
 
 <style lang="scss" scoped>
+.main {
+  background: #F9F8F8;;
+}
 
 </style>
 
@@ -25,20 +30,19 @@ Vue.component('ChoosePortfolio', ChoosePortfolio)
 
 @Component
 export default class App extends Vue {
+    private key = 2
 
-    private key = 0
-
-    private created() {
-        this.changeComponent();
+    private created () {
+      this.changeComponent();
     }
 
     @Watch('$route.name')
-    private changeComponent() {
-        if (this.$route.name === 'InputPortfolio') {
-            this.key = 1;
-        } else if (this.$route.name === 'InputResult') {
-            this.key = 2
-        }
+    private changeComponent () {
+      if (this.$route.name === 'InputPortfolio') {
+        this.key = 1;
+      } else if (this.$route.name === 'InputResult') {
+        this.key = 2;
+      }
     }
 }
 </script>
