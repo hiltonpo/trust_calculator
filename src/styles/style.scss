@@ -56,3 +56,26 @@ span.chip {
 .v-btn {
   text-transform: capitalize !important;
 }
+
+@for $i from 1 through 10 {
+  .w-#{$i*10} {
+    width: calc(10%*#{$i}) !important;
+  }
+  
+  .h-#{$i*10} {
+    height: calc(10%*#{$i});
+  }
+}
+
+.v-application .overwrite.border {
+  &-cyan {
+    border: 3px solid #00BCD4 !important;
+  }
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+}

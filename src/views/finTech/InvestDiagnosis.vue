@@ -52,16 +52,22 @@
       <!-- 拯救你的投資組合 -->
       <figure class="d-flex justify-center position-relative">
         <img class=" home-phone" :src="imghp" alt="投資健檢"/>
-        <div class="login-box nextStep position-absolute">
-          <a class=" pulsing ">
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
+        <router-link to="/ChoosePortfolio">
+          <!-- <v-btn class="nextStep">
             立即體驗
-          </a>
-        </div>
+          </v-btn> -->
+          <div class="login-box nextStep position-absolute">
+            <a class=" pulsing ">
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+              立即體驗
+            </a>
+          </div>
+        </router-link>
       </figure>
+
     </article>
   </v-app>
 </template>
