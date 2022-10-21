@@ -2,10 +2,10 @@
     <v-app class="main">
       <transition name="fade" mode="out-in">
         <InvestDiagnosis v-if="key === 0"></InvestDiagnosis>
-        <InputPortfolio v-if="key === 1"></InputPortfolio>
-        <InputResult v-if="key === 2"></InputResult>
+        <ChoosePortfolio v-if="key === 1"></ChoosePortfolio>
+        <InputPortfolio v-if="key === 2"></InputPortfolio>
+        <InputResult v-if="key === 3"></InputResult>
       </transition>
-      <ChoosePortfolio></ChoosePortfolio>
     </v-app>
 </template>
 
@@ -22,6 +22,7 @@ import InvestDiagnosis from '@/views/finTech/InvestDiagnosis.vue'
 import InputPortfolio from '@/views/finTech/InputPortfolio.vue'
 import InputResult from '@/views/finTech/InputResult.vue'
 import ChoosePortfolio from '@/views/finTech/ChoosePortfolio.vue';
+import { findKey } from 'lodash-es';
 
 Vue.component('InvestDiagnosis', InvestDiagnosis)
 Vue.component('InputPortfolio', InputPortfolio)
@@ -30,7 +31,13 @@ Vue.component('ChoosePortfolio', ChoosePortfolio)
 
 @Component
 export default class App extends Vue {
-    private key = 2
+    private key = 0;
+    private routes = {
+      0: 'InvestDiagnosis',
+      1: 'ChoosePortfolio',
+      2: 'InputPortfolio',
+      3: 'InputResult'
+    }
 
     private created () {
       this.changeComponent();
@@ -38,11 +45,7 @@ export default class App extends Vue {
 
     @Watch('$route.name')
     private changeComponent () {
-      if (this.$route.name === 'InputPortfolio') {
-        this.key = 1;
-      } else if (this.$route.name === 'InputResult') {
-        this.key = 2;
-      }
+      this.key = Number(findKey(this.routes, (item: any) =>  item === this.$route.name)) || 0;
     }
 }
 </script>
