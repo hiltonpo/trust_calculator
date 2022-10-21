@@ -19,9 +19,12 @@
       <figure class="d-flex justify-center">
         <img class=" home-phone" :src="imghp" alt="投資健檢"/>
       </figure>
-      <v-btn class="nextStep">
-        立即體驗
-      </v-btn>
+      <router-link to="/ChoosePortfolio">
+        <v-btn class="nextStep">
+          立即體驗
+        </v-btn>
+      </router-link>
+
     </article>
   </v-app>
 </template>

@@ -112,18 +112,25 @@ import { forEach } from "lodash-es";
 import { Component, Vue, Watch } from "vue-property-decorator";
 import { Action, Getter, Mutation } from "vuex-class";
 import { getCookie, removeCookie, rules, setCookie } from "@/utility/utility";
-import { stockData, optionHealthCheck } from "@/utility/globalData";
+import { stockData } from "@/utility/globalData";
 import router from "@/router";
 
 @Component
 export default class ChoosePortfolio extends Vue {
+  @Mutation('setType') setType!: (type: any) => void;
   private CommitSettype(type: string){
-    this.$store.commit('setType', type);
+    // this.$store.commit('setType', type);
+    this.setType(type);
+    if (type === 'option') {
+      this.$router.push('/InputPortfolio');
+    } else {
+      this.$router.push('/InputResult');
+    }
   }
 
   public clickYahoo(){
     this.CommitSettype('yahoo');
-    console.log(this.$store.getters.getType);
+    // console.log(this.$store.getters.getType);
   }
 
   public clickFund(){

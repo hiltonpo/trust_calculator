@@ -1,10 +1,11 @@
 <template>
     <v-app class="main">
       <transition name="fade" mode="out-in">
-        <InvestDiagnosis v-if="key === 0"></InvestDiagnosis>
+        <!-- <InvestDiagnosis v-if="key === 0"></InvestDiagnosis>
         <ChoosePortfolio v-if="key === 1"></ChoosePortfolio>
         <InputPortfolio v-if="key === 2"></InputPortfolio>
-        <InputResult v-if="key === 3"></InputResult>
+        <InputResult v-if="key === 3"></InputResult> -->
+        <component :is="routes[key]"></component>
       </transition>
     </v-app>
 </template>

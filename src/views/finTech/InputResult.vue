@@ -116,7 +116,7 @@
                 </v-btn> -->
               </template>
             </v-simple-table>
-            <div class="w-100 light-blue lighten-5 pa-10 pt-0">
+            <div v-if="getType === 'option'" class="w-100 light-blue lighten-5 pa-10 pt-0">
               <router-link to="/InputPortfolio">
                 <v-btn class="white text-h4 font-weight-bold overwrite border-cyan d-block"
                   color="cyan" height="4.5vh" width="100%" rounded outlined x-large>
@@ -349,7 +349,6 @@ export default class InputResult extends Vue {
   @Getter('getPortfolioLength') getPortfolioLength!: any;
   @Getter('getType') getType!: any;
 
-  private stockType = '';
   private AnalysisState = false;
   private nonUpdateError = false;
   private show = false;
@@ -448,7 +447,7 @@ export default class InputResult extends Vue {
     this.delPortfolio(data);
     this.deleteDialog = true;
     setTimeout(() => {
-      // this.deleteDialog = false;
+      this.deleteDialog = false;
     }, 1300)
   }
 
@@ -483,12 +482,16 @@ export default class InputResult extends Vue {
     this.setLunchBoxType(lunchBoxType(this.getType, this.getPortfolio));
     this.setResultType(resultType(this.getType, this.getPortfolio));
 
-    console.log(lunchBoxType(this.getType, this.getPortfolio));
-    console.log(resultType(this.getType, this.getPortfolio));
+    // console.log(lunchBoxType(this.getType, this.getPortfolio));
+    // console.log(resultType(this.getType, this.getPortfolio));
   }
 
   private back () {
-    router.push('./InputPortfolio');
+    if (this.getType === 'option') {
+      this.$router.push('/InputPortfolio');
+    } else {
+      this.$router.push('/ChoosePortfolio');
+    }
   }
 
   // 確認當前修改標的
@@ -498,18 +501,15 @@ export default class InputResult extends Vue {
   }
 
   private created () {
-    this.stockType = 'option';
     this.switchPortfoliosType();
   }
 
-  @Watch('stockType')
+  @Watch('getType')
   private switchPortfoliosType () {
-    this.setType(this.stockType);
     this.renderData();
-    // this.loadPortfolio(stockData(this.stockType));
     
     if (this.getType !== 'option') {
-      this.loadPortfolio(stockData(this.stockType));
+      this.loadPortfolio(stockData(this.getType));
     }
     this.targetType = filter(this.typeRoot, [ 'type', this.getType ])[0];
     console.log(this.getPortfolio);
