@@ -3,13 +3,8 @@
     <article class="bg-home position-relative">
       <div class="home-liquid position-absolute"></div>
       <!-- 阿爾發LOGO -->
-<<<<<<< HEAD
       <figure  data-aos="zoom-in-down" data-aos-duration="1500" class="d-flex justify-center mt-10">
         <img class=" home-logo" :src="imgCl" alt="投資健檢"/>
-=======
-      <figure class="d-flex justify-center mt-10">
-        <img class="home-logo" :src="imgCl" alt="投資健檢"/>
->>>>>>> a0d6c5304b48451ad0ef73aa8b5746fec06cbe99
       </figure>
       <!-- 拯救你的投資組合 -->
       <figure class="position-relative d-flex justify-center mt-10">
@@ -101,7 +96,7 @@
   &-liquid {
     width: 100%;
     height: 100%;
-    background: linear-gradient(-45deg, #3A007C, #4c1d56, #9822c3, #00009C);
+    background: linear-gradient(-45deg, #3A007C, #7a2b8b69, #9822c3, #00009C);
     background-size: 400% 400%;
     animation: gradient 2s ease infinite;
     opacity: 0.5;
