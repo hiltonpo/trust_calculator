@@ -51,7 +51,7 @@
       </div>
       <!-- 拯救你的投資組合 -->
       <figure class="d-flex justify-center position-relative">
-        <img class=" home-phone" :src="imghp" alt="投資健檢"/>
+        <img class="home-phone" :src="imghp" alt="投資健檢"/>
         <router-link to="/ChoosePortfolio">
           <!-- <v-btn class="nextStep">
             立即體驗
@@ -73,6 +73,11 @@
 </template>
 
 <style lang="scss" scoped>
+::v-deep {
+  --move-height: -10px;
+  --move-speed: 1.5s;
+}
+
 @import url(~@/styles/fintech.scss);
 .bg-home {
   max-width: 1080px;
@@ -93,6 +98,7 @@
   }
   &-phone {
     width: 70%;
+    transform: translateX(1vw);
   }
 }
 

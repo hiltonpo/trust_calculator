@@ -1,17 +1,18 @@
+
 .avatar {
-    overflow: hidden;
-    transform: translatey(0px);
-    animation: float 1.5s ease-in-out infinite;
+  overflow: hidden;
+  transform: translateY(0px);
+  animation: float var(--move-speed) ease-in-out infinite;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0px);
   }
-  
-  @keyframes float {
-    0% {
-      transform: translatey(0px);
-    }
-    50% {
-      transform: translatey(-6px) ;
-    }
-    100% {
-      transform: translatey(0px);
-    }
+  50% {
+    transform: translateY(var(--move-height)) ;
   }
+  100% {
+    transform: translateY(0px);
+  }
+}

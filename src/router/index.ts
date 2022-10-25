@@ -4,8 +4,8 @@ import { pathToRegexp, match, parse, compile } from 'path-to-regexp';
 import InputPortfolio from '@/views/finTech/InputPortfolio.vue';
 import InputResult from '@/views/finTech/InputResult.vue';
 import ChoosePortfolio from '@/views/finTech/ChoosePortfolio.vue';
-
 import InvestDiagnosis from '@/views/finTech/InvestDiagnosis.vue';
+import Report from '@/views/finTech/Report.vue';
 
 Vue.use(VueRouter);
 
@@ -36,6 +36,13 @@ const routes: Array<RouteConfig> = [
     name: 'InvestDiagnosis',
     components: {
       InvestDiagnosis
+    }
+  },
+  {
+    path: '/Report',
+    name: 'Report',
+    components: {
+      Report
     }
   }
 ];

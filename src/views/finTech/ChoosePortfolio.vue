@@ -8,7 +8,8 @@
     <div class="main">
       <div class="main__title white--text">選擇要健檢的投資組合</div>
       <div class="btnGroup d-flex flex-wrap justify-center">
-        <div v-for="(button, index) in buttons" :key="index" :class="[ shineIndex === index ? 'active' : '' ]"
+        <div v-for="(button, index) in typeRoot" :key="index"
+          :class="[ shineIndex === index ? `active`: ``]"
           class="btnGroup__btn d-flex flex-column justify-center align-center" tabindex="0" @click="clickType(button.type), shineIndex = index">
           <v-img :src="button.img" max-height="220" contain/>
           <div class="d-flex flex-column align-center mt-5">
@@ -30,6 +31,10 @@
 </template>
 
 <style lang="scss" scoped>
+::v-deep {
+  --move-height: -5px;
+  --move-speed: .8s;
+}
 @import url(~@/styles/fintech.scss);
 .app {
   height: 100%;
@@ -102,8 +107,7 @@
 import { forEach, findKey } from 'lodash-es';
 import { Component, Vue, Watch } from 'vue-property-decorator';
 import { Action, Getter, Mutation } from 'vuex-class';
-import { getCookie, removeCookie, rules, setCookie } from '@/utility/utility';
-import { stockData } from '@/utility/globalData';
+import { typeRoot } from '@/utility/globalData';
 import router from '@/router';
 import imgYahoo from '@/assets/img/finTech/tw.png';
 import imgFund from '@/assets/img/finTech/fund.png';
@@ -122,12 +126,7 @@ export default class ChoosePortfolio extends Vue {
   private shineIndex = 0;
   private counter: any = null;
 
-  private buttons = [
-    { title: 'Yahoo 股市熱門', summary: '台股組合', img: this.imgYahoo, type: 'yahoo' },
-    { title: '台灣人最愛', summary: '基金組合', img: this.imgFund, type: 'fund' },
-    { title: '精選外國標的', summary: '美股組合', img: this.imgUS, type: 'US' },
-    { title: '我有自己想法', summary: '體驗自選組合', img: this.imgOption, type: 'option' }
-  ];
+  private typeRoot = typeRoot;
 
   private created () {
     this.shineIndex = this.getIndex(this.getType || 0);
@@ -135,7 +134,7 @@ export default class ChoosePortfolio extends Vue {
 
   private mounted () {
     this.counter = setInterval(() => {
-      this.shineIndex < (this.buttons.length - 1) ? this.shineIndex++ : this.shineIndex = 0;
+      this.shineIndex < (this.typeRoot.length - 1) ? this.shineIndex++ : this.shineIndex = 0;
     }, 1300);
   }
 

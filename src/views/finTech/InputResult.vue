@@ -18,33 +18,32 @@
       <nav>
         <v-row class="ma-0 text-center" style="border-bottom: 2px solid black;">
           <v-col
-            class="text-h4 font-weight-bold px-0 py-5 white--text" :class="targetType.color">
-            {{ targetType.title }}
+            class="text-h4 font-weight-medium px-0 py-5 white--text" :class="targetType.color">
+            <span class="portfolio-title d-block">{{ targetType.title }}{{ targetType.summary }}</span>
           </v-col>
 
-          <v-col class="text-table font-weight-bold d-flex align-center justify-end" cols="3">
+          <v-col class="text-table font-weight-bold d-flex align-center justify-end" :class="[ getType === 'fund' ? `justify-center` : `justify-end` ]" cols="3">
             <span v-if="getType === 'yahoo' || getType === 'option'">成本／新台幣</span>
             <span v-if="getType === 'fund'">成本</span>
             <span v-if="getType === 'US'">成本／美元</span>
           </v-col>
-          <v-col class="text-table font-weight-bold d-flex align-center justify-end px-8" cols="2">
+          <v-col class="text-table font-weight-bold d-flex align-center px-8" cols="2">
             股數
           </v-col>
           <v-col v-if="getType === 'option'" cols="1"></v-col>
         </v-row>
       </nav>
-      <!-- 台股表 Yahoo / 自選 -->
-      <div v-if="getType === 'yahoo' || getType === 'option'">
+      <div>
         <div>
-          <v-form ref="stockForm">
+          <v-form ref="stockForm" :class="[ getType === 'option'? 'option' : '' ]">
             <v-simple-table dense class="pa-5"
-              :class="[ getType === 'yahoo' ? 'pink lighten-5' : 'light-blue lighten-5' ]">
+              :class="targetType.bg">
               <template v-slot:default>
                 <tbody>
-                  <tr v-for="(value , key) in getPortfolioStock" :key="key">
+                  <tr v-for="(value , key) in portfolioList" :key="key">
                     <td style="width: 26px">
                       <div class="d-inline-block d-flex align-center text-h6 justify-center font-weight-bold white--text cube"
-                      :class="[ getType === 'yahoo' ? 'pink lighten-2' : 'cyan' ]">
+                      :class="targetType.color">
                         {{ key + 1 }}
                       </div>
                     </td>
@@ -127,75 +126,8 @@
         </div>
       </div>
 
-      <!-- 基金表 -->
-      <div v-if="getType === 'fund'">
-        <div>
-          <v-form ref="fundForm">
-            <v-simple-table dense class="mb-10 pa-5 amber lighten-5">
-              <template v-slot:default>
-                <tbody>
-                  <tr v-for="(value , key) in getPortfolioFund" :key="key" class="amber lighten-5">
-                    <td style="width: 26px">
-                      <div class="d-inline-block amber accent-3 d-flex align-center text-subtitle-1 justify-center font-weight-bold white--text cube">
-                        {{ key }}
-                      </div>
-                    </td>
-                    <td class="text-left w-50 font-weight-bold"
-                      v-html="value.id.split(' ').join('<br />')">
-                    </td>
-                    <td class="text-right font-weight-bold">
-                      $ {{ Number(value.buy).toFixed(2) }}
-                    </td>
-                    <td class="text-right font-weight-bold">{{ value.reserve }}</td>
-                  </tr>
-                </tbody>
-              </template>
-            </v-simple-table>
-          </v-form>
-        </div>
-      </div>
-
-      <!-- 美股表 -->
-      <div v-if="getType === 'US'">
-
-        <div style="margin-bottom: 100px;">
-          <v-form ref="stockUSAForm">
-            <v-simple-table dense class="mb-10 pa-5 green lighten-5">
-              <template v-slot:default>
-                <tbody>
-                  <tr v-for="(value , key) in getPortfolioStockUSA" :key="key" class="green lighten-5">
-                    <td style="width: 26px">
-                      <div class="d-inline-block green darken-1 d-flex align-center justify-center font-weight-bold white--text cube">
-                        {{ key }}
-                      </div>
-                    </td>
-                    <td class="text-left w-50 font-weight-bold"
-                      v-html="value.id">
-                    </td>
-                    <td class="text-right font-weight-bold">$ {{ Number(value.buy).toFixed(2) }}</td>
-                    <td class="text-right font-weight-bold">{{ value.reserve }}</td>
-                  </tr>
-                </tbody>
-              </template>
-            </v-simple-table>
-          </v-form>
-        </div>
-      </div>
     </section>
 
-    <template v-if="AnalysisState">
-      <div class="text-center bgProgress d-flex flex-column justify-center align-center" style="z-index: 5">
-        <v-progress-circular
-          :size="100"
-          :width="10"
-          color="white"
-          indeterminate>
-        </v-progress-circular>
-        <p class="text-h6 white--text text--lighten-1 my-4">
-          投資健檢報告分析中
-        </p>
-      </div>
-    </template>
     <div class="d-flex justify-center">
       <v-btn
         class="mt-2 rounded-xl ma-6"
@@ -206,7 +138,6 @@
         large
         depressed
         outlined
-        :disabled="permission()"
         @click="back"
         :loading="show">
         <span class="text-h3 font-weight-bold">返回</span>
@@ -226,6 +157,8 @@
 
       <FintechDialog :dialog="deleteDialog"  icon="fas fa-check-circle" dialogContent="標的已刪除">
       </FintechDialog>
+      <FintechDialog :dialog="reportDialog"  icon="fas fa-clipboard-list" :dialogContent="`產生報告中${loadingTxt}`">
+      </FintechDialog>
     </div>
   </div>
 </template>
@@ -239,7 +172,7 @@
 
 header {
   height: 10vh;
-  background: url(~@/assets/img/header_bg_p3.png);
+  background: url(~@/assets/img/finTech/header_bg_p3.png);
   background-size: cover;
 }
 .del {
@@ -274,12 +207,10 @@ $--font-size: 2rem;
   max-height: 6vh;
 }
 
-.bgProgress {
-  background: rgba(0, 172, 193, 0.7);
-  position: absolute;
-  top: 0; bottom: 0;
-  left: 0; right: 0;
+.portfolio-title {
+  transform: scale(1.15);
 }
+
 button.white.v-btn.v-btn--depressed.theme--light.v-size--x-small {
   background: none !important;
 }
@@ -294,7 +225,12 @@ $--cube-base: 3.6vw;
   overflow-y: scroll;
   max-height: 68vh;
 }
-
+.option {
+  .v-data-table {
+    overflow-y: scroll;
+    max-height: 55vh;
+  }
+}
 ::v-deep .theme--light.v-data-table > .v-data-table__wrapper > table > tbody > tr:hover:not(.v-data-table__expanded__content):not(.v-data-table__empty-wrapper) {
   background: unset;
 }
@@ -314,7 +250,7 @@ import { Component, Vue, Watch } from 'vue-property-decorator';
 import { Action, Getter, Mutation } from 'vuex-class';
 
 import { rules } from '@/utility/utility';
-import { stockData, lunchBoxType, resultType } from '@/utility/globalData';
+import { stockData, lunchBoxType, resultType, typeRoot } from '@/utility/globalData';
 import router from '@/router';
 import { filter } from 'lodash-es';
 
@@ -327,8 +263,8 @@ Vue.component('FintechDialog', FintechDialog);
 @Component({
   data () {
     return {
-      headerTitle: require('@/assets/img/logo_header_left.png'),
-      headerLogo: require('@/assets/img/alpha-white.svg')
+      headerTitle: require('@/assets/img/finTech/logo_header_left.png'),
+      headerLogo: require('@/assets/img/finTech/alpha-white.svg')
     };
   }
 })
@@ -346,16 +282,12 @@ export default class InputResult extends Vue {
   @Getter('getPortfolioStockUSA') getPortfolioStockUSA!: any;
   @Getter('getPortfolioLength') getPortfolioLength!: any;
   @Getter('getType') getType!: any;
+  @Getter('getResultType') getResultType!: string;
 
-  private AnalysisState = false;
+
   private nonUpdateError = false;
   private show = false;
-  private typeRoot: any = [
-    { type: 'yahoo', color: 'pink lighten-2', title: 'Yahoo 股市熱門台股組合' },
-    { type: 'fund', color: 'amber accent-3', title: '台灣人最愛基金組合' },
-    { type: 'US', color: 'green darken-1', title: '精選國外標的美股組合' },
-    { type: 'option', color: 'cyan', title: '我有自己想法體驗自選組合' }
-  ]
+  private typeRoot: any = typeRoot;
 
   private targetType = {};
   private updateModeId = {
@@ -364,19 +296,53 @@ export default class InputResult extends Vue {
     id: null
   };
 
-  // 選擇出現哪種列表 台股、美股、基金、或全部
-  private showType (type: any) {
-    if (type === 'yahoo') {
-
-    }
-  }
-
   private getStock = [];
   private getBuy = [];
   private getReserve = [];
   private getClass = [];
 
   private deleteDialog = false;
+  private reportDialog = false;
+  private loadingTxt = '';
+
+  private created () {
+    this.switchPortfoliosType();
+  }
+
+  @Watch('getType')
+  private switchPortfoliosType () {
+    if (!this.getType) {
+      this.$router.push('/ChoosePortfolio');
+    }
+
+    if (this.getType) {
+      this.targetType = filter(this.typeRoot, ['type', this.getType])[0];
+      this.renderData();
+
+      if (this.getType !== 'option') {
+        this.loadPortfolio(stockData(this.getType));
+      }
+
+      if (this.getType === 'option') {
+        this.permission ();
+      }
+      // this.loadPortfolio(stockData(type));
+      
+      // console.log(this.getPortfolio);
+      // console.log(this.getPortfolioStockUSA);
+    }
+
+  }
+
+  get portfolioList () {
+    const list: any = {
+      yahoo: this.getPortfolioStock,
+      fund: this.getPortfolioFund,
+      US: this.getPortfolioStockUSA,
+      option: this.getPortfolioStock,
+    };
+    return list[this.getType];
+  }
 
   // 監聽標的總數
   @Watch('getPortfolio')
@@ -428,11 +394,18 @@ export default class InputResult extends Vue {
 
   // 開始健檢disabled condition
   private permission () {
-    if (this.getPortfolioLength !== 0 && !this.updateModeId.id) {
-      return false;
-    } else {
-      return true;
-    };
+    // if (this.getPortfolioLength !== 0 && !this.updateModeId.id) {
+    //   return false;
+    // } else {
+    //   return true;
+    // };
+    return this.getPortfolioLength === 0 && this.updateModeId.id;
+  }
+
+  @Watch('getPortfolioLength')
+  @Watch('updateModeId')
+  private updatePermission () {
+    this.permission ();
   }
 
   // 點擊新增標的，進入InputPortfolio自動帶入標的種類
@@ -479,7 +452,18 @@ export default class InputResult extends Vue {
   private healthCheck () {
     this.setLunchBoxType(lunchBoxType(this.getType, this.getPortfolio));
     this.setResultType(resultType(this.getType, this.getPortfolio));
+    this.reportDialog = true;
+    console.log(this.getResultType)
 
+    const timer = setInterval(()=> { 
+      this.loadingTxt.length < 3
+        ? this.loadingTxt += '.' : this.loadingTxt = '';
+    }, 600);
+
+    setTimeout(() => {
+      clearInterval(timer);
+      this.$router.push('/Report');
+    }, 3800)
     // console.log(lunchBoxType(this.getType, this.getPortfolio));
     // console.log(resultType(this.getType, this.getPortfolio));
   }
@@ -496,22 +480,6 @@ export default class InputResult extends Vue {
   // 在修改階段下 設定當下修改標的id 避免手賤點到其他標的按鈕
   private uniqle () {
     return Boolean(this.updateModeId.id);
-  }
-
-  private created () {
-    this.switchPortfoliosType();
-  }
-
-  @Watch('getType')
-  private switchPortfoliosType () {
-    this.renderData();
-
-    if (this.getType !== 'option') {
-      this.loadPortfolio(stockData(this.getType));
-    }
-    this.targetType = filter(this.typeRoot, ['type', this.getType])[0];
-    console.log(this.getPortfolio);
-    console.log(this.getPortfolioStockUSA);
   }
 }
 </script>

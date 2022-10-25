@@ -7,10 +7,15 @@
 	</header>
 </template>
 <style lang="scss" scoped>
+::v-deep {
+  --move-height: -5px;
+  --move-speed: .8s;
+}
 @import url(~@/styles/fintech.scss);
+
 header {
   height: 10vh;
-  background: url(~@/assets/img/header_bg_p3.png);
+  background: url(~@/assets/img/finTech/header_bg_p3.png);
   background-size: cover;
 }
 
@@ -26,8 +31,8 @@ import { Component, Vue, Prop } from 'vue-property-decorator';
 @Component({
   data () {
     return {
-      headerTitle: require('@/assets/img/logo_header_left.png'),
-      headerLogo: require('@/assets/img/alpha-white.svg')
+      headerTitle: require('@/assets/img/finTech/logo_header_left.png'),
+      headerLogo: require('@/assets/img/finTech/alpha-white.svg')
     };
   }
 })

@@ -1,10 +1,6 @@
 <template>
     <v-app class="main">
       <transition name="fade" mode="out-in">
-        <!-- <InvestDiagnosis v-if="key === 0"></InvestDiagnosis>
-        <ChoosePortfolio v-if="key === 1"></ChoosePortfolio>
-        <InputPortfolio v-if="key === 2"></InputPortfolio>
-        <InputResult v-if="key === 3"></InputResult> -->
         <component :is="routes[key]"></component>
       </transition>
     </v-app>
@@ -23,12 +19,14 @@ import InvestDiagnosis from '@/views/finTech/InvestDiagnosis.vue';
 import InputPortfolio from '@/views/finTech/InputPortfolio.vue';
 import InputResult from '@/views/finTech/InputResult.vue';
 import ChoosePortfolio from '@/views/finTech/ChoosePortfolio.vue';
+import Report from '@/views/finTech/Report.vue';
 import { findKey } from 'lodash-es';
 
 Vue.component('InvestDiagnosis', InvestDiagnosis);
 Vue.component('InputPortfolio', InputPortfolio);
 Vue.component('InputResult', InputResult);
 Vue.component('ChoosePortfolio', ChoosePortfolio);
+Vue.component('Report', Report);
 
 @Component
 export default class App extends Vue {
@@ -37,7 +35,8 @@ export default class App extends Vue {
       0: 'InvestDiagnosis',
       1: 'ChoosePortfolio',
       2: 'InputPortfolio',
-      3: 'InputResult'
+      3: 'InputResult',
+      4: 'Report'
     }
 
     private created () {
