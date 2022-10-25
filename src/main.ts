@@ -6,6 +6,8 @@ import router from './router';
 import store from './store';
 import './plugins/main';
 import vuetify from './plugins/vuetify';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 
 Vue.use(VueCompositionAPI);
 
@@ -22,5 +24,8 @@ export const app = new Vue({
   router,
   store,
   vuetify,
+  created () {
+    AOS.init({ });
+  },
   render: (h) => h(App)
 }).$mount('#app');

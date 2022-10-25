@@ -1,8 +1,9 @@
 <template>
   <v-app>
-    <article class="bg-home">
+    <article class="bg-home position-relative">
+      <div class="home-liquid position-absolute"></div>
       <!-- 阿爾發LOGO -->
-      <figure class="d-flex justify-center mt-10">
+      <figure  data-aos="zoom-in-down" data-aos-duration="1500" class="d-flex justify-center mt-10">
         <img class=" home-logo" :src="imgCl" alt="投資健檢"/>
       </figure>
       <!-- 拯救你的投資組合 -->
@@ -44,18 +45,15 @@
         <img class="home-lightning" :src="imgLt" alt="投資健檢"/>
       </figure> -->
       <!-- 立即體驗 ALPHA投資健檢領好禮 ! -->
-      <div class="text-center white--text my-10">
+      <div data-aos="fade-right" data-aos-duration="2000" class="text-center white--text my-10 position-relative">
         <h1 style="font-size:40px;">
           立即體驗 alpha 投資健檢領好禮 !
         </h1>
       </div>
       <!-- 拯救你的投資組合 -->
       <figure class="d-flex justify-center position-relative">
-        <img class=" home-phone" :src="imghp" alt="投資健檢"/>
+        <img  data-aos="zoom-in-up" data-aos-duration="1500" class=" home-phone" :src="imghp" alt="投資健檢"/>
         <router-link to="/ChoosePortfolio">
-          <!-- <v-btn class="nextStep">
-            立即體驗
-          </v-btn> -->
           <div class="login-box nextStep position-absolute">
             <a class=" pulsing ">
               <span></span>
@@ -80,7 +78,28 @@
   background: url(~@/assets/img/investDiagnosis/bg_home.png) no-repeat;
   overflow: hidden;
 }
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
 .home {
+  &-liquid {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(-45deg, #3A007C, #4c1d56, #9822c3, #00009C);
+    background-size: 400% 400%;
+    animation: gradient 2s ease infinite;
+    opacity: 0.5;
+  }
   &-logo {
     width: 20%;
   }
@@ -182,9 +201,7 @@
   z-index: 12 !important;
   color: #FFF;
   background: linear-gradient(to right, #774DAF 0%, #942987 100%);
-
   text-shadow: rgb(3, 3, 3) 4px 4px 15px;
-
 }
 
 .login-box a {
