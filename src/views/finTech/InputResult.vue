@@ -284,7 +284,6 @@ export default class InputResult extends Vue {
   @Getter('getType') getType!: any;
   @Getter('getResultType') getResultType!: string;
 
-
   private nonUpdateError = false;
   private show = false;
   private typeRoot: any = typeRoot;
@@ -324,14 +323,13 @@ export default class InputResult extends Vue {
       }
 
       if (this.getType === 'option') {
-        this.permission ();
+        this.permission();
       }
       // this.loadPortfolio(stockData(type));
-      
+
       // console.log(this.getPortfolio);
       // console.log(this.getPortfolioStockUSA);
     }
-
   }
 
   get portfolioList () {
@@ -339,7 +337,7 @@ export default class InputResult extends Vue {
       yahoo: this.getPortfolioStock,
       fund: this.getPortfolioFund,
       US: this.getPortfolioStockUSA,
-      option: this.getPortfolioStock,
+      option: this.getPortfolioStock
     };
     return list[this.getType];
   }
@@ -405,7 +403,7 @@ export default class InputResult extends Vue {
   @Watch('getPortfolioLength')
   @Watch('updateModeId')
   private updatePermission () {
-    this.permission ();
+    this.permission();
   }
 
   // 點擊新增標的，進入InputPortfolio自動帶入標的種類
@@ -453,9 +451,9 @@ export default class InputResult extends Vue {
     this.setLunchBoxType(lunchBoxType(this.getType, this.getPortfolio));
     this.setResultType(resultType(this.getType, this.getPortfolio));
     this.reportDialog = true;
-    console.log(this.getResultType)
+    console.log(this.getResultType);
 
-    const timer = setInterval(()=> { 
+    const timer = setInterval(() => {
       this.loadingTxt.length < 3
         ? this.loadingTxt += '.' : this.loadingTxt = '';
     }, 600);
@@ -463,7 +461,7 @@ export default class InputResult extends Vue {
     setTimeout(() => {
       clearInterval(timer);
       this.$router.push('/Report');
-    }, 3800)
+    }, 3800);
     // console.log(lunchBoxType(this.getType, this.getPortfolio));
     // console.log(resultType(this.getType, this.getPortfolio));
   }

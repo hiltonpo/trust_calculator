@@ -129,7 +129,7 @@ export function optionLunchBoxType (rowClassData: any) {
   }, []);
   const classAllSet = new Set(classAll);
 
-  if ((classAllSet.has('半導體') && classAllSet.has('ETF') || classAllSet.has('半導體')) && !classAllSet.has('金融')) {
+  if (((classAllSet.has('半導體') && classAllSet.has('ETF')) || (classAllSet.has('半導體')) && !classAllSet.has('金融'))) {
     return 'R1';
   } else if ((classAllSet.has('半導體') && classAllSet.has('金融')) || (classAllSet.has('ETF') && !classAllSet.has('半導體') && !classAllSet.has('金融'))) {
     return 'R2';
@@ -210,8 +210,8 @@ export function resultType (type: any, rowData: any) {
 }
 
 export const typeRoot: any = [
-  { type: 'yahoo', color: 'pink lighten-2', bg: 'pink lighten-5',  title: 'Yahoo奇摩股市', summary: '用戶熱門組合', img: imgYahoo, },
-  { type: 'fund', color: 'amber accent-3', bg: 'amber lighten-5', title: '台灣人最愛', summary: '基金組合', img: imgFund, },
-  { type: 'US', color: 'green darken-1', bg: 'green lighten-5', title: '精選國外標的', summary: '美股組合', img: imgUS, },
-  { type: 'option', color: 'cyan', bg: 'light-blue lighten-5', title: '我有自己想法', summary: '體驗自選組合', img: imgOption, }
-]
+  { type: 'yahoo', color: 'pink lighten-2', bg: 'pink lighten-5', title: 'Yahoo奇摩股市', summary: '用戶熱門組合', img: imgYahoo },
+  { type: 'fund', color: 'amber accent-3', bg: 'amber lighten-5', title: '台灣人最愛', summary: '基金組合', img: imgFund },
+  { type: 'US', color: 'green darken-1', bg: 'green lighten-5', title: '精選國外標的', summary: '美股組合', img: imgUS },
+  { type: 'option', color: 'cyan', bg: 'light-blue lighten-5', title: '我有自己想法', summary: '體驗自選組合', img: imgOption }
+];
