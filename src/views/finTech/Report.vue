@@ -177,7 +177,7 @@ export default class Report extends Vue {
   }
 
   private mounted () {
-    this.getReportImg = this[this.getResultType || 'A1'];
+    this.getReportImg = (this as any)[this.getResultType || 'A1'];
     const body = document.documentElement;
     this.fullDistance = Math.max(
       body.scrollHeight,

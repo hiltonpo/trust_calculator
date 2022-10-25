@@ -433,7 +433,7 @@ export default class InputResult extends Vue {
   // 關閉修改功能
   private updateDone (index: any, id: any) {
     this.nonUpdateError = false;
-    if (this.$refs.stockForm.validate()) {
+    if ((this.$refs.stockForm as Vue & { validate: () => boolean }).validate()) {
       this.$nextTick(() => {
         this.updateModeId = {
           index: null,
