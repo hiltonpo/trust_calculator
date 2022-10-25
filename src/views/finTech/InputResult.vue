@@ -17,7 +17,7 @@
       <!-- 類別標籤 -->
       <nav>
         <v-row class="ma-0 text-center" style="border-bottom: 2px solid black;">
-          <v-col 
+          <v-col
             class="text-h4 font-weight-bold px-0 py-5 white--text" :class="targetType.color">
             {{ targetType.title }}
           </v-col>
@@ -59,7 +59,6 @@
                     <td v-else  class="text-left w-50 font-weight-bold"
                       v-html="value.id.split(' ').join('<br />')">
                     </td>
-
 
                     <td v-if="(updateModeId.index === key) && (updateModeId.type === value.type)" class="text-right font-weight-bold w-30">
                       <v-text-field :value="value.buy" :disabled="true"></v-text-field>
@@ -325,20 +324,19 @@ import FintechDialog from '@/components/FintechDialog.vue';
 Vue.component('FintechHeader', FintechHeader);
 Vue.component('FintechDialog', FintechDialog);
 
-
 @Component({
   data () {
     return {
       headerTitle: require('@/assets/img/logo_header_left.png'),
       headerLogo: require('@/assets/img/alpha-white.svg')
-    }
+    };
   }
 })
 export default class InputResult extends Vue {
   @Action('delPortfolio') delPortfolio!: (params: any) => void;
   @Action('loadPortfolio') loadPortfolio!: (stock: any) => void;
 
-  @Mutation('setType') setType!: (type: any) => void;
+  // @Mutation('setType') setType!: (type: any) => void;
   @Mutation('setLunchBoxType') setLunchBoxType!: (type: any) => void;
   @Mutation('setResultType') setResultType!: (type: any) => void;
 
@@ -358,6 +356,7 @@ export default class InputResult extends Vue {
     { type: 'US', color: 'green darken-1', title: '精選國外標的美股組合' },
     { type: 'option', color: 'cyan', title: '我有自己想法體驗自選組合' }
   ]
+
   private targetType = {};
   private updateModeId = {
     index: null,
@@ -385,7 +384,7 @@ export default class InputResult extends Vue {
     const portfolioAllId = this.getPortfolio.map((item: any) => {
       return item.id;
     });
-    console.log(this.getPortfolio)
+    console.log(this.getPortfolio);
     return portfolioAllId;
   }
 
@@ -397,7 +396,6 @@ export default class InputResult extends Vue {
   }
 
   private change (idRenew: any, updateMode: any) {
-
     const stockIndex = this.getStock.findIndex((item: any) => {
       return item === idRenew;
     });
@@ -448,7 +446,7 @@ export default class InputResult extends Vue {
     this.deleteDialog = true;
     setTimeout(() => {
       this.deleteDialog = false;
-    }, 1300)
+    }, 1300);
   }
 
   // 開啟修改功能
@@ -474,7 +472,7 @@ export default class InputResult extends Vue {
       });
     };
   }
-  
+
   // 進行健檢 output兩個值
   // 1. lunchBoxType得到[哪種便當盒] R1:積極型、R2:穩健型、R3:保守型
   // 2. resultType得到[哪種報告分析圖] A1:美股、A2:yahoo、A3:基金、A4~10為自選投組 (A4:半、A5:金、A6:ETF、A7:半+金、A8:半+ETF、A9:金+ETF、A10:半+金+ETF)
@@ -507,11 +505,11 @@ export default class InputResult extends Vue {
   @Watch('getType')
   private switchPortfoliosType () {
     this.renderData();
-    
+
     if (this.getType !== 'option') {
       this.loadPortfolio(stockData(this.getType));
     }
-    this.targetType = filter(this.typeRoot, [ 'type', this.getType ])[0];
+    this.targetType = filter(this.typeRoot, ['type', this.getType])[0];
     console.log(this.getPortfolio);
     console.log(this.getPortfolioStockUSA);
   }

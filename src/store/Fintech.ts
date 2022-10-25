@@ -3,10 +3,10 @@ import { clone, filter, remove } from 'lodash-es';
 export default
 {
   state: {
-    type: 'option', // 四種投組 yahoo、fund、US、option
-    portfolio: [],  // 股票標的
-    lunchBoxType: '',  // 餐盒類型
-    resultType: ''  // 報告結果類型
+    type: '', // 四種投組 yahoo、fund、US、option
+    portfolio: [], // 股票標的
+    lunchBoxType: '', // 餐盒類型
+    resultType: '' // 報告結果類型
   },
   mutations: {
     // 增加標的

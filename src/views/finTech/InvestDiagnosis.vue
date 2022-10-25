@@ -3,8 +3,13 @@
     <article class="bg-home position-relative">
       <div class="home-liquid position-absolute"></div>
       <!-- 阿爾發LOGO -->
+<<<<<<< HEAD
       <figure  data-aos="zoom-in-down" data-aos-duration="1500" class="d-flex justify-center mt-10">
         <img class=" home-logo" :src="imgCl" alt="投資健檢"/>
+=======
+      <figure class="d-flex justify-center mt-10">
+        <img class="home-logo" :src="imgCl" alt="投資健檢"/>
+>>>>>>> a0d6c5304b48451ad0ef73aa8b5746fec06cbe99
       </figure>
       <!-- 拯救你的投資組合 -->
       <figure class="position-relative d-flex justify-center mt-10">
@@ -71,6 +76,7 @@
 </template>
 
 <style lang="scss" scoped>
+@import url(~@/styles/fintech.scss);
 .bg-home {
   max-width: 1080px;
   width: 100vh;
@@ -169,23 +175,6 @@
 }
 .cls-2 {
   fill:#D49DFF;
-}
-
-.avatar {
-  overflow: hidden;
-  transform: translatey(0px);
-  animation: float 2.5s ease-in-out infinite;
-}
-@keyframes float {
-  0% {
-    transform: translatey(0px);
-  }
-  50% {
-    transform: translatey(-20px) ;
-  }
-  100% {
-    transform: translatey(0px);
-  }
 }
 .nextStep {
   bottom: -200px;

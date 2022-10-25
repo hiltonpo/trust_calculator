@@ -1,53 +1,36 @@
 <template>
   <div class="app pa-5">
     <div class="header d-flex justify-space-between align-center">
-      <v-img src="../../assets/img/finTech/logo_header_left.png" max-width="250" contain/>
+      <v-img class="avatar" src="../../assets/img/finTech/logo_header_left.png" max-width="250" contain/>
       <v-img src="../../assets/img/investDiagnosis/coverLogo.png" max-width="210" contain/>
       <div class="header__space"></div>
     </div>
     <div class="main">
       <div class="main__title white--text">選擇要健檢的投資組合</div>
       <div class="btnGroup d-flex flex-wrap justify-center">
-        <div class="btnGroup__btn d-flex flex-column justify-center align-center" tabindex="0" @click="clickYahoo">
-          <v-img src="../../assets/img/finTech/tw.png" max-height="220" contain/>
+        <div v-for="(button, index) in buttons" :key="index" :class="[ shineIndex === index ? 'active' : '' ]"
+          class="btnGroup__btn d-flex flex-column justify-center align-center" tabindex="0" @click="clickType(button.type), shineIndex = index">
+          <v-img :src="button.img" max-height="220" contain/>
           <div class="d-flex flex-column align-center mt-5">
-            <span>Yahoo 股市熱門</span>
-            <span>台股組合</span>
-          </div>
-        </div>
-        <div class="btnGroup__btn d-flex flex-column justify-center align-center" tabindex="0" @click="clickFund">
-          <v-img src="../../assets/img/finTech/fund.png" max-height="220" contain/>
-          <div class="d-flex flex-column align-center mt-5">
-            <span>台灣人最愛</span>
-            <span>基金組合</span>
-          </div>
-        </div>
-        <div class="btnGroup__btn d-flex flex-column justify-center align-center" tabindex="0" @click="clickUS">
-          <v-img src="../../assets/img/finTech/na.png" max-height="220" contain/>
-          <div class="d-flex flex-column align-center mt-5">
-            <span>精選外國標的</span>
-            <span>美股組合</span>
-          </div>
-        </div>
-        <!-- onclick="location.href=''" -->
-        <div class="btnGroup__btn d-flex flex-column justify-center align-center" tabindex="0" @click="clickOption">
-          <v-img src="../../assets/img/finTech/self.png" max-height="220" contain/>
-          <div class="d-flex flex-column align-center mt-5">
-            <span>我有自己想法</span>
-            <span>體驗自選組合</span>
+            <span>{{ button.title }}</span>
+            <span>{{ button.summary }}</span>
           </div>
         </div>
       </div>
     </div>
     <div class="footer d-flex justify-center">
-      <v-btn class="footer__btn" height="100px" width="350px" @click="" outlined rounded>
-        返回
-      </v-btn>
+      <router-link to="/">
+        <v-btn class="footer__btn" height="100px" width="350px" outlined rounded>
+          返回
+        </v-btn>
+      </router-link>
+
     </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
+@import url(~@/styles/fintech.scss);
 .app {
   height: 100%;
   width: 100%;
@@ -70,7 +53,7 @@
   }
   .btnGroup{
     margin-top: 70px;
-    
+
     &__btn{
       cursor: pointer;
       height: 560px;
@@ -82,11 +65,19 @@
       box-shadow: 0px 3px 6px #00000029;
       border: 8px solid #FFFFFF;
       border-radius: 25px;
+      opacity: .6;
       transition: all .3s linear;
+      transform: scale(0.96);
     }
     &__btn:hover{
       background: #fff;
       color: #000;
+      transform: scale(1);
+    }
+    &__btn.active{
+      box-shadow: 3vw 3vw 5vw rgba(0, 0, 0, 0.719);
+      transform: scale(1);
+      opacity: 1;
     }
   }
 }
@@ -103,23 +94,59 @@
       opacity: 1;
     }
   }
-  
+
 }
 </style>
 
 <script lang="ts">
-import { forEach } from "lodash-es";
-import { Component, Vue, Watch } from "vue-property-decorator";
-import { Action, Getter, Mutation } from "vuex-class";
-import { getCookie, removeCookie, rules, setCookie } from "@/utility/utility";
-import { stockData } from "@/utility/globalData";
-import router from "@/router";
+import { forEach, findKey } from 'lodash-es';
+import { Component, Vue, Watch } from 'vue-property-decorator';
+import { Action, Getter, Mutation } from 'vuex-class';
+import { getCookie, removeCookie, rules, setCookie } from '@/utility/utility';
+import { stockData } from '@/utility/globalData';
+import router from '@/router';
+import imgYahoo from '@/assets/img/finTech/tw.png';
+import imgFund from '@/assets/img/finTech/fund.png';
+import imgUS from '@/assets/img/finTech/na.png';
+import imgOption from '@/assets/img/finTech/self.png';
 
 @Component
 export default class ChoosePortfolio extends Vue {
   @Mutation('setType') setType!: (type: any) => void;
-  private CommitSettype(type: string){
-    // this.$store.commit('setType', type);
+  @Getter('getType') getType!: any;
+
+  private imgYahoo = imgYahoo;
+  private imgFund = imgFund;
+  private imgUS = imgUS;
+  private imgOption = imgOption;
+  private shineIndex = 0;
+  private counter: any = null;
+
+  private buttons = [
+    { title: 'Yahoo 股市熱門', summary: '台股組合', img: this.imgYahoo, type: 'yahoo' },
+    { title: '台灣人最愛', summary: '基金組合', img: this.imgFund, type: 'fund' },
+    { title: '精選外國標的', summary: '美股組合', img: this.imgUS, type: 'US' },
+    { title: '我有自己想法', summary: '體驗自選組合', img: this.imgOption, type: 'option' }
+  ];
+
+  private created () {
+    this.shineIndex = this.getIndex(this.getType || 0);
+  }
+
+  private mounted () {
+    this.counter = setInterval(() => {
+      this.shineIndex < (this.buttons.length - 1) ? this.shineIndex++ : this.shineIndex = 0;
+    }, 1300);
+  }
+
+  private getIndex (type: string) {
+    const types = {
+      0: 'yahoo', 1: 'fund', 2: 'US', 3: 'option'
+    };
+    return Number(findKey(types, (item: any) => item === type));
+  }
+
+  private CommitSettype (type: string) {
     this.setType(type);
     if (type === 'option') {
       this.$router.push('/InputPortfolio');
@@ -128,25 +155,17 @@ export default class ChoosePortfolio extends Vue {
     }
   }
 
-  public clickYahoo(){
-    this.CommitSettype('yahoo');
+  public clickType (type: string) {
+    this.CommitSettype(type);
     // console.log(this.$store.getters.getType);
   }
 
-  public clickFund(){
-    this.CommitSettype('fund');
-  }
-
-  public clickUS(){
-    this.CommitSettype('US');
-  }
-
-  public clickOption(){
-    this.CommitSettype('option');
-  }
-
-  public clickReturn(){
+  public clickReturn () {
     console.log('back');
+  }
+
+  private destroyed () {
+    clearInterval(this.counter);
   }
 }
 </script>
