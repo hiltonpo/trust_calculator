@@ -27,6 +27,10 @@ export default
 
       state.portfolio = temp;
     },
+    // 清空標的
+    delAllPortfolio (state: any){
+      state.portfolio = [];
+    },
     // 設定哪種投組
     setType (state: any, type: any) {
       state.type = type;

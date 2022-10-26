@@ -67,7 +67,7 @@
                     <td v-if="(updateModeId.index === key) && (updateModeId.type === value.type)" class="text-right font-weight-bold w-20">
                       <v-text-field v-model="value.reserve" :disabled="true"></v-text-field>
                     </td>
-                    <td v-else class="text-right font-weight-bold">{{ value.reserve }}</td>
+                    <td v-else class="text-right font-weight-bold">{{ toCurrency(value.reserve) }}</td>
 
                     <td v-if="getType === 'option'" class="text-center px-0" style="width: 10vw">
                       <v-btn
@@ -283,6 +283,7 @@ export default class InputResult extends Vue {
   @Getter('getPortfolioLength') getPortfolioLength!: any;
   @Getter('getType') getType!: any;
   @Getter('getResultType') getResultType!: string;
+  @Mutation('delAllPortfolio') delAllPortfolio!: () => void;
 
   private nonUpdateError = false;
   private show = false;
@@ -467,6 +468,7 @@ export default class InputResult extends Vue {
   }
 
   private back () {
+    this.delAllPortfolio(); // 清空 portfolio
     if (this.getType === 'option') {
       this.$router.push('/InputPortfolio');
     } else {
@@ -478,6 +480,12 @@ export default class InputResult extends Vue {
   // 在修改階段下 設定當下修改標的id 避免手賤點到其他標的按鈕
   private uniqle () {
     return Boolean(this.updateModeId.id);
+  }
+
+  private toCurrency(num: any){
+    var parts = num.toString().split('.');
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    return parts.join('.');
   }
 }
 </script>

@@ -125,6 +125,7 @@
     </FintechDialog>
   </div>
 </template>
+
 <style lang="scss" scoped>
 $rounded: (
   0: 0,
@@ -225,7 +226,7 @@ button.mt-16.rounded-xl.v-btn.v-btn--outlined.theme--light.v-size--large {
 
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator';
-import { Action, Getter } from 'vuex-class';
+import { Action, Getter, Mutation } from 'vuex-class';
 import { rules } from '@/utility/utility';
 import { stockData } from '@/utility/globalData';
 
@@ -241,6 +242,8 @@ export default class InputPortfolio extends Vue {
   @Action('loadPortfolio') loadPortfolio!: (stock: any) => void;
   @Getter('getPortfolio') getPortfolio!: any;
   @Getter('getType') getType!: any;
+  @Mutation('delAllPortfolio') delAllPortfolio!: () => void;
+
 
   private show = false;
   private deleteDialog = false;
@@ -317,7 +320,7 @@ export default class InputPortfolio extends Vue {
       return item === this.stockNumber;
     });
     this.buy = stockData(this.getType)[1][index];
-    this.reserve = stockData(this.getType)[2][index];
+    this.reserve = this.toCurrency(stockData(this.getType)[2][index]);
     if (this.getType === 'option') {
       this.classes = stockData(this.getType)[3][index];
     }
@@ -351,7 +354,15 @@ export default class InputPortfolio extends Vue {
   }
 
   private toChoosePortfolio () {
+    this.delAllPortfolio(); // 清空 portfolio
     this.$router.push('/ChoosePortfolio');
+  }
+
+  // 數字千分位
+  private toCurrency(num: any){
+    var parts = num.toString().split('.');
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    return parts.join('.');
   }
 }
 </script>
