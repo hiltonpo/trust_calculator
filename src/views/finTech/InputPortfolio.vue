@@ -320,7 +320,7 @@ export default class InputPortfolio extends Vue {
       return item === this.stockNumber;
     });
     this.buy = stockData(this.getType)[1][index];
-    this.reserve = stockData(this.getType)[2][index];
+    this.reserve = this.toCurrency(stockData(this.getType)[2][index]);
     if (this.getType === 'option') {
       this.classes = stockData(this.getType)[3][index];
     }
@@ -356,6 +356,13 @@ export default class InputPortfolio extends Vue {
   private toChoosePortfolio () {
     this.delAllPortfolio(); // 清空 portfolio
     this.$router.push('/ChoosePortfolio');
+  }
+
+  // 數字千分位
+  private toCurrency(num: any){
+    var parts = num.toString().split('.');
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    return parts.join('.');
   }
 }
 </script>
