@@ -13,7 +13,7 @@
     </section>
     <div>
       <router-link to="/">
-        <v-btn class="login-box text-h3 font-weight-bold white--text d-flex align-center pb-2 mx-auto mb-16" height="6vh" width="40vw" rounded>
+        <v-btn class="login-box text-h3 font-weight-bold white--text d-flex align-center pb-2 mx-auto mb-16" height="6vh" width="40vw" @click="finish()" rounded>
           <span>完成</span>
         </v-btn>
       </router-link>
@@ -168,6 +168,8 @@ Vue.component('FintechDialog', FintechDialog);
 })
 export default class Report extends Vue {
   @Getter('getResultType') getResultType!: string;
+  @Mutation('delAllPortfolio') delAllPortfolio!: () => void;
+  
   private distance = 0;
   private fullDistance = 0;
   private getReportImg: any = null;
@@ -199,6 +201,10 @@ export default class Report extends Vue {
 
   get showTop () {
     return (this.distance / this.fullDistance) > 0.15;
+  }
+
+  private finish (){
+    this.delAllPortfolio(); // 清空 portfolio
   }
 }
 </script>

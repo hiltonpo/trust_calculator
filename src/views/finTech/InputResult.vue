@@ -283,6 +283,7 @@ export default class InputResult extends Vue {
   @Getter('getPortfolioLength') getPortfolioLength!: any;
   @Getter('getType') getType!: any;
   @Getter('getResultType') getResultType!: string;
+  @Mutation('delAllPortfolio') delAllPortfolio!: () => void;
 
   private nonUpdateError = false;
   private show = false;
@@ -467,6 +468,7 @@ export default class InputResult extends Vue {
   }
 
   private back () {
+    this.delAllPortfolio(); // 清空 portfolio
     if (this.getType === 'option') {
       this.$router.push('/InputPortfolio');
     } else {
