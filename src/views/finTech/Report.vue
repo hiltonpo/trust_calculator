@@ -20,7 +20,9 @@
     </div>
     <div class="w-100" @click="scrollToSmooth(0, 0)">
       <div class="rounded-circle top position-fixed d-flex align-center justify-center" :class="[ showTop ? 'show' : '' ]">
-          <v-img :src="report" width="3.8vw" contain></v-img>
+        <div class="arrow">
+          <v-img :src="top" width="3.6vw" contain></v-img>
+        </div>
       </div>
     </div>
   </div>
@@ -121,9 +123,12 @@ $--base: 7vw;
   right: 1vh;
   opacity: 0;
   transition: all .3s;
-  i {
-    transform: rotate(-45deg) scale(1.4);
+  .arrow {
+    transform: rotate(-45deg);
   }
+  // i {
+  //   transform: rotate(-45deg) scale(1.4);
+  // }
 
   &.show {
     opacity: 1;
