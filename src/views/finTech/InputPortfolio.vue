@@ -244,7 +244,6 @@ export default class InputPortfolio extends Vue {
   @Getter('getType') getType!: any;
   @Mutation('delAllPortfolio') delAllPortfolio!: () => void;
 
-
   private show = false;
   private deleteDialog = false;
   private select = '台股 / ETF';
@@ -359,8 +358,8 @@ export default class InputPortfolio extends Vue {
   }
 
   // 數字千分位
-  private toCurrency(num: any){
-    var parts = num.toString().split('.');
+  private toCurrency (num: any) {
+    const parts = num.toString().split('.');
     parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     return parts.join('.');
   }

@@ -20,7 +20,7 @@
     </div>
     <div class="w-100" @click="scrollToSmooth(0, 0)">
       <div class="rounded-circle top position-fixed d-flex align-center justify-center" :class="[ showTop ? 'show' : '' ]">
-        <v-icon color="white">fas fa-location-arrow</v-icon>
+          <v-img :src="report" width="3.8vw" contain></v-img>
       </div>
     </div>
   </div>
@@ -141,6 +141,7 @@ import { rules } from '@/utility/utility';
 import { stockData, lunchBoxType, resultType } from '@/utility/globalData';
 import router from '@/router';
 import { filter } from 'lodash-es';
+import top from '@/assets/img/finTech/top.svg';
 
 import FintechHeader from '@/components/FintechHeader.vue';
 import FintechDialog from '@/components/FintechDialog.vue';
@@ -173,6 +174,7 @@ export default class Report extends Vue {
   private distance = 0;
   private fullDistance = 0;
   private getReportImg: any = null;
+  private top = top;
 
   private getScrollDistance () {
     this.distance = document.documentElement.scrollTop;
@@ -203,7 +205,7 @@ export default class Report extends Vue {
     return (this.distance / this.fullDistance) > 0.15;
   }
 
-  private finish (){
+  private finish () {
     this.delAllPortfolio(); // 清空 portfolio
   }
 }

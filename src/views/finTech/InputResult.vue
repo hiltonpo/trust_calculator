@@ -78,7 +78,10 @@
                         x-small
                         depressed
                         @click="del({id: value.id , type: value.type})">
-                        <v-icon>fas fa-minus</v-icon>
+                        <!-- <v-icon>fas fa-minus</v-icon> -->
+                        <div>
+                          <v-img :src="minus" width="2.5vw" contain></v-img>
+                        </div>
                       </v-btn>
                       &emsp;
                       <v-btn
@@ -89,7 +92,10 @@
                         x-small
                         depressed
                         @click.stop="updateMode(key, value.type, value.id)">
-                        <v-icon>fas fa-pencil-alt</v-icon>
+                        <!-- <v-icon>fas fa-pencil-alt</v-icon> -->
+                        <div>
+                          <v-img :src="edit" width="2.5vw" contain></v-img>
+                        </div>
                       </v-btn>
                       &emsp;
                       <v-btn
@@ -99,7 +105,10 @@
                         x-small
                         depressed
                         @click="updateDone(key, value.id)">
-                        <v-icon>fas fa-check</v-icon>
+                        <!-- <v-icon>fas fa-check</v-icon> -->
+                        <div>
+                          <v-img :src="done" width="2.5vw" contain></v-img>
+                        </div>
                       </v-btn>
                     </td>
                   </tr>
@@ -149,7 +158,7 @@
         height="5vh"
         large
         depressed
-        :disabled="permission()"
+        :disabled="permission() || (portfolioList.length === 0)"
         @click="healthCheck"
         :loading="show">
         <span class="text-h3 font-weight-bold">確定</span>
@@ -253,6 +262,9 @@ import { rules } from '@/utility/utility';
 import { stockData, lunchBoxType, resultType, typeRoot } from '@/utility/globalData';
 import router from '@/router';
 import { filter } from 'lodash-es';
+import edit from '@/assets/img/finTech/edit.svg';
+import minus from '@/assets/img/finTech/minus.svg';
+import done from '@/assets/img/finTech/done.svg';
 
 import FintechHeader from '@/components/FintechHeader.vue';
 import FintechDialog from '@/components/FintechDialog.vue';
@@ -284,6 +296,10 @@ export default class InputResult extends Vue {
   @Getter('getType') getType!: any;
   @Getter('getResultType') getResultType!: string;
   @Mutation('delAllPortfolio') delAllPortfolio!: () => void;
+
+  private edit = edit;
+  private minus = minus;
+  private done = done;
 
   private nonUpdateError = false;
   private show = false;
@@ -417,7 +433,7 @@ export default class InputResult extends Vue {
     this.delPortfolio(data);
     this.deleteDialog = true;
     setTimeout(() => {
-      this.deleteDialog = false;
+      // this.deleteDialog = false;
     }, 1300);
   }
 
@@ -482,8 +498,8 @@ export default class InputResult extends Vue {
     return Boolean(this.updateModeId.id);
   }
 
-  private toCurrency(num: any){
-    var parts = num.toString().split('.');
+  private toCurrency (num: any) {
+    const parts = num.toString().split('.');
     parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     return parts.join('.');
   }

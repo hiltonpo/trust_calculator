@@ -10,8 +10,12 @@
           fas fa-times-circle
         </v-icon> -->
         <v-card-text class="pa-0 py-6 ">
-          <div class="text-h6 font-weight-bold pa-4 d-flex justify-center">
-            <v-icon class="mr-3" color="#7166F9" x-large>{{ icon }}</v-icon>
+          <div class="text-h6 font-weight-bold pa-4 d-flex align-center justify-center">
+            <!-- <v-icon class="mr-3" color="#7166F9" x-large>{{ icon }}</v-icon> -->
+            <div class="mr-2">
+              <v-img v-if="icon === 'fas fa-clipboard-list'" :src="report" width="3.8vw" contain></v-img>
+              <v-img v-if="icon === 'fas fa-check-circle'" :src="check" width="3.8vw" contain></v-img>
+            </div>
             <span class="text-h3 font-weight-bold black--text">{{ dialogContent }}</span>
           </div>
         </v-card-text>
@@ -37,6 +41,8 @@
 
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator';
+import check from '@/assets/img/finTech/check.svg';
+import report from '@/assets/img/finTech/report.svg';
 
 @Component
 export default class FintechDialog extends Vue {
@@ -45,6 +51,8 @@ export default class FintechDialog extends Vue {
   @Prop({ default: 'fas fa-check-circle' }) icon!: string;
 
   private show = false;
+  private report = report;
+  private check = check;
 
   @Watch('dialog')
   private switchDialog () {
