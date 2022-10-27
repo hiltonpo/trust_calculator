@@ -76,12 +76,17 @@
   --move-speed: 1.5s;
 }
 
+body::-webkit-scrollbar {
+  display: none !important;
+}
 @import url(~@/styles/fintech.scss);
 .bg-home {
-  max-width: 1080px;
-  width: 100vh;
+  width: 100%;
   height: 100vh;
   background: url(~@/assets/img/investDiagnosis/bg_home.png) no-repeat;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
   overflow: hidden;
 }
 
