@@ -49,9 +49,8 @@ const routes: Array<RouteConfig> = [
 
 const router = new VueRouter({
   mode: 'history',
-  // base: process.env.NODE_ENV === 'development' ? '/RoboAdvisor_Customer_frontend/fintech2022/' : '/',
+  base: process.env.NODE_ENV === 'development' ? '/RoboAdvisor_Customer_frontend/fintech2022/' : '/',
   routes: routes
 });
 
 export default router;
-99
