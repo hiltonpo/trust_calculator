@@ -46,10 +46,10 @@ const routes: Array<RouteConfig> = [
     }
   }
 ];
-
+336
 const router = new VueRouter({
   mode: 'history',
-  base: process.env.NODE_ENV === 'development' ? '/RoboAdvisor_Customer_frontend/fintech2022/' : '/',
+  // base: process.env.NODE_ENV === 'development' ? '/RoboAdvisor_Customer_frontend/fintech2022/' : '/',
   routes: routes
 });
 

@@ -62,7 +62,7 @@
                     <td v-if="(updateModeId.index === key) && (updateModeId.type === value.type)" class="text-right font-weight-bold w-30">
                       <v-text-field :value="value.buy" :disabled="true"></v-text-field>
                     </td>
-                    <td v-else class="text-right font-weight-bold">$ {{ Number(value.buy).toFixed(2) }}</td>
+                    <td v-else class="text-right font-weight-bold w-40">$ {{ Number(value.buy).toFixed(2) }}</td>
 
                     <td v-if="(updateModeId.index === key) && (updateModeId.type === value.type)" class="text-right font-weight-bold w-20">
                       <v-text-field v-model="value.reserve" :disabled="true"></v-text-field>
@@ -161,7 +161,7 @@
         :disabled="permission() || (portfolioList.length === 0)"
         @click="healthCheck"
         :loading="show">
-        <span class="text-h3 font-weight-bold">確定</span>
+        <span class="text-h3 font-weight-bold white--text">確定</span>
       </v-btn>
 
       <FintechDialog :dialog="deleteDialog"  icon="fas fa-check-circle" dialogContent="標的已刪除">

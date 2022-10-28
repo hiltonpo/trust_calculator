@@ -184,15 +184,14 @@ body::-webkit-scrollbar {
 }
 .nextStep {
   bottom: -200px;
-  left: 100px;
+  left: calc(50% - 44vw);
 }
 
 .pulsing {
-  width: 900px;
+  width: 88vw;
   height: 11vh !important;
   font-size: 80px;
   font-weight: 600;
-
   z-index: 12 !important;
   color: #FFF;
   background: linear-gradient(to right, #774DAF 0%, #942987 100%);
