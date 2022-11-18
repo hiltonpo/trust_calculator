@@ -17,77 +17,81 @@
           </v-row>
           <v-row class="graph justify-center pb-6">
             <LineChart
+              v-if="validation"
               chartID="trustLineChart"
               ref="trustLineChart"
               :height="'1000px'"
               :lineChartOption="lineChartOption">
             </LineChart>
+            <div v-else style="height: 1000px;"></div>
           </v-row>
           <v-row class="justify-center my-5 text-h4 blue--text text--lighten-1">
             <div class="center-text pa-10" :class="warning ? 'warn' : '' ">
               <p v-html="textDetail"></p>
             </div>
           </v-row>
-          <v-row class="justify pt-10 justify-center">
-            <v-col cols="3" class="d-flex justify-end text-h4">
-              <span>{{ ageRangeOption.name[0] }}</span>
-              <v-text-field
-              v-model="input[ageRangeOption.prop][0]"
-              class="ml-2 mt-1 pt-0 text-h4"
-              hide-details
-              single-line
-              type="number"
-              style="max-width:55px;"
-              >
-              </v-text-field>
-            </v-col>
-            <v-col cols="6">
-              <div class="range-slider">
-                <v-range-slider
-                v-model="input.ageRange"
-                :min="ageRangeOption.min"
-                :max="ageRangeOption.max"
-                color="brown lighten-2"
-                track-color="grey lighten-2"
-                track-fill-color="yellow darken-2"
+          <v-form ref="form">
+            <v-row class="justify pt-10 justify-center">
+              <v-col cols="3" class="d-flex justify-end text-h4">
+                <span>{{ ageRangeOption.name[0] }}</span>
+                <v-text-field
+                v-model="input[ageRangeOption.prop][0]"
+                class="ml-2 mt-1 pt-0 text-h4"
+                hide-details
+                single-line
+                type="number"
+                style="max-width:55px;"
                 >
-                </v-range-slider>
-              </div>
-            </v-col>
-            <v-col cols="3" class="d-flex text-h4">
-              <span>{{ageRangeOption.name[1]}}</span>
-              <v-text-field
-              v-model="input[ageRangeOption.prop][1]"
-              class="ml-2 mt-1 pt-0 text-h4"
-              hide-details
-              single-line
-              type="number"
-              style="max-width:55px;"
-              >
-              </v-text-field>
-            </v-col>
-          </v-row>
-          <v-row class="justify pt-10 justify-center">
-            <v-col cols="3" class="d-flex justify-end text-h4">{{ lifeOption.name }}</v-col>
-            <v-col cols="6">
-              <div class="slider">
-                <v-slider
-                v-model="input[lifeOption.prop]"
-                :max="lifeOption.max"
-                :min="lifeOption.min"
-                :step="lifeOption.step"
-                color="yellow darken-2"
-                thumb-color="brown lighten-2"
-                :rules="[rules.retireAge]"
+                </v-text-field>
+              </v-col>
+              <v-col cols="6">
+                <div class="range-slider">
+                  <v-range-slider
+                  v-model="input.ageRange"
+                  :min="ageRangeOption.min"
+                  :max="ageRangeOption.max"
+                  color="brown lighten-2"
+                  track-color="grey lighten-2"
+                  track-fill-color="yellow darken-2"
+                  >
+                  </v-range-slider>
+                </div>
+              </v-col>
+              <v-col cols="3" class="d-flex text-h4">
+                <span>{{ageRangeOption.name[1]}}</span>
+                <v-text-field
+                v-model="input[ageRangeOption.prop][1]"
+                class="ml-2 mt-1 pt-0 text-h4"
+                hide-details
+                single-line
+                type="number"
+                style="max-width:55px;"
                 >
-                </v-slider>
-              </div>
-            </v-col>
-            <v-col cols="3" class="text-h4">
-              <span class="font-weight-black">{{ input[lifeOption.prop] }}</span>
-              <span class="ml-2">{{ lifeOption.unit }}</span>
-            </v-col>
-          </v-row>
+                </v-text-field>
+              </v-col>
+            </v-row>
+            <v-row class="justify pt-10 justify-center">
+              <v-col cols="3" class="d-flex justify-end text-h4">{{ lifeOption.name }}</v-col>
+              <v-col cols="6">
+                <div class="slider">
+                  <v-slider
+                  v-model="input[lifeOption.prop]"
+                  :max="lifeOption.max"
+                  :min="lifeOption.min"
+                  :step="lifeOption.step"
+                  color="yellow darken-2"
+                  thumb-color="brown lighten-2"
+                  :rules="[rules.retireAge]"
+                  >
+                  </v-slider>
+                </div>
+              </v-col>
+              <v-col cols="3" class="text-h4">
+                <span class="font-weight-black">{{ input[lifeOption.prop] }}</span>
+                <span class="ml-2">{{ lifeOption.unit }}</span>
+              </v-col>
+            </v-row>
+          </v-form>
           <v-row  v-for="(option, index) in options" :key="index" class="justify pt-10 justify-center">
             <v-col cols="3" class="d-flex justify-end text-h4">{{ option.name }}</v-col>
             <v-col cols="6">
@@ -163,7 +167,7 @@
   height: 20px !important;
 }
 
-::v-deep .v-messages__message.message-transition-enter-to {
+::v-deep .v-messages__message.message-transition-enter-to, ::v-deep .v-messages.theme--light.error--text {
   font-size: 24px;
 }
 
@@ -199,10 +203,13 @@ export default class TrustCalculator extends Vue {
 
   // 圖表資料
   private lineChartOption = {};
+  
+  private validation = true;
 
   // 退休年齡限制
   private rules = {
     retireAge: (value: any) => {
+      console.log(this.input.ageRange[1])
       return !(value < this.input.ageRange[1]) || '不得小於退休年齡';
     }
   };
@@ -377,6 +384,7 @@ export default class TrustCalculator extends Vue {
     // 帶入echartOptions => 五個參數代表: 圖表檔案、標記座標(累積資產最大值)、X軸資料陣列、Y軸資料陣列、Y軸最大值
     this.lineChartOption = orderLineChartOption('graph', markpointXY, XLineData, YLineData, maximum(YLineData.better, withdrawAll));
 
+
     // 文字渲染 右上角 還有 中間
     this.$nextTick(() => {
       this.text = this.textRender(this.input.ageRange[1], YLineData.normal[(this.input.ageRange[1] - this.input.ageRange[0])], withdrawAll, 'right-top');
@@ -411,6 +419,8 @@ export default class TrustCalculator extends Vue {
   @Watch('input.deposit')
   @Watch('input.withdraw')
   private change () {
+    this.$refs.form.validate()
+    this.validation = this.$refs.form.validate()
     setTimeout(() => {
       this.setLineChartData();
     }, 700);

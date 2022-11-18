@@ -4,6 +4,8 @@ import { map, template } from 'lodash-es';
 // import smileFace from '@/assets/img/smileFace.svg';
 import { toThousand } from '@/utility/utility';
 import { preffix } from '@/utility/utility';
+import 'echarts/lib/component/markLine'
+import 'echarts/lib/component/markPoint'
 
 const chartColor: any = {
   alpha: '#16b6d2',
