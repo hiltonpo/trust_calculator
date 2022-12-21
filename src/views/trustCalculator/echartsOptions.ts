@@ -6,6 +6,7 @@ import { toThousand } from '@/utility/utility';
 import { preffix } from '@/utility/utility';
 import 'echarts/lib/component/markLine'
 import 'echarts/lib/component/markPoint'
+import { start } from 'repl';
 
 const chartColor: any = {
   alpha: '#16b6d2',
@@ -14,10 +15,48 @@ const chartColor: any = {
   grid: '#eee'
 };
 
-// 目標規劃 圖表的 echart 設定檔
-export function orderLineChartOption (markpointSVGpath: string, markpointXY: any, XLinedata: any, YLinedata: any, max: number) {
-  const [assetMarkpointX, assetMarkpointY] = markpointXY.assetCoord;
-  const { retireAge } = markpointXY;
+const situationColor: any = {
+  better: '#A6C7A5',
+  normal: '#6BB169',
+  poor: '#438B41'
+}
+
+
+// 退休計畫 圖表的 echart 設定檔
+export function retireLineChartOption (markpointSVGpath: string, markpointXY: any, XLinedata: any, YLinedata: any, max: number, chartWidth: any) {
+
+  const breakpoint = 1000;
+  
+  const labelResizer = function () {
+    return {
+      x: chartWidth - (chartWidth < breakpoint ? chartWidth < 600 ? 100 : 150 : 250),
+      moveOverlap: 'shiftY'
+    };
+  };
+
+  const scatterSettings: any = {
+    labelLayout: labelResizer,
+    z: 5,
+    symbolSize: 8,
+    type: 'scatter'
+  };
+
+  const labelLine: any = {
+    labelLine: {
+      show: true,
+      lineStyle: {
+        color: 'black'
+      }
+    }
+  }
+
+  const [assetMarkpointX, assetMarkpointY] = markpointXY.assetCoord[0];
+  const { withdrawCoord, retireAge } = markpointXY;
+
+  const start = () => {
+    return 'start'
+  }
+
   const lineChartOption = {
     tooltip: {
       show: true,
@@ -29,6 +68,12 @@ export function orderLineChartOption (markpointSVGpath: string, markpointXY: any
       borderColor: '#00838F',
       borderWidth: 1,
       padding: 0,
+      position: function (pos: any, params: any, dom: any, rect: any, size: any) {
+        // 鼠标在左侧时 tooltip 显示到右侧，鼠标在右侧时 tooltip 显示到左侧。
+        const obj: any = { top: 60 };
+        obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 5;
+        return obj;
+      },
       axisPointer: {
         lineStyle: {
           type: 'solid',
@@ -39,7 +84,7 @@ export function orderLineChartOption (markpointSVGpath: string, markpointXY: any
         snap: true,
         z: -1
       },
-      extraCssText: 'width:450px;max-height:350px;',
+      // extraCssText: 'width:550px;max-height:350px;',
       formatter: (params: any) => {
         const colorSpan = (color: string) => `<span style="display:inline-block;margin-right:5px;border-radius:10px;width:9px;height:9px;background-color:${color}">
         </span><span style="color: ${color};">`;
@@ -50,29 +95,27 @@ export function orderLineChartOption (markpointSVGpath: string, markpointXY: any
           </div>
         </div>`;
         const compiled = template(string, { imports: { toThousand: toThousand } });
-        console.log(params[3].data);
         return `<div class="text-caption">
-          <p class="pa-2 text-center mb-0 text-h4" style="background-color: #37406C;">
-            ${params[0].axisValueLabel} 歲 累積總資產比較
+          <p class="pa-2 text-center mb-0 text-h5" style="background-color: #37406C;">
+            ${params[0].axisValueLabel} 歲 得到/需要金額比較
           </p>
-          <section class="mb-0 pa-3 text-h5">
-            ${colorSpan('#00BCD4')}<strong>預計累積資產</strong></span> <br />
+          <section class="mb-0 pa-3 text-h6">
+            ${colorSpan('#00BCD4')}<strong>預計得到金額</strong></span> <br />
             ${compiled({ name: params[0].seriesName, value: params[0].data })}
             ${compiled({ name: params[1].seriesName, value: params[1].data })}
             ${compiled({ name: params[2].seriesName, value: params[2].data })}
-            <br/>
             <div>
-            ${params[3].data ? `${colorSpan('#FF8F00')}預計提領金額(總計)</span> <br />
-            ${compiled({ name: params[3].seriesName, value: params[3].data })}` : ''}
+            ${params[3].data ? `${colorSpan('#FF8F00')}預計需要金額</span> <br />
+            ${compiled({ name: `退休總花費金額`, value: params[3].data })}` : ''}
             </div>
           </section>
         </div>`;
       }
     },
     grid: {
-      left: '3%',
-      right: '4%',
-      bottom: '3%',
+      left: '8%',
+      right: '6%',
+      bottom: '8%',
       containLabel: true
     },
     xAxis: [
@@ -81,7 +124,7 @@ export function orderLineChartOption (markpointSVGpath: string, markpointXY: any
         nameLocation: 'middle',
         nameTextStyle: {
           padding: [26, 0, 0, 0],
-          fontSize: 24,
+          fontSize: 18,
           fontWeight: 'bold'
         },
         type: 'category',
@@ -89,8 +132,9 @@ export function orderLineChartOption (markpointSVGpath: string, markpointXY: any
         data: XLinedata,
         postion: 6.5,
         axisLabel: {
-          rotate: 40,
-          fontSize: 18
+          rotate: 0,
+          fontSize: 18,
+          showMaxLabel: true
         },
         axisTick: {
           show: false
@@ -105,8 +149,8 @@ export function orderLineChartOption (markpointSVGpath: string, markpointXY: any
         name: '金\n額',
         nameLocation: 'left',
         nameTextStyle: {
-          padding: [0, 320, 0, 0],
-          fontSize: 26,
+          padding: [0, 190, 180, 0],
+          fontSize: 20,
           fontWeight: 'bold'
         },
         type: 'value',
@@ -114,8 +158,8 @@ export function orderLineChartOption (markpointSVGpath: string, markpointXY: any
           formatter (params: any) {
             return toThousand(params / 10000) + ' 萬';
           },
-          margin: 30,
-          fontSize: 24
+          margin: 10,
+          fontSize: 18
         },
         splitLine: {
           lineStyle: {
@@ -135,19 +179,54 @@ export function orderLineChartOption (markpointSVGpath: string, markpointXY: any
     ],
     series: [
       {
+        ...scatterSettings,
+        ...labelLine,
         name: '市場較好情況',
         type: 'line',
-        symbol: 'none',
+        symbol: (value: any, params: any) => {
+          if (YLinedata.normal.length - 1 === params.dataIndex) {
+            return 'circle'
+          } else {
+            return 'none'
+          }
+        },
+        label: {
+          show:true,
+          position: [10,-15],
+          fontSize: 16,
+          formatter (params: any) {
+            if (YLinedata.better.length - 1 === params.dataIndex) {
+              return '較好情況'
+            } else {
+              return ''
+            };
+          }
+        },
+        markPoint: {
+          symbolSize: [20, 20], // 图形大小
+          data: [
+            {
+              coord: markpointXY.assetCoord[0],
+              symbolRotate: 50
+            }
+          ],
+          itemStyle: {
+            color: situationColor.better
+          },
+        },
         lineStyle: {
-          color: '#B2EBF2'
+          color: 'none'
+        },
+        itemStyle: {
+          color: 'none'
         },
         areaStyle: {
           color: new echarts.graphic.LinearGradient(0, 0, 0, 0.7, [{
             offset: 0,
-            color: '#26C6DA'
+            color: '#A6C7A5'
           }, {
             offset: 1,
-            color: '#D2E9FF'
+            color: '#A6C7A5'
           }])
         },
         emphasis: {
@@ -157,70 +236,47 @@ export function orderLineChartOption (markpointSVGpath: string, markpointXY: any
         data: YLinedata.better
       },
       {
+        ...scatterSettings,
+        ...labelLine,
         name: '市場一般情況',
         type: 'line',
-        symbol: 'none',
-        showSymbol: false,
         symbolSize: 6,
-        markLine: {
-          symbol: ['none', 'none'],
-          label: {
-            show: true,
-            fontWeight: 'bold',
-            fontSize: '28px',
-            color: '#977C00',
-            formatter (params: any) {
-              return `退休年齡 ${retireAge} 歲`;
-            }
-
-          },
-          data: [{ xAxis: assetMarkpointX }],
-          lineStyle: {
-            type: 'dotted',
-            width: 6,
-            color: '#EAC100'
+        symbol: (value: any, params: any) => {
+          if (YLinedata.normal.length - 1 === params.dataIndex) {
+            return 'circle'
+          } else {
+            return 'none'
+          }
+        },
+        label: {
+          show:true,
+          position: [10,-15],
+          fontSize: 16,
+          formatter (params: any) {
+            if (YLinedata.better.length - 1 === params.dataIndex) {
+              return '一般情況'
+            } else {
+              return ''
+            };
           }
         },
         markPoint: {
-          symbolSize: [60, 60], // 图形大小
+          symbolSize: [20, 20], // 图形大小
           data: [
             {
-              coord: markpointXY.assetCoord,
-              symbolRotate: -50
+              coord: markpointXY.assetCoord[1],
+              symbolRotate: 50
             }
           ],
           itemStyle: {
-            color: '#00BCD4'
+            color: situationColor.normal
           },
-          tooltip: {
-            show: true,
-            trigger: 'item',
-            padding: 0,
-            extraCssText: 'width:450px;height:180px;',
-            formatter (params: any) {
-              const [year, value] = params.data.coord;
-              console.log(params);
-              return `<div class="font-weight-medium">
-                <p class="pa-2 text-center mb-0 text-h4" style="background-color: #37406C;">
-                  累積資產(市場一般情況)
-                </p>
-                <section class="pa-3">
-                <div class="d-flex justify-space-between text-h5">
-                  <span class="mr-2">退休時預計累積資產</span><span>TWD $ ${toThousand(value)}</span>  
-                </div>
-                <div class="d-flex justify-space-between text-h5">
-                  <span class="mr-2">投資期間</span><span>${year} 年</span>  
-                </div>
-                </section>
-              </div>`;
-            }
-          }
         },
         lineStyle: {
-          color: '#00BCD4'
+          color: '#438B41'
         },
         itemStyle: {
-          color: '#262F5A'
+          color: 'none'
         },
         emphasis: {
           disabled: true
@@ -229,14 +285,49 @@ export function orderLineChartOption (markpointSVGpath: string, markpointXY: any
         data: YLinedata.normal
       },
       {
+        ...scatterSettings,
+        ...labelLine,
         name: '市場較差情況',
         type: 'line',
-        symbol: 'none',
+        symbol: (value: any, params: any) => {
+          if (YLinedata.normal.length - 1 === params.dataIndex) {
+            return 'circle'
+          } else {
+            return 'none'
+          }
+        },
+        label: {
+          show:true,
+          position: [10,-15],
+          fontSize: 16,
+          formatter (params: any) {
+            if (YLinedata.better.length - 1 === params.dataIndex) {
+              return '較差情況'
+            } else {
+              return ''
+            };
+          }
+        },
+        markPoint: {
+          symbolSize: [20, 20], // 图形大小
+          data: [
+            {
+              coord: markpointXY.assetCoord[2],
+              symbolRotate: 50
+            }
+          ],
+          itemStyle: {
+            color: situationColor.poor
+          },
+        },
         lineStyle: {
-          color: '#B2EBF2'
+          color: 'none'
+        },
+        itemStyle: {
+          color: 'none'
         },
         areaStyle: {
-          color: 'rgb(255, 255, 255)', // color of the background
+          color: '#F2EADA', // color of the background
           opacity: 1 // <--- solution
         },
         emphasis: {
@@ -250,8 +341,8 @@ export function orderLineChartOption (markpointSVGpath: string, markpointXY: any
         type: 'line',
         symbol: 'none',
         lineStyle: {
-          color: '#9D9D9D',
-          width: 5,
+          color: '#707070',
+          width: 3,
           type: 'dotted'
         },
         areaStyle: {
@@ -261,44 +352,396 @@ export function orderLineChartOption (markpointSVGpath: string, markpointXY: any
         emphasis: {
           disabled: true
         },
-        markPoint: {
-          symbolSize: [60, 60], // 图形大小
-          data: [
-            {
-              coord: markpointXY.withdrawCoord,
-              symbolRotate: -50
-            }
-          ],
-          itemStyle: {
-            color: '#9D9D9D'
-          },
-          tooltip: {
-            show: true,
-            trigger: 'item',
-            padding: 0,
-            extraCssText: 'width:450px;height:180px;',
-            formatter (params: any) {
-              const [year, value] = params.data.coord;
-              // console.log(params);
-              return `<div class="font-weight-medium">
-                <p class="pa-2 text-center mb-0 text-h4" style="background-color: #37406C;">
-                  提領金額
-                </p>
-                <section class="pa-3">
-                <div class="d-flex justify-space-between text-h5">
-                  <span class="mr-2">預計提領總金額約</span><span>TWD $ ${toThousand(value)}</span>  
-                </div>
-                <div class="d-flex justify-space-between text-h5">
-                  <span class="mr-2">退休年數</span><span>${year} 年</span>  
-                </div>
-                </section>
-              </div>`;
-            }
-          }
-        },
         z: -2,
         data: YLinedata.withdraw,
         connectNulls: true
+      }, {
+        type: 'scatter',
+        data: YLinedata.withdraw,
+        markLine: {
+          symbol: ['none', 'none'],
+          symbolSize: 0,
+          data: [
+            [
+              { 
+                coord: withdrawCoord
+              },
+              {
+                coord: [withdrawCoord[0],0]
+              }
+            ],
+            [
+              { 
+                coord: withdrawCoord,
+                lineStyle: {
+                  type: 'dotted',
+                  width: 2,
+                  color: '#CC9C50'
+                },
+                label: {
+                  show: true,
+                  position: 'end',
+                  fontWeight: 'bold',
+                  fontSize: '16px',
+                  // distance: 2,
+                  color: '#FFFFFF',
+                  backgroundColor: '#CC9C50',
+                  borderRadius: 5,
+                  padding: 8,
+                  borderWidth:2,
+                  formatter (params: any) {
+                    return `您需要的退休金\n NTD $ ${toThousand(Number(withdrawCoord[1]  / 10000))} 萬`;
+                  }
+                },
+              },
+              {
+                coord: [withdrawCoord[0],max],
+              }
+            ]
+          ],
+          lineStyle: {
+            type: 'solid',
+            width: 3,
+            color: '#CC9C50'
+          },
+        },
+        itemStyle: {
+          opacity: 0
+        }
+      }
+    ]
+  };
+  return lineChartOption;
+}
+
+
+// 累積財富計畫 圖表的 echart 設定檔
+export function assetLineChartOption (markpointSVGpath: string, markpointXY: any, XLinedata: any, YLinedata: any, max: number, chartWidth: any) {
+  const breakpoint = 1000;
+  
+  const labelResizer = function () {
+    return {
+      x: chartWidth - (chartWidth < breakpoint ? chartWidth < 600 ? 100 : 150 : 250),
+      moveOverlap: 'shiftY'
+    };
+  };
+
+  const scatterSettings: any = {
+    labelLayout: labelResizer,
+    z: 5,
+    symbolSize: 8,
+    type: 'scatter'
+  };
+
+  const labelLine: any = {
+    labelLine: {
+      show: true,
+      lineStyle: {
+        color: 'black'
+      }
+    }
+  }
+
+
+
+  const [assetMarkpointX, assetMarkpointY] = markpointXY.assetCoord[0];
+  const { retireAge, assetCoord } = markpointXY;
+
+  const lineChartOption = {
+    tooltip: {
+      show: true,
+      trigger: 'axis',
+      textStyle: {
+        color: '#fff'
+      },
+      backgroundColor: '#262F5A',
+      borderColor: '#00838F',
+      borderWidth: 1,
+      padding: 0,
+      position: function (pos: any, params: any, dom: any, rect: any, size: any) {
+        // 鼠标在左侧时 tooltip 显示到右侧，鼠标在右侧时 tooltip 显示到左侧。
+        const obj: any = { top: 60 };
+        obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 5;
+        return obj;
+      },
+      axisPointer: {
+        lineStyle: {
+          type: 'solid',
+          cap: 'butt',
+          color: '#262F5A',
+          width: 2
+        },
+        snap: true,
+        z: 20
+      },
+      // extraCssText: 'width:570px;max-height:350px;',
+      formatter: (params: any) => {
+        const colorSpan = (color: string) => `<span style="display:inline-block;margin-right:5px;border-radius:10px;width:9px;height:9px;background-color:${color}">
+        </span><span style="color: ${color};">`;
+        const string = `<div class="d-flex flex-wrap justify-space-between pb-2">
+          <span class="mr-2"><%= name %></span>
+          <div class="d-flex flex-wrap justify-space-between" style="min-width: 100px">
+            <span class="mr-1">${preffix}</span><span><% print(toThousand(value)); %></span>
+          </div>
+        </div>`;
+        const compiled = template(string, { imports: { toThousand: toThousand } });
+        return `<div class="text-caption">
+          <p class="pa-2 text-center mb-0 text-h5" style="background-color: #37406C;">
+            ${params[0].axisValueLabel} 歲 得到/需要金額比較 ${params[0].dataIndex === assetMarkpointX ? `<span style="color: pink; font-size: 24px"><strong>(已達投資年限)</strong></span>`: ''}
+          </p>
+          <section class="mb-0 pa-3 text-h6">
+            ${colorSpan('#00BCD4')}<strong>預計得到金額</strong></span> <br />
+            ${compiled({ name: params[0].seriesName, value: params[0].data })}
+            ${compiled({ name: params[1].seriesName, value: params[1].data })}
+            ${compiled({ name: params[2].seriesName, value: params[2].data })}
+          </section>
+        </div>`;
+      }
+    },
+    grid: {
+      left: '7%',
+      right: '6%',
+      bottom: '8%',
+      containLabel: true
+    },
+    xAxis: [
+      {
+        name: '歲數',
+        nameLocation: 'middle',
+        nameTextStyle: {
+          padding: [26, 0, 0, 0],
+          fontSize: 18,
+          fontWeight: 'bold'
+        },
+        type: 'category',
+        boundaryGap: true,
+        data: XLinedata,
+        postion: 6.5,
+        axisLabel: {
+          fontSize: 18,
+          showMaxLabel: true
+        },
+        axisTick: {
+          show: false
+        },
+        axisLine: {
+          onZero: false
+        }
+      }
+    ],
+    yAxis: [
+      {
+        name: '金\n額',
+        nameLocation: 'left',
+        nameTextStyle: {
+          padding: [0, 150, 180, 0],
+          fontSize: 20,
+          fontWeight: 'bold'
+        },
+        type: 'value',
+        axisLabel: {
+          formatter (params: any) {
+            return toThousand(params / 10000) + ' 萬';
+          },
+          margin: 10,
+          fontSize: 18
+        },
+        splitLine: {
+          lineStyle: {
+            color: 'rgba(160, 160, 160, 0.5)'
+          }
+        },
+        offset: -7,
+        axisTick: {
+          show: false
+        },
+        axisLine: {
+          show: false
+        },
+        max: max,
+        z: -1
+      }
+    ],
+    series: [
+      {
+        ...scatterSettings,
+        ...labelLine,
+        name: '市場較好情況',
+        type: 'line',
+        symbol: (value: any, params: any) => {
+          if (YLinedata.better.length - 1 === params.dataIndex) {
+            return 'circle'
+          } else {
+            return 'none'
+          }
+        },
+        symbolSize: 10,
+        label: {
+          show:true,
+          position: [10,-15],
+          fontSize: 16,
+          formatter (params: any) {
+            if (YLinedata.better.length - 1 === params.dataIndex) {
+              return '較好情況'
+            } else {
+              return ''
+            };
+          }
+        },
+        lineStyle: {
+          color: 'none'
+        },
+        itemStyle: {
+          color: situationColor.normal
+        },
+        areaStyle: {
+          color: new echarts.graphic.LinearGradient(0, 0, 0, 0.7, [{
+            offset: 0,
+            color: '#A6C7A5'
+          }, {
+            offset: 1,
+            color: '#A6C7A5'
+          }])
+        },
+        emphasis: {
+          disabled: true
+        },
+        z: 5,
+        data: YLinedata.better
+      },
+      {
+        ...scatterSettings,
+        ...labelLine,
+        name: '市場一般情況',
+        type: 'line',
+        symbol: (value: any, params: any) => {
+          if (YLinedata.normal.length - 1 === params.dataIndex) {
+            return 'circle'
+          } else {
+            return 'none'
+          }
+        },
+        label: {
+          show:true,
+          position: [10,-15],
+          fontSize: 16,
+          formatter (params: any) {
+            if (YLinedata.better.length - 1 === params.dataIndex) {
+              return '一般情況'
+            } else {
+              return ''
+            };
+          }
+        },
+        showSymbol: true,
+        symbolSize: 10,
+        lineStyle: {
+          color: '#438B41'
+        },
+        itemStyle: {
+          color: situationColor.normal
+        },
+        emphasis: {
+          disabled: true
+        },
+        z: 20,
+        data: YLinedata.normal,
+      },
+      {
+        ...scatterSettings,
+        ...labelLine,
+        name: '市場較差情況',
+        type: 'line',
+        symbol: (value: any, params: any) => {
+          if (YLinedata.poor.length - 1 === params.dataIndex) {
+            return 'circle'
+          } else {
+            return 'none'
+          }
+        },
+        symbolSize: 10,
+        label: {
+          show:true,
+          position: [10,-15],
+          fontSize: 16,
+          formatter (params: any) {
+            if (YLinedata.better.length - 1 === params.dataIndex) {
+              return '較差情況'
+            } else {
+              return ''
+            };
+          }
+        },
+        lineStyle: {
+          color: 'none'
+        },
+        itemStyle: {
+          color: situationColor.poor
+        },
+        areaStyle: {
+          color: '#F2EADA', // color of the background
+          opacity: 1 // <--- solution
+        },
+        emphasis: {
+          disabled: true
+        },
+        z: 10,
+        data: YLinedata.poor
+      },
+      {
+        type: 'scatter',
+        data: YLinedata.better,
+        markLine: {
+          symbol: ['none', 'none'],
+          symbolSize: 0,
+          data: [
+            [
+              { 
+                coord: assetCoord[0]
+              },
+              {
+                coord: [assetCoord[0][0],0]
+              }
+            ]
+          ],
+          lineStyle: {
+            type: 'solid',
+            width: 3,
+            color: '#CC9C50'
+          },
+        },
+        itemStyle: {
+          opacity: 0
+        }
+      },
+      {
+        type: 'scatter',
+        markPoint: {
+          symbolSize: 0, // 图形大小
+          label: {
+            show: true,
+            position: [-120, -70],
+            fontWeight: 'bold',
+            fontSize: '16px',
+            color: '#FFFFFF',
+            backgroundColor: situationColor.normal,
+            borderRadius: 5,
+            padding: 8,
+            borderWidth:2,
+            formatter (params: any) {
+              return `資產預計成長到\nNTD $ ${toThousand(Number(assetCoord[1][1] / 10000))} 萬`;
+            }
+          },
+          data: [
+            {
+              coord: assetCoord[1],
+            }
+          ],
+          itemStyle: {
+            color: situationColor.poor
+          },
+        },
+        z:30,
       }
     ]
   };

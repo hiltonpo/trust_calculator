@@ -1,50 +1,42 @@
 <template>
-    <!-- <v-app-bar
-      absolute
-      color="white"
-      elevation="4"
-      height="75px"
-    >
-      <v-app-bar-nav-icon></v-app-bar-nav-icon>
-
-      <v-toolbar-title>Title</v-toolbar-title>
-
-      <v-spacer></v-spacer>
-
-      <v-btn icon>
-        <v-icon>mdi-magnify</v-icon>
-      </v-btn>
-
-      <v-btn icon>
-        <v-icon>mdi-heart</v-icon>
-      </v-btn>
-
-      <v-btn icon>
-        <v-icon>mdi-dots-vertical</v-icon>
-      </v-btn>
-    </v-app-bar> -->
-    <span>
-      <v-navigation-drawer app v-model="drawer" class="sideBar cyan darken-2" dark disable-resize-watcher>
-        <v-list>
-          <template v-for="(item, index) in items">
-            <v-list-item-title :key="index">
-              <v-list-item-content class="ml-3 text">
-                {{item.title}}
-              </v-list-item-content>
-            </v-list-item-title>
-            <v-divider :key="`divider-${index}`" class="my-4"></v-divider>
-          </template>
-        </v-list>
-      </v-navigation-drawer>
+  <v-app-bar class="bar" app color="white" height="70px" elevation="4" hide-on-scroll>
+    <v-row class="mx-0 pa-sm-5 font-weight-medium justify-space-between align-center">
+      <div>
+        <img class="logo" :src="logo" />
+      </div>
+      <div>
+        <div class="text-center text-caption">由 阿爾發證券投資顧問(股)公司 提供</div>
+        <div class="text-center text-caption">110金管投顧新字第027號</div>
+      </div>
+      <!-- <v-col cols="6" sm="4" class="d-flex justify-start align-center">
+        <a :href="hrefHome('./Home.html')" class="d-sm-none">
+          <img class="logo" :src="alphaLogo" />
+        </a>
+      </v-col>
+      <v-col cols="12" sm="4" class="d-sm-flex justify-center d-none">
+        <a :href="hrefHome('./Home.html')">
+          <img class="logo" :src="alphaLogo" />
+        </a>
+      </v-col>
+      <v-col cols="6" sm="4" class="d-flex justify-end align-center">
+        <div class="topRight d-flex justify-end flex-wrap">
+          <span class="alphaAccount">
+            {{ $t('alphaAccount') }}
+          </span>
+          <span>
+            <a class="pl-2 text-decoration-underline cyan--text" @click="href(topBarType)">{{ $t('register') }}</a>
+          </span>
+        </div>
+      </v-col> -->
+    </v-row>
+  </v-app-bar>
+    <!-- <span>
       <v-app-bar app color="grey lighten-4" height="80px" elevation="3">
-        <v-app-bar-nav-icon class="hidden-md-and-up" @click="drawer = !drawer"></v-app-bar-nav-icon>
         <img class="logo" :src="logo" />
         <div class="ml-10 text-h6">信託試算工具</div>
         <v-spacer class="hidden-sm-and-down"></v-spacer>
-        <!-- <v-btn class="hidden-sm-and-down">SIGN IN</v-btn>
-        <v-btn color="brown lighten-3" class="hidden-sm-and-down">JOIN</v-btn> -->
       </v-app-bar>
-    </span>
+    </span> -->
 </template>
 
 <style lang="scss" scoped>
