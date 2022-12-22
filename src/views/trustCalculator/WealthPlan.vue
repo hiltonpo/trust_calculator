@@ -97,7 +97,7 @@
                         </v-form>
                       </span>
                       <span>{{ investOptions[0].unit }} </span>
-                      <v-icon class="ml-2 cursor-pointer" color="grey" small @click.stop="switchEditState('single')">
+                      <v-icon class="ml-2 cursor-pointer" color="black" small @click.stop="switchEditState('single')">
                         {{ edit.single === false ? 'fas fa-edit' : 'fas fa-times-circle'}}
                       </v-icon>
                     </div>
@@ -145,7 +145,7 @@
                         </v-form>
                       </span>
                       <span>{{ investOptions[1].unit }} </span>
-                      <v-icon class="ml-2 cursor-pointer" color="grey" small @click.stop="switchEditState('regular')">
+                      <v-icon class="ml-2 cursor-pointer" color="black" small @click.stop="switchEditState('regular')">
                         {{ edit.regular === false ? 'fas fa-edit' : 'fas fa-times-circle'}}
                       </v-icon>
                     </div>
@@ -287,7 +287,6 @@ export default class WealthPlan extends Vue {
 
   // 文字資料
   private text: any = [];
-  private textDetail: any = [];
 
   // 提醒警告
   private warning = false;
@@ -349,11 +348,13 @@ export default class WealthPlan extends Vue {
     return toThousand(val);
   };
 
+  // 千分位轉換number原型
   private commasToNumber (commas: string) {
     const value = commas.split(',').join('');
     return Number(value) || 0;
   }
 
+  // 加上千分位逗點
   private addCommas (money: number) {
     if (isNaN(Number(money)) === false) return toThousand(money);
     if (isNaN(Number(money)) !== false) return '0';
@@ -385,7 +386,6 @@ export default class WealthPlan extends Vue {
   private textRender = (assetData: any, type: any) => {
     const assetFixedData = assetData.map((item: any) => { return (item / 10000).toFixed(0); });
     if (type === 'lint') {
-      // return [`${retireAge}歲時，資產預期會成長到約TWD＄ ${toThousand(Number(assetFixed))} 萬`, `${retireAge}歲時，你需要的退休金目標約為TWD＄ ${toThousand(Number(retireFixed))} 萬`];
       return [
         ['#A6C7A5', `市場較好情況下，您可能累積到：NTD$ ${toThousand(Number(assetFixedData[0]))}萬`],
         ['#6BB169', `市場一般情況下，您可能累積到：NTD$ ${toThousand(Number(assetFixedData[1]))}萬`],

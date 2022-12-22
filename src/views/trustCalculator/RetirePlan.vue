@@ -114,7 +114,7 @@
                   <span>{{ investOptions[0].unit }} </span>
                   <v-icon
                     class="ml-2 cursor-pointer"
-                    color="grey"
+                    color="black"
                     small
                     @click.stop="switchEditState('single')"
                   >
@@ -172,7 +172,7 @@
                   <span>{{ investOptions[1].unit }} </span>
                   <v-icon
                     class="ml-2 cursor-pointer"
-                    color="grey"
+                    color="black"
                     small
                     @click.stop="switchEditState('regular')"
                   >
@@ -391,7 +391,6 @@ export default class RetirePlan extends Vue {
   private thumbColor = '#F2EADA';
   // 文字資料
   private text: any = [];
-  private textDetail: any = [];
 
   // 提醒警告
   private warning = false;
@@ -437,12 +436,14 @@ export default class RetirePlan extends Vue {
   private thousand (val: any) {
     return toThousand(val);
   }
-
+  
+  // 千分位轉換number原型
   private commasToNumber (commas: string) {
     const value = commas.split(',').join('');
     return Number(value) || 0;
   }
-
+  
+  // 加上千分位逗點
   private addCommas (money: number) {
     if (isNaN(Number(money)) === false) return toThousand(money);
     if (isNaN(Number(money)) !== false) return '0';
@@ -488,7 +489,6 @@ export default class RetirePlan extends Vue {
     kyc: 1,
     nowAge: 35,
     retireAge: 65,
-    ageRange: [35, 65],
     lifeAge: 90,
     invMoney: 100, // 萬
     regMoney: 15000, // 元  (定期先設為零，不確定金額限制)
@@ -554,7 +554,7 @@ export default class RetirePlan extends Vue {
     {
       name: '預期壽命',
       prop: 'lifeAge',
-      max: 100,
+      max: 120,
       min: 0,
       unit: '歲',
       step: 1
@@ -647,13 +647,6 @@ export default class RetirePlan extends Vue {
         );
       };
       this.$nextTick(() => {
-        const string = `<div> 您需要將 單筆投入金額 提升至<span class="red--text font-weight-black"> ${toThousand(
-          Number(deltaInv() / 10000)
-        )} </span>萬，將可以順利提領到<span class="green--text font-weight-bold"> ${
-          this.input.lifeAge
-        } </span>歲</div>`;
-        const complied = template(string);
-        this.textDetail = complied();
         this.warning = true;
         this.suggest = [
           toThousand(Number(deltaInv() / 10000)),
@@ -744,7 +737,7 @@ export default class RetirePlan extends Vue {
     this.optimalSolution(
       withdrawAll,
       afterRetireAssetData.normal.shift(),
-      this.input.ageRange[1] - this.input.ageRange[0]
+      this.input.retireAge - this.input.nowAge
     );
 
     // 圖表RWD
