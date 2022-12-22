@@ -93,27 +93,28 @@ export function retireLineChartOption (markpointSVGpath: string, markpointXY: an
           </div>
         </div>`;
         const compiled = template(string, { imports: { toThousand: toThousand } });
-        return `<div class="text-caption">
-          <p class="pa-2 text-center mb-0 text-h5" style="background-color: #37406C;">
-            ${params[0].axisValueLabel} 歲 得到/需要金額比較
-          </p>
-          <section class="mb-0 pa-3 text-h6">
-            ${colorSpan('#00BCD4')}<strong>預計得到金額</strong></span> <br />
-            ${compiled({ name: params[0].seriesName, value: params[0].data })}
-            ${compiled({ name: params[1].seriesName, value: params[1].data })}
-            ${compiled({ name: params[2].seriesName, value: params[2].data })}
-            <div>
-            ${params[3].data ? `${colorSpan('#FF8F00')}預計需要金額</span> <br />
-            ${compiled({ name: '退休總花費金額', value: params[3].data })}` : ''}
-            </div>
-          </section>
-        </div>`;
+        // return `<div class="text-caption">
+        //   <p class="pa-2 text-center mb-0 text-h5" style="background-color: #37406C;">
+        //     ${params[0].axisValueLabel} 歲 得到/需要金額比較
+        //   </p>
+        //   <section class="mb-0 pa-3 text-h6">
+        //     ${colorSpan('#00BCD4')}<strong>預計得到金額</strong></span> <br />
+        //     ${compiled({ name: params[0].seriesName, value: params[0].data })}
+        //     ${compiled({ name: params[1].seriesName, value: params[1].data })}
+        //     ${compiled({ name: params[2].seriesName, value: params[2].data })}
+        //     <div>
+        //     ${params[3].data ? `${colorSpan('#FF8F00')}預計需要金額</span> <br />
+        //     ${compiled({ name: '退休總花費金額', value: params[3].data })}` : ''}
+        //     </div>
+        //   </section>
+        // </div>`;
+        return '';
       }
     },
     grid: {
-      left: '8%',
-      right: '6%',
-      bottom: '8%',
+      left: '2%',
+      right: '4%',
+      bottom: '4%',
       containLabel: true
     },
     xAxis: [
@@ -121,8 +122,8 @@ export function retireLineChartOption (markpointSVGpath: string, markpointXY: an
         name: '歲數',
         nameLocation: 'middle',
         nameTextStyle: {
-          padding: [26, 0, 0, 0],
-          fontSize: 18,
+          padding: [6, 0, 0, 0],
+          fontSize: 14,
           fontWeight: 'bold'
         },
         type: 'category',
@@ -131,7 +132,7 @@ export function retireLineChartOption (markpointSVGpath: string, markpointXY: an
         postion: 6.5,
         axisLabel: {
           rotate: 0,
-          fontSize: 18,
+          fontSize: 12,
           showMaxLabel: true
         },
         axisTick: {
@@ -147,8 +148,8 @@ export function retireLineChartOption (markpointSVGpath: string, markpointXY: an
         name: '金\n額',
         nameLocation: 'left',
         nameTextStyle: {
-          padding: [0, 190, 180, 0],
-          fontSize: 20,
+          padding: [0, 120, 180, 0],
+          fontSize: 14,
           fontWeight: 'bold'
         },
         type: 'value',
@@ -157,7 +158,8 @@ export function retireLineChartOption (markpointSVGpath: string, markpointXY: an
             return toThousand(params / 10000) + ' 萬';
           },
           margin: 10,
-          fontSize: 18
+          fontSize: 12,
+          // rotate:20
         },
         splitLine: {
           lineStyle: {
@@ -189,7 +191,7 @@ export function retireLineChartOption (markpointSVGpath: string, markpointXY: an
           }
         },
         label: {
-          show: true,
+          show: false,
           position: [10, -15],
           fontSize: 16,
           formatter (params: any) {
@@ -247,7 +249,7 @@ export function retireLineChartOption (markpointSVGpath: string, markpointXY: an
           }
         },
         label: {
-          show: true,
+          show: false,
           position: [10, -15],
           fontSize: 16,
           formatter (params: any) {
@@ -295,7 +297,7 @@ export function retireLineChartOption (markpointSVGpath: string, markpointXY: an
           }
         },
         label: {
-          show: true,
+          show: false,
           position: [10, -15],
           fontSize: 16,
           formatter (params: any) {
@@ -338,6 +340,19 @@ export function retireLineChartOption (markpointSVGpath: string, markpointXY: an
         name: '預計總提領金額',
         type: 'line',
         symbol: 'none',
+        markPoint: {
+          symbolSize: [20, 20], // 图形大小
+          data: [
+            {
+              coord: withdrawCoord,
+              symbolRotate: 50
+            }
+          ],
+          itemStyle: {
+            color: '#CC9C50'
+          }
+        },
+        symbolSize: 50,
         lineStyle: {
           color: '#707070',
           width: 3,
@@ -350,7 +365,7 @@ export function retireLineChartOption (markpointSVGpath: string, markpointXY: an
         emphasis: {
           disabled: true
         },
-        z: -2,
+        z: 2,
         data: YLinedata.withdraw,
         connectNulls: true
       }, {
@@ -480,23 +495,24 @@ export function assetLineChartOption (markpointSVGpath: string, markpointXY: any
           </div>
         </div>`;
         const compiled = template(string, { imports: { toThousand: toThousand } });
-        return `<div class="text-caption">
-          <p class="pa-2 text-center mb-0 text-h5" style="background-color: #37406C;">
-            ${params[0].axisValueLabel} 歲 得到/需要金額比較 ${params[0].dataIndex === assetMarkpointX ? '<span style="color: pink; font-size: 24px"><strong>(已達投資年限)</strong></span>' : ''}
-          </p>
-          <section class="mb-0 pa-3 text-h6">
-            ${colorSpan('#00BCD4')}<strong>預計得到金額</strong></span> <br />
-            ${compiled({ name: params[0].seriesName, value: params[0].data })}
-            ${compiled({ name: params[1].seriesName, value: params[1].data })}
-            ${compiled({ name: params[2].seriesName, value: params[2].data })}
-          </section>
-        </div>`;
+        // return `<div class="text-caption">
+        //   <p class="pa-2 text-center mb-0 text-h5" style="background-color: #37406C;">
+        //     ${params[0].axisValueLabel} 歲 得到/需要金額比較 ${params[0].dataIndex === assetMarkpointX ? '<span style="color: pink; font-size: 24px"><strong>(已達投資年限)</strong></span>' : ''}
+        //   </p>
+        //   <section class="mb-0 pa-3 text-h6">
+        //     ${colorSpan('#00BCD4')}<strong>預計得到金額</strong></span> <br />
+        //     ${compiled({ name: params[0].seriesName, value: params[0].data })}
+        //     ${compiled({ name: params[1].seriesName, value: params[1].data })}
+        //     ${compiled({ name: params[2].seriesName, value: params[2].data })}
+        //   </section>
+        // </div>`;
+        return '';
       }
     },
     grid: {
-      left: '7%',
-      right: '6%',
-      bottom: '8%',
+      left: '2%',
+      right: '4%',
+      bottom: '4%',
       containLabel: true
     },
     xAxis: [
@@ -504,8 +520,8 @@ export function assetLineChartOption (markpointSVGpath: string, markpointXY: any
         name: '歲數',
         nameLocation: 'middle',
         nameTextStyle: {
-          padding: [26, 0, 0, 0],
-          fontSize: 18,
+          padding: [6, 0, 0, 0],
+          fontSize: 14,
           fontWeight: 'bold'
         },
         type: 'category',
@@ -513,7 +529,7 @@ export function assetLineChartOption (markpointSVGpath: string, markpointXY: any
         data: XLinedata,
         postion: 6.5,
         axisLabel: {
-          fontSize: 18,
+          fontSize: 12,
           showMaxLabel: true
         },
         axisTick: {
@@ -529,8 +545,8 @@ export function assetLineChartOption (markpointSVGpath: string, markpointXY: any
         name: '金\n額',
         nameLocation: 'left',
         nameTextStyle: {
-          padding: [0, 150, 180, 0],
-          fontSize: 20,
+          padding: [0, 120, 180, 0],
+          fontSize: 14,
           fontWeight: 'bold'
         },
         type: 'value',
@@ -539,7 +555,7 @@ export function assetLineChartOption (markpointSVGpath: string, markpointXY: any
             return toThousand(params / 10000) + ' 萬';
           },
           margin: 10,
-          fontSize: 18
+          fontSize: 12
         },
         splitLine: {
           lineStyle: {
@@ -564,6 +580,7 @@ export function assetLineChartOption (markpointSVGpath: string, markpointXY: any
         name: '市場較好情況',
         type: 'line',
         symbol: (value: any, params: any) => {
+          // console.log(params)
           if (YLinedata.better.length - 1 === params.dataIndex) {
             return 'circle';
           } else {
@@ -572,7 +589,7 @@ export function assetLineChartOption (markpointSVGpath: string, markpointXY: any
         },
         symbolSize: 10,
         label: {
-          show: true,
+          show: false,
           position: [10, -15],
           fontSize: 16,
           formatter (params: any) {
@@ -617,7 +634,7 @@ export function assetLineChartOption (markpointSVGpath: string, markpointXY: any
           }
         },
         label: {
-          show: true,
+          show: false,
           position: [10, -15],
           fontSize: 16,
           formatter (params: any) {
@@ -656,7 +673,7 @@ export function assetLineChartOption (markpointSVGpath: string, markpointXY: any
         },
         symbolSize: 10,
         label: {
-          show: true,
+          show: false,
           position: [10, -15],
           fontSize: 16,
           formatter (params: any) {
