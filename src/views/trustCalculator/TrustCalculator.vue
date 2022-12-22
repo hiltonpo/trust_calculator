@@ -38,26 +38,26 @@
             <v-row style="height:70px" class="ma-0">
               <v-col cols="6" class="pa-0">
                 <v-btn
-                width="100%" 
+                width="100%"
                 height="100%"
                 :color="plan === 0 ? 'white' : '#00000029'"
-                :style="plan === 0 ?  '' : 'opacity: 53%'"
+                :style="plan === 0 ?  '' : 'opacity: 70%'"
                 @click="choosePlan(0)"
                 >
-                  <span :class="plan === 0 ? 'btnText' : ''" class="aa">
+                  <span :class="plan === 0 ? 'clickOn' : 'hoverOn'" class="btn">
                     退休規劃
                   </span>
                 </v-btn>
               </v-col>
               <v-col cols="6" class="pa-0">
                 <v-btn
-                width="100%" 
+                width="100%"
                 height="100%"
                 :color="plan === 1 ? 'white' : '#00000029'"
-                :style="plan === 1 ?  '' : 'opacity: 53%'"
-                @click="choosePlanOther(1)"
+                :style="plan === 1 ?  '' : 'opacity: 70%'"
+                @click="choosePlan(1)"
                 >
-                  <span :class="plan === 1 ? 'btnText' : ''" class="aa">
+                  <span :class="plan === 1 ? 'clickOn' : 'hoverOn'" class="btn">
                     累積財富
                   </span>
                 </v-btn>
@@ -83,13 +83,12 @@
   background-position: center center;
 }
 
-.aa {
+.hoverOn {
   display: inline-block;
   position: relative;
 }
 
-
-.aa::after {
+.hoverOn::after {
   background: none repeat scroll 0 0 transparent;
   bottom:-20px;
   content: "";
@@ -102,43 +101,47 @@
   width: 0;
 }
 
-.aa:hover::after {
-  width: 100%; 
-  left: 0; 
+.hoverOn:hover::after {
+  width: 100%;
+  left: 0;
 }
 
-
-.btnText {
+.btn:hover {
   color: #CC9C50;
 }
 
-.btnText::after {
-  background: none repeat scroll 0 0 transparent;
+.clickOn {
+  color: #CC9C50;
+  display: inline-block;
+  position: relative;
+}
+
+.clickOn::after {
+    background: none repeat scroll 0 0 transparent;
   bottom:-20px;
   content: "";
   display: block;
   height: 3px;
-  left: 50%;
+  left: 0;
   position: absolute;
   background: #CC9C50;
   transition: width 0.3s ease 0s, left 0.3s ease 0s;
-  width: 0;
+  width: 100%;
 }
-
 
 .v-btn {
   font-size: 20px;
   border-radius: 0;
 }
 
-[class^="pie"] { 
-  stroke-width: 58; 
-  fill: none; 
-  transition: all ease 450ms; 
+[class^="pie"] {
+  stroke-width: 58;
+  fill: none;
+  transition: all ease 450ms;
 }
 
-[class^="pie"]:hover { 
-  stroke-width: 70; border-radius: 4px; 
+[class^="pie"]:hover {
+  stroke-width: 70; border-radius: 4px;
 }
 
 .outline {
@@ -149,41 +152,41 @@
   transition: all ease 450ms 1000ms;
 }
 
-.pie-1 { 
-  stroke-dasharray: 0 628.32; 
-  stroke-dashoffset: 498;  
-  stroke: #8E714F; 
-  transition-delay: 25ms; 
+.pie-1 {
+  stroke-dasharray: 0 628.32;
+  stroke-dashoffset: 498;
+  stroke: #8E714F;
+  transition-delay: 25ms;
 }
-.pie-2 { 
-  stroke-dasharray: 0 628.32; 
-  stroke-dashoffset: 490;  
-  stroke: #CC9C50; 
-  transition-delay: 50ms; 
+.pie-2 {
+  stroke-dasharray: 0 628.32;
+  stroke-dashoffset: 490;
+  stroke: #CC9C50;
+  transition-delay: 50ms;
 }
-.pie-3 { 
-  stroke-dasharray: 0 628.32; 
-  stroke-dashoffset: 560;  
-  stroke: #E8B462; 
-  transition-delay: 75ms; 
+.pie-3 {
+  stroke-dasharray: 0 628.32;
+  stroke-dashoffset: 560;
+  stroke: #E8B462;
+  transition-delay: 75ms;
 }
-.pie-4 { 
-  stroke-dasharray: 0 628.32; 
-  stroke-dashoffset: -69;  
-  stroke: #F5D39C; 
-  transition-delay: 100ms; 
+.pie-4 {
+  stroke-dasharray: 0 628.32;
+  stroke-dashoffset: -69;
+  stroke: #F5D39C;
+  transition-delay: 100ms;
 }
-.pie-5 { 
-  stroke-dasharray: 0 628.32; 
-  stroke-dashoffset:  10;  
-  stroke: #A6C7A5; 
-  transition-delay: 125ms; 
+.pie-5 {
+  stroke-dasharray: 0 628.32;
+  stroke-dashoffset:  10;
+  stroke: #A6C7A5;
+  transition-delay: 125ms;
 }
-.pie-6 { 
-  stroke-dasharray: 0 628.32; 
-  stroke-dashoffset: 164;  
-  stroke: #6BB169; 
-  transition-delay: 150ms; 
+.pie-6 {
+  stroke-dasharray: 0 628.32;
+  stroke-dashoffset: 164;
+  stroke: #6BB169;
+  transition-delay: 150ms;
 }
 
 .animated {
@@ -207,7 +210,6 @@
   height: 400px;
 }
 
-
 </style>
 
 <script lang="ts">
@@ -223,15 +225,15 @@ import * as echarts from 'echarts/core';
 import {
   CanvasRenderer
 } from 'echarts/renderers';
-import RetirePlan from '@/views/trustCalculator/RetirePlan.vue'
-import WealthPlan from '@/views/trustCalculator/WealthPlan.vue'
+import RetirePlan from '@/views/trustCalculator/RetirePlan.vue';
+import WealthPlan from '@/views/trustCalculator/WealthPlan.vue';
 
 import logo from '@/assets/img/logo.png';
 import bg from '@/assets/img/bg.png';
 
 echarts.use([DatasetComponent, TooltipComponent, GridComponent, LegendComponent, ToolboxComponent, CanvasRenderer]);
-Vue.component('RetirePlan', RetirePlan)
-Vue.component('WealthPlan', WealthPlan)
+Vue.component('RetirePlan', RetirePlan);
+Vue.component('WealthPlan', WealthPlan);
 
 @Component({
   setup () {
@@ -242,28 +244,22 @@ Vue.component('WealthPlan', WealthPlan)
   }
 })
 export default class TrustCalculator extends Vue {
-
   private RetirePlan = RetirePlan;
   private WealthPlan = WealthPlan;
-  
+
   private isAnimated = false
 
   private plan = 0;
 
-  private choosePlan(val: any) {
-    this.plan = val
+  private choosePlan (val: any) {
+    this.plan = val;
   }
 
-  private choosePlanOther(val: any) {
-    this.plan = val
-  }
-
-  private created() {
-    setTimeout( () => {
+  private created () {
+    setTimeout(() => {
       this.isAnimated = true;
-    },1000);
+    }, 1000);
   }
-
 }
 
 </script>

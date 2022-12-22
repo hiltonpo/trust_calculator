@@ -2,25 +2,6 @@
   <v-app>
     <v-main class="pt-0">
       <v-container fluid class="px-0 pt-0">
-        <!-- <v-row class="justify-end pb-10">
-              <div class="text-legend pa-6" style="border: 1px solid black">
-                <div class="mb-8">
-                  <span style="display:inline-block;margin-right:20px;border-radius:35px;width:25px;height:25px;background-color:#3cbedd"></span>
-                  <span class="text-content">{{ text[0] }}</span>
-                </div>
-                <div>
-                  <span style="display:inline-block;margin-right:20px;border-radius:35px;width:25px;height:25px;background-color:#878787"></span>
-                  <span class="text-content">{{ text[1] }}</span>
-                </div>
-              </div>
-          </v-row> -->
-        <!-- <v-row class="justify-center my-5 text-h5 blue--text text--lighten-1">
-            <v-card class="mx-4" elevation="4" rounded="xl">
-              <div class="center-text pa-5" :class="warning ? 'warn' : '' ">
-                <p v-html="textDetail" class="my-0"></p>
-              </div>
-            </v-card>
-          </v-row> -->
         <section class="optionArea px-4">
           <v-form ref="form">
             <!-- 風險等級 -->
@@ -50,15 +31,14 @@
               <div
                 v-for="(option, index) in goalOptions"
                 :key="index"
-                class="justify pt-2 justify-center"
-                style="font-size: 17px"
+                class="optionSet justify pt-2 justify-center"
               >
                 <v-row class="justify-space-between px-4 font-weight-medium">
                   <div>{{ option.name }}</div>
                   <div>
                     <span v-if="option.prop === 'withdraw'">NTD$</span>
-                    <span class="font-weight-black">{{ thousand(input[option.prop]) }}</span>
-                    <span class="ml-2">{{ option.unit }}</span>
+                    <span class="font-weight-black mx-1">{{ thousand(input[option.prop]) }}</span>
+                    <span>{{ option.unit }}</span>
                   </div>
                 </v-row>
                 <v-row class="justify-center">
@@ -88,7 +68,7 @@
             </div>
           </v-form>
           <!-- 投入金額：單筆、定期、其他現金準備slider -->
-          <v-row class="align-center px-4 mb-3">
+          <v-row class="switch align-center px-4 mb-3">
             <h2 class="font-weight-bold mr-5">投入金額</h2>
             <div class="d-flex mt-3">
               <v-switch class="mr-5" flat label="單筆" v-model="switchSet.single"> </v-switch>
@@ -105,15 +85,14 @@
           <v-slide-y-transition>
             <div
               v-if="switchSet.single"
-              class="justify pt-2 justify-center"
-              style="font-size: 17px"
+              class="single justify pt-2 justify-center"
             >
               <v-row class="justify-space-between px-4 font-weight-medium">
                 <div>{{ investOptions[0].name }}</div>
                 <div class="d-flex align-baseline">
                   <span>NTD$</span>
                   <span>
-                    <span v-show="edit.single === false" class="font-weight-black">{{
+                    <span v-show="edit.single === false" class="font-weight-black mx-1">{{
                       thousand(input[investOptions[0].prop])
                     }}</span>
                     <v-form v-show="edit.single === true" class="text mt-3 mb-5">
@@ -122,13 +101,17 @@
                         v-model="textSingle"
                         inputmode="numeric"
                         placeholder="輸入投資金額..."
+                        color="cyan"
+                        background-color="white"
+                        rounded
+                        dense
                         outlined
                         :rules="[rules.singleMoney]"
                       >
                       </v-text-field>
                     </v-form>
                   </span>
-                  <span class="ml-2">{{ investOptions[0].unit }} </span>
+                  <span>{{ investOptions[0].unit }} </span>
                   <v-icon
                     class="ml-2 cursor-pointer"
                     color="grey"
@@ -139,16 +122,6 @@
                   </v-icon>
                 </div>
               </v-row>
-              <!-- <v-row class="justify-space-between px-4 font-weight-medium">
-                <div>{{ investOptions[0].name }}</div>
-                <div>
-                  <span>NTD$</span>
-                  <span class="font-weight-black">{{
-                    thousand(input[investOptions[0].prop])
-                  }}</span>
-                  <span class="ml-2">{{ investOptions[0].unit }}</span>
-                </div>
-              </v-row> -->
               <v-row v-show="edit.single === false" class="justify-center">
                 <v-col cols="12" class="pr-0">
                   <div class="slider">
@@ -171,15 +144,14 @@
           <v-slide-y-transition>
             <div
               v-if="switchSet.regular"
-              class="justify pt-2 justify-center"
-              style="font-size: 17px"
+              class="regular justify pt-2 justify-center"
             >
               <v-row class="justify-space-between px-4 font-weight-medium">
                 <div>{{ investOptions[1].name }}</div>
                 <div class="d-flex align-baseline">
                   <span>NTD$</span>
                   <span>
-                    <span v-show="edit.regular === false" class="font-weight-black">{{
+                    <span v-show="edit.regular === false" class="font-weight-black mx-1">{{
                       thousand(input[investOptions[1].prop])
                     }}</span>
                     <v-form v-show="edit.regular === true" class="text mb-6 mt-3">
@@ -188,13 +160,16 @@
                         v-model="textRegular"
                         inputmode="numeric"
                         placeholder="輸入投資金額..."
+                        background-color="white"
+                        rounded
+                        dense
                         outlined
                         :rules="[rules.regularMoney]"
                       >
                       </v-text-field>
                     </v-form>
                   </span>
-                  <span class="ml-2">{{ investOptions[1].unit }} </span>
+                  <span>{{ investOptions[1].unit }} </span>
                   <v-icon
                     class="ml-2 cursor-pointer"
                     color="grey"
@@ -224,13 +199,13 @@
             </div>
           </v-slide-y-transition>
           <!-- 其他現金準備 -->
-          <div class="justify pt-2 justify-center" style="font-size: 17px">
+          <div class="deposit justify pt-2 justify-center">
             <v-row class="justify-space-between px-4 font-weight-medium">
               <div>{{ investOptions[2].name }}</div>
               <div>
                 <span>NTD$</span>
-                <span class="font-weight-black">{{ thousand(input[investOptions[2].prop]) }}</span>
-                <span class="ml-2">{{ investOptions[2].unit }}</span>
+                <span class="font-weight-black mx-1">{{ thousand(input[investOptions[2].prop]) }}</span>
+                <span>{{ investOptions[2].unit }}</span>
               </div>
             </v-row>
             <v-row class="justify-center">
@@ -272,8 +247,8 @@
             <v-card width="100%" elevation="4" rounded="xl">
               <div class="text-legend pa-4">
                 <div class="mb-6 font-weight-bold">退休時，預估退休金:</div>
-                <v-row style="padding: 2px" v-for="(item, index) in text" :key="index">
-                  <div>
+                <v-row style="padding: 2px">
+                  <div v-for="(item, index) in text" :key="index" class="mr-sm-3">
                     <span
                       :style="`display:inline-block;border-radius:10px;width:12px;height:12px;background-color:${item[0]};`"
                     ></span>
@@ -342,38 +317,14 @@
 </template>
 
 <style lang="scss" scoped>
-.text-legend {
-  margin: 0 auto;
-  @media (min-width: 900px) {
-    margin-right: 150px;
-  }
-  .text-content {
-    font-size: 18px;
-    @media (min-width: 900px) {
-      font-size: 20px;
-    }
-  }
+
+.optionSet, .switch, .single, .regular, .deposit {
+  font-size: 17px;
 }
 
 .container {
   max-width: 100%;
   width: 100%;
-}
-
-.center-text {
-  margin: 0 auto;
-  border: 4px solid rgb(0, 89, 255);
-  border-radius: 20px;
-  text-align: center;
-  &.warn {
-    border: 4px solid rgb(255, 0, 0);
-    @media (max-width: 900px) {
-      font-size: 28px;
-    }
-  }
-  @media (max-width: 900px) {
-    font-size: 28px;
-  }
 }
 
 .optionArea {
@@ -409,19 +360,19 @@
 </style>
 
 <script lang="ts">
-import { Component, Vue, Watch, Prop } from "vue-property-decorator";
-import { toThousand, chartDataCalculation } from "@/utility/utility";
-import { template } from "lodash-es";
+import { Component, Vue, Watch, Prop } from 'vue-property-decorator';
+import { toThousand, chartDataCalculation } from '@/utility/utility';
+import { template } from 'lodash-es';
 import {
   DatasetComponent,
   GridComponent,
   LegendComponent,
   ToolboxComponent,
-  TooltipComponent,
-} from "echarts/components";
-import * as echarts from "echarts/core";
-import { CanvasRenderer } from "echarts/renderers";
-import { retireLineChartOption } from "@/views/trustCalculator/echartsOptions";
+  TooltipComponent
+} from 'echarts/components';
+import * as echarts from 'echarts/core';
+import { CanvasRenderer } from 'echarts/renderers';
+import { retireLineChartOption } from '@/views/trustCalculator/echartsOptions';
 
 echarts.use([
   DatasetComponent,
@@ -429,15 +380,15 @@ echarts.use([
   GridComponent,
   LegendComponent,
   ToolboxComponent,
-  CanvasRenderer,
+  CanvasRenderer
 ]);
 
 @Component
 export default class RetirePlan extends Vue {
   // slider bar & track 顏色
-  private barColor = "#CC9C50";
-  private trackColor = "#FFFFFF";
-  private thumbColor = "#F2EADA";
+  private barColor = '#CC9C50';
+  private trackColor = '#FFFFFF';
+  private thumbColor = '#F2EADA';
   // 文字資料
   private text: any = [];
   private textDetail: any = [];
@@ -457,67 +408,67 @@ export default class RetirePlan extends Vue {
   // 單筆、定期開關
   private switchSet = {
     single: true,
-    regular: true,
+    regular: true
   };
 
   private edit: any = {
     fee: false,
     single: false,
-    regular: false,
+    regular: false
   };
 
   // 退休年齡限制
   private rules = {
     nowAge: (value: any) => {
-      return !(value > this.input.retireAge) || "不得大於退休年齡";
+      return !(value > this.input.retireAge) || '不得大於退休年齡';
     },
     lifeAge: (value: any) => {
-      return !(value < this.input.retireAge) || "不得小於退休年齡";
+      return !(value < this.input.retireAge) || '不得小於退休年齡';
     },
     regularMoney: (value: any) => {
-      return this.commasToNumber(value) >= 15000 || `定期定額不得小於NTD$ 15,000元`;
+      return this.commasToNumber(value) >= 15000 || '定期定額不得小於NTD$ 15,000元';
     },
     singleMoney: (value: any) => {
-      return value >= 30 || `單筆投入不得小於NTD$ 30萬`;
-    },
+      return this.commasToNumber(value) >= 30 || '單筆投入不得小於NTD$ 30萬';
+    }
   };
 
   // 千分位
-  private thousand(val: any) {
+  private thousand (val: any) {
     return toThousand(val);
   }
 
-  private commasToNumber(commas: string) {
-    const value = commas.split(",").join("");
+  private commasToNumber (commas: string) {
+    const value = commas.split(',').join('');
     return Number(value) || 0;
   }
 
-  private addCommas(money: number) {
+  private addCommas (money: number) {
     if (isNaN(Number(money)) === false) return toThousand(money);
-    if (isNaN(Number(money)) !== false) return "0";
+    if (isNaN(Number(money)) !== false) return '0';
   }
 
   // 投資狀況
-  public situation = ["better", "normal", "poor", "withdraw"];
+  public situation = ['better', 'normal', 'poor', 'withdraw'];
 
   // 風險屬性文字
   private riskText = [
     {
-      text: "保守型",
-      value: 0,
+      text: '保守型',
+      value: 0
     },
     {
-      text: "穩健型",
-      value: 1,
+      text: '穩健型',
+      value: 1
     },
     {
-      text: "成長型",
-      value: 2,
+      text: '成長型',
+      value: 2
     },
     {
-      text: "積極型",
-      value: 3,
-    },
+      text: '積極型',
+      value: 3
+    }
   ];
 
   // 固定內建參數: 三種投資報酬率(較好、一般、較差)、通膨率、定存利率
@@ -526,10 +477,10 @@ export default class RetirePlan extends Vue {
       [0.021, 0.013, 0.005], // 保守
       [0.064, 0.049, 0.034], // 穩健
       [0.083, 0.065, 0.047], // 成長
-      [0.103, 0.083, 0.063], // 積極
+      [0.103, 0.083, 0.063] // 積極
     ],
     Rinflation: 0.02,
-    Rdeposit: 0,
+    Rdeposit: 0
   };
 
   // 輸入參數 (給予初始預設值): 風險等級、年齡區間、預期壽命、單筆投入、定期定額、其他退休準備(定存)、退休後每月提領金額
@@ -542,7 +493,7 @@ export default class RetirePlan extends Vue {
     invMoney: 100, // 萬
     regMoney: 15000, // 元  (定期先設為零，不確定金額限制)
     deposit: 300, // 萬
-    withdraw: 30000, // 元
+    withdraw: 30000 // 元
   };
 
   private textSingle = this.thousand(this.input.invMoney);
@@ -553,21 +504,20 @@ export default class RetirePlan extends Vue {
     const assetFixedData = assetData.map((item: any) => {
       return (item / 10000).toFixed(0);
     });
-    if (type === "lint") {
-      // return [`${retireAge}歲時，資產預期會成長到約TWD＄ ${toThousand(Number(assetFixed))} 萬`, `${retireAge}歲時，你需要的退休金目標約為TWD＄ ${toThousand(Number(retireFixed))} 萬`];
+    if (type === 'lint') {
       return [
         [
-          "#A6C7A5",
-          `市場較好情況下，您可能累積到：NTD$ ${toThousand(Number(assetFixedData[0]))}萬`,
+          '#A6C7A5',
+          `市場較好情況下，您可能累積到：NTD$ ${toThousand(Number(assetFixedData[0]))}萬`
         ],
         [
-          "#6BB169",
-          `市場一般情況下，您可能累積到：NTD$ ${toThousand(Number(assetFixedData[1]))}萬`,
+          '#6BB169',
+          `市場一般情況下，您可能累積到：NTD$ ${toThousand(Number(assetFixedData[1]))}萬`
         ],
         [
-          "#438B41",
-          `市場較差情況下，您可能累積到：NTD$ ${toThousand(Number(assetFixedData[2]))}萬`,
-        ],
+          '#438B41',
+          `市場較差情況下，您可能累積到：NTD$ ${toThousand(Number(assetFixedData[2]))}萬`
+        ]
       ];
     }
   };
@@ -575,107 +525,88 @@ export default class RetirePlan extends Vue {
   // 調整器設置
   // 風險等級
   private risk = {
-    name: "風險屬性",
-    prop: "kyc",
+    name: '風險屬性',
+    prop: 'kyc',
     max: 3,
     min: 0,
-    unit: "",
-    step: 1,
+    unit: '',
+    step: 1
   };
 
   // 目標設定：現在年齡、退休年齡、預期壽命、退休每月花費
   private goalOptions = [
     {
-      name: "現在年齡",
-      prop: "nowAge",
+      name: '現在年齡',
+      prop: 'nowAge',
       max: 120,
       min: 0,
-      unit: "歲",
-      step: 1,
+      unit: '歲',
+      step: 1
     },
     {
-      name: "退休年齡",
-      prop: "retireAge",
+      name: '退休年齡',
+      prop: 'retireAge',
       max: 120,
       min: 0,
-      unit: "歲",
-      step: 1,
+      unit: '歲',
+      step: 1
     },
     {
-      name: "預期壽命",
-      prop: "lifeAge",
+      name: '預期壽命',
+      prop: 'lifeAge',
       max: 100,
       min: 0,
-      unit: "歲",
-      step: 1,
+      unit: '歲',
+      step: 1
     },
     {
-      name: "退休後每月提領金額",
-      prop: "withdraw",
+      name: '退休後每月提領金額',
+      prop: 'withdraw',
       max: 200000,
       min: 0,
-      unit: "元",
-      step: 1000,
-    },
+      unit: '元',
+      step: 1000
+    }
   ];
 
   // 投入金額: 單、定、其他現金
   private investOptions = [
     {
-      name: "單筆投入金額",
-      prop: "invMoney",
+      name: '單筆投入金額',
+      prop: 'invMoney',
       max: 3000,
       min: 30,
-      unit: "萬",
-      step: 10,
+      unit: '萬',
+      step: 10
     },
     {
-      name: "定期定額投入金額",
-      prop: "regMoney",
+      name: '定期定額投入金額',
+      prop: 'regMoney',
       max: 100000,
       min: 15000,
-      unit: "元",
-      step: 1000,
+      unit: '元',
+      step: 1000
     },
     {
-      name: "其他現金準備",
-      prop: "deposit",
+      name: '其他現金準備',
+      prop: 'deposit',
       max: 2000,
       min: 0,
-      unit: "萬",
-      step: 5,
-    },
+      unit: '萬',
+      step: 5
+    }
   ];
 
-  private switchEditState(type: string) {
-    if (type === "single") {
+  private switchEditState (type: string) {
+    if (type === 'single') {
       this.edit.single = !this.edit.single;
     } else {
       this.edit.regular = !this.edit.regular;
     }
-    // const capitalizedKey = editKey[0].toUpperCase() + editKey.substring(1);
-    // const selectedInput = this.$refs[`input${capitalizedKey}`].$el.querySelector('input');
-
-    // if (boolean === true) {
-    //   const tempInput = document.createElement('input');
-    //   document.body.appendChild(tempInput);
-    //   tempInput.focus();
-    //   this.$set(this.edit, editKey, boolean);
-
-    //   setTimeout(() => {
-    //     selectedInput.focus();
-    //     selectedInput.click();
-    //     // selectedInput.select();
-    //     selectedInput.setSelectionRange(0, this[`slider${capitalizedKey}Commas`].length);
-    //     document.body.removeChild(tempInput);
-    //   }, 100);
-    // }
-
-    // if (boolean === false) this.$set(this.edit, editKey, boolean);
   }
 
   // 讓圖表RWD
-  private chartsResize() {
+  private chartsResize () {
     const resizeAllCharts = () => {
       const graph: any = this.$refs.trustLineChart;
       graph.drawLineChart();
@@ -683,12 +614,12 @@ export default class RetirePlan extends Vue {
 
     setTimeout(() => {
       resizeAllCharts();
-      window.addEventListener("resize", resizeAllCharts);
+      window.addEventListener('resize', resizeAllCharts);
     }, 50);
   }
 
   // 最佳解：假如總提領金額 > 退休前累積資產(市場一般情況)，則計算單筆 或 定期定額 所需要調整的金額大小
-  private optimalSolution(withdrawAll: any, assetBeforeRetire: any, year: any) {
+  private optimalSolution (withdrawAll: any, assetBeforeRetire: any, year: any) {
     const depositRatio = 1 + this.constant.Rdeposit; // 總定存投報率
     const investRatio = 1 + this.constant.Rinvest[this.input.kyc][1]; // 總投資投報率
     const totalDeposit = (t: number) => {
@@ -716,8 +647,6 @@ export default class RetirePlan extends Vue {
         );
       };
       this.$nextTick(() => {
-        //   const string = `<div class="pb-3">您需要將 定期定額投入金額 提升至<span class="red--text font-weight-black"> ${toThousand(Math.round(Number(deltaReg() / 1000)) * 1000)} </span>元 或</div>
-        // <div> 單筆投入金額 提升至<span class="red--text font-weight-black"> ${toThousand(Number(deltaInv() / 10000))} </span>萬，將可以順利提領到<span class="green--text font-weight-bold"> ${this.input.lifeAge} </span>歲</div>`;
         const string = `<div> 您需要將 單筆投入金額 提升至<span class="red--text font-weight-black"> ${toThousand(
           Number(deltaInv() / 10000)
         )} </span>萬，將可以順利提領到<span class="green--text font-weight-bold"> ${
@@ -728,7 +657,7 @@ export default class RetirePlan extends Vue {
         this.warning = true;
         this.suggest = [
           toThousand(Number(deltaInv() / 10000)),
-          toThousand(Math.round(Number(deltaReg() / 1000)) * 1000),
+          toThousand(Math.round(Number(deltaReg() / 1000)) * 1000)
         ];
       });
     }
@@ -737,7 +666,7 @@ export default class RetirePlan extends Vue {
   }
 
   // 構圖：將參數整合並帶入echartsOption.ts
-  private setLineChartData() {
+  private setLineChartData () {
     const [XLineData, YLineData, beforeRetireAssetData, afterRetireAssetData, withdrawAll] =
       chartDataCalculation(this.input, this.situation, this.constant);
 
@@ -749,32 +678,32 @@ export default class RetirePlan extends Vue {
           : withdrawMax.toString();
       };
       const reset = (condition: any) => {
-        if (condition === "upToFive") {
+        if (condition === 'upToFive') {
           return [...axisMax()]
             .map((item: any, index: any) => {
               if (index === 0) {
                 return item;
               } else if (index === 1) {
-                return "5";
+                return '5';
               } else {
-                return "0";
+                return '0';
               }
             })
-            .join("");
-        } else if (condition === "upToOrder") {
+            .join('');
+        } else if (condition === 'upToOrder') {
           return [...axisMax()]
             .map((item: any, index: any) => {
               if (index === 0) {
                 return (Number(item) + 1).toString();
               } else {
-                return "0";
+                return '0';
               }
             })
-            .join("");
+            .join('');
         }
       };
       const temp: any = () => {
-        return [...axisMax()][1] < 5 ? reset("upToFive") : reset("upToOrder");
+        return [...axisMax()][1] < 5 ? reset('upToFive') : reset('upToOrder');
       };
       const order = temp().length - 1;
       return Number((temp() / 10 ** order).toFixed(1)) * 10 ** order;
@@ -782,19 +711,19 @@ export default class RetirePlan extends Vue {
 
     // 目標顯示點 => 顯示累計提領金額、退休前累積資產(一般情況)兩個資料點
     const markpointXY = {
-      name: "座標",
+      name: '座標',
       assetCoord: [
         [this.input.retireAge - this.input.nowAge, beforeRetireAssetData.better.pop()],
         [this.input.retireAge - this.input.nowAge, beforeRetireAssetData.normal.pop()],
-        [this.input.retireAge - this.input.nowAge, beforeRetireAssetData.poor.pop()],
+        [this.input.retireAge - this.input.nowAge, beforeRetireAssetData.poor.pop()]
       ],
       withdrawCoord: [this.input.retireAge - this.input.nowAge, withdrawAll],
-      retireAge: this.input.retireAge,
+      retireAge: this.input.retireAge
     };
 
     // 帶入echartOptions => 五個參數代表: 圖表檔案、標記座標(累積資產最大值)、X軸資料陣列、Y軸資料陣列、Y軸最大值
     this.lineChartOption = retireLineChartOption(
-      "graph",
+      'graph',
       markpointXY,
       XLineData,
       YLineData,
@@ -808,7 +737,7 @@ export default class RetirePlan extends Vue {
         const { better, normal, poor } = YLineData;
         return [better[index], normal[index], poor[index]];
       };
-      this.text = this.textRender(retireAllData(this.input.retireAge - this.input.nowAge), "lint");
+      this.text = this.textRender(retireAllData(this.input.retireAge - this.input.nowAge), 'lint');
     });
 
     // 當總退休資產小於總提領金額，提醒需要調整單筆或定期之金額
@@ -820,11 +749,10 @@ export default class RetirePlan extends Vue {
 
     // 圖表RWD
     this.chartsResize();
-    console.log(YLineData);
   }
 
-  @Watch("edit.single")
-  private singleTurnText() {
+  @Watch('edit.single')
+  private singleTurnText () {
     if (this.edit.single) {
       this.investOptions[0].max = 9999;
       this.investOptions[0].min = 0;
@@ -837,8 +765,8 @@ export default class RetirePlan extends Vue {
     this.textSingle = this.addCommas(this.input.invMoney);
   }
 
-  @Watch("edit.regular")
-  private regularTurnText() {
+  @Watch('edit.regular')
+  private regularTurnText () {
     if (this.edit.regular) {
       this.investOptions[1].max = 1000000;
       this.investOptions[1].min = 0;
@@ -850,41 +778,41 @@ export default class RetirePlan extends Vue {
     this.textRegular = this.addCommas(this.input.regMoney);
   }
 
-  @Watch("textSingle")
-  private textRenderToSingle() {
-    this.input.invMoney = this.commasToNumber(this.textSingle);
+  @Watch('textSingle')
+  private textRenderToSingle () {
+    this.input.invMoney = this.commasToNumber(this.textSingle as any);
   }
 
-  @Watch("textRegular")
-  private textRenderToRegular() {
-    this.input.regMoney = this.commasToNumber(this.textRegular);
+  @Watch('textRegular')
+  private textRenderToRegular () {
+    this.input.regMoney = this.commasToNumber(this.textRegular as any);
   }
 
-  private mounted() {
-    this.lineChartWidth = this.$refs.trustLineChart.lineChart.getWidth();
+  private mounted () {
+    this.lineChartWidth = (this.$refs.trustLineChart as any).lineChart.getWidth();
     this.setLineChartData();
     this.change();
 
     // setTimeout(() => {
     //   this.chartsResize();
     // }, 800);
-    window.addEventListener("resize", () => {
-      this.lineChartWidth = this.$refs.trustLineChart.lineChart.getWidth();
+    window.addEventListener('resize', () => {
+      this.lineChartWidth = (this.$refs.trustLineChart as any).lineChart.getWidth();
       this.chartsResize();
     });
   }
 
-  @Watch("switchSet.single")
-  @Watch("switchSet.regular")
-  @Watch("input.kyc")
-  @Watch("input.nowAge")
-  @Watch("input.retireAge")
-  @Watch("input.lifeAge")
-  @Watch("input.invMoney")
-  @Watch("input.regMoney")
-  @Watch("input.deposit")
-  @Watch("input.withdraw")
-  private change() {
+  @Watch('switchSet.single')
+  @Watch('switchSet.regular')
+  @Watch('input.kyc')
+  @Watch('input.nowAge')
+  @Watch('input.retireAge')
+  @Watch('input.lifeAge')
+  @Watch('input.invMoney')
+  @Watch('input.regMoney')
+  @Watch('input.deposit')
+  @Watch('input.withdraw')
+  private change () {
     if (!this.switchSet.single) {
       this.input.invMoney = 0;
     }
@@ -902,8 +830,8 @@ export default class RetirePlan extends Vue {
     }, 700);
   }
 
-  @Watch("lineChartWidth")
-  private retest() {
+  @Watch('lineChartWidth')
+  private retest () {
     setTimeout(() => {
       this.setLineChartData();
     }, 700);

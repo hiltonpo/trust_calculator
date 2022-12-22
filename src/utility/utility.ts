@@ -44,7 +44,7 @@ export function toThousand (num: number, digits = 0) {
     return `${thousand(number)}.${float}`;
   }
 }
-/******  For 退休計畫  *******/
+/** ****  For 退休計畫  *******/
 //  退休前資產累積  (year為投資第幾年、r為投報率=>好、普通、差)
 function assetBeforeRetire (input: any, constant: any) {
   return (year: number, r: number) => {
@@ -140,8 +140,7 @@ export function chartDataCalculation (input: any, situation: any, constant: any)
   return [XLineData, YLineData, beforeRetireAssetData, afterRetireAssetData, withdrawAll];
 }
 
-
-/******* 財富累積計畫  *******/
+/** ***** 財富累積計畫  *******/
 // 累積資產 (year為退休第幾年、r為投報率=>好、普通、差)
 function asset_Aum (input: any, constant: any) {
   return (year: number, r: number) => {
@@ -172,7 +171,7 @@ export function chartDataCalculation_Aum (input: any, situation: any, constant: 
   // 投資期間(array)： 0 至 目標投資年限
   const invYearData = new Array(input.invYear + 1).fill(0).map((item, index) => index);
 
-  // Y軸資料：累積資產(分成 較好投報率、正常投報率、較差投報率 三條折線) 
+  // Y軸資料：累積資產(分成 較好投報率、正常投報率、較差投報率 三條折線)
   // 另外如果調整風險等級kyc 會有不同種之利率  註:kyc:0(保守), 1(穩健), 2(成長), 3(積極)
   const AssetAumData: any = situation.reduce((all: any, cur: any, Rindex: any) => {
     all[cur] = invYearData.map((year, index) => { return asset_Aum(input, constant)(year, constant.Rinvest[input.kyc][Rindex]); });
@@ -185,10 +184,6 @@ export function chartDataCalculation_Aum (input: any, situation: any, constant: 
 
   return [XLineData, YLineData, AssetAumData];
 }
-
-
-
-
 
 /**
  * 以下兩個函式為 Echarts 升級 版本後修復 Dom 重複 init 警告所用

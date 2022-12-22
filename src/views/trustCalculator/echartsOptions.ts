@@ -4,8 +4,8 @@ import { map, template } from 'lodash-es';
 // import smileFace from '@/assets/img/smileFace.svg';
 import { toThousand } from '@/utility/utility';
 import { preffix } from '@/utility/utility';
-import 'echarts/lib/component/markLine'
-import 'echarts/lib/component/markPoint'
+import 'echarts/lib/component/markLine';
+import 'echarts/lib/component/markPoint';
 import { start } from 'repl';
 
 const chartColor: any = {
@@ -19,14 +19,12 @@ const situationColor: any = {
   better: '#A6C7A5',
   normal: '#6BB169',
   poor: '#438B41'
-}
-
+};
 
 // 退休計畫 圖表的 echart 設定檔
 export function retireLineChartOption (markpointSVGpath: string, markpointXY: any, XLinedata: any, YLinedata: any, max: number, chartWidth: any) {
-
   const breakpoint = 1000;
-  
+
   const labelResizer = function () {
     return {
       x: chartWidth - (chartWidth < breakpoint ? chartWidth < 600 ? 100 : 150 : 250),
@@ -48,14 +46,14 @@ export function retireLineChartOption (markpointSVGpath: string, markpointXY: an
         color: 'black'
       }
     }
-  }
+  };
 
   const [assetMarkpointX, assetMarkpointY] = markpointXY.assetCoord[0];
   const { withdrawCoord, retireAge } = markpointXY;
 
   const start = () => {
-    return 'start'
-  }
+    return 'start';
+  };
 
   const lineChartOption = {
     tooltip: {
@@ -106,7 +104,7 @@ export function retireLineChartOption (markpointSVGpath: string, markpointXY: an
             ${compiled({ name: params[2].seriesName, value: params[2].data })}
             <div>
             ${params[3].data ? `${colorSpan('#FF8F00')}預計需要金額</span> <br />
-            ${compiled({ name: `退休總花費金額`, value: params[3].data })}` : ''}
+            ${compiled({ name: '退休總花費金額', value: params[3].data })}` : ''}
             </div>
           </section>
         </div>`;
@@ -185,20 +183,20 @@ export function retireLineChartOption (markpointSVGpath: string, markpointXY: an
         type: 'line',
         symbol: (value: any, params: any) => {
           if (YLinedata.normal.length - 1 === params.dataIndex) {
-            return 'circle'
+            return 'circle';
           } else {
-            return 'none'
+            return 'none';
           }
         },
         label: {
-          show:true,
-          position: [10,-15],
+          show: true,
+          position: [10, -15],
           fontSize: 16,
           formatter (params: any) {
             if (YLinedata.better.length - 1 === params.dataIndex) {
-              return '較好情況'
+              return '較好情況';
             } else {
-              return ''
+              return '';
             };
           }
         },
@@ -212,7 +210,7 @@ export function retireLineChartOption (markpointSVGpath: string, markpointXY: an
           ],
           itemStyle: {
             color: situationColor.better
-          },
+          }
         },
         lineStyle: {
           color: 'none'
@@ -243,20 +241,20 @@ export function retireLineChartOption (markpointSVGpath: string, markpointXY: an
         symbolSize: 6,
         symbol: (value: any, params: any) => {
           if (YLinedata.normal.length - 1 === params.dataIndex) {
-            return 'circle'
+            return 'circle';
           } else {
-            return 'none'
+            return 'none';
           }
         },
         label: {
-          show:true,
-          position: [10,-15],
+          show: true,
+          position: [10, -15],
           fontSize: 16,
           formatter (params: any) {
             if (YLinedata.better.length - 1 === params.dataIndex) {
-              return '一般情況'
+              return '一般情況';
             } else {
-              return ''
+              return '';
             };
           }
         },
@@ -270,7 +268,7 @@ export function retireLineChartOption (markpointSVGpath: string, markpointXY: an
           ],
           itemStyle: {
             color: situationColor.normal
-          },
+          }
         },
         lineStyle: {
           color: '#438B41'
@@ -291,20 +289,20 @@ export function retireLineChartOption (markpointSVGpath: string, markpointXY: an
         type: 'line',
         symbol: (value: any, params: any) => {
           if (YLinedata.normal.length - 1 === params.dataIndex) {
-            return 'circle'
+            return 'circle';
           } else {
-            return 'none'
+            return 'none';
           }
         },
         label: {
-          show:true,
-          position: [10,-15],
+          show: true,
+          position: [10, -15],
           fontSize: 16,
           formatter (params: any) {
             if (YLinedata.better.length - 1 === params.dataIndex) {
-              return '較差情況'
+              return '較差情況';
             } else {
-              return ''
+              return '';
             };
           }
         },
@@ -318,7 +316,7 @@ export function retireLineChartOption (markpointSVGpath: string, markpointXY: an
           ],
           itemStyle: {
             color: situationColor.poor
-          },
+          }
         },
         lineStyle: {
           color: 'none'
@@ -363,15 +361,15 @@ export function retireLineChartOption (markpointSVGpath: string, markpointXY: an
           symbolSize: 0,
           data: [
             [
-              { 
+              {
                 coord: withdrawCoord
               },
               {
-                coord: [withdrawCoord[0],0]
+                coord: [withdrawCoord[0], 0]
               }
             ],
             [
-              { 
+              {
                 coord: withdrawCoord,
                 lineStyle: {
                   type: 'dotted',
@@ -388,14 +386,14 @@ export function retireLineChartOption (markpointSVGpath: string, markpointXY: an
                   backgroundColor: '#CC9C50',
                   borderRadius: 5,
                   padding: 8,
-                  borderWidth:2,
+                  borderWidth: 2,
                   formatter (params: any) {
-                    return `您需要的退休金\n NTD $ ${toThousand(Number(withdrawCoord[1]  / 10000))} 萬`;
+                    return `您需要的退休金\n NTD $ ${toThousand(Number(withdrawCoord[1] / 10000))} 萬`;
                   }
-                },
+                }
               },
               {
-                coord: [withdrawCoord[0],max],
+                coord: [withdrawCoord[0], max]
               }
             ]
           ],
@@ -403,7 +401,7 @@ export function retireLineChartOption (markpointSVGpath: string, markpointXY: an
             type: 'solid',
             width: 3,
             color: '#CC9C50'
-          },
+          }
         },
         itemStyle: {
           opacity: 0
@@ -414,11 +412,10 @@ export function retireLineChartOption (markpointSVGpath: string, markpointXY: an
   return lineChartOption;
 }
 
-
 // 累積財富計畫 圖表的 echart 設定檔
 export function assetLineChartOption (markpointSVGpath: string, markpointXY: any, XLinedata: any, YLinedata: any, max: number, chartWidth: any) {
   const breakpoint = 1000;
-  
+
   const labelResizer = function () {
     return {
       x: chartWidth - (chartWidth < breakpoint ? chartWidth < 600 ? 100 : 150 : 250),
@@ -440,9 +437,7 @@ export function assetLineChartOption (markpointSVGpath: string, markpointXY: any
         color: 'black'
       }
     }
-  }
-
-
+  };
 
   const [assetMarkpointX, assetMarkpointY] = markpointXY.assetCoord[0];
   const { retireAge, assetCoord } = markpointXY;
@@ -487,7 +482,7 @@ export function assetLineChartOption (markpointSVGpath: string, markpointXY: any
         const compiled = template(string, { imports: { toThousand: toThousand } });
         return `<div class="text-caption">
           <p class="pa-2 text-center mb-0 text-h5" style="background-color: #37406C;">
-            ${params[0].axisValueLabel} 歲 得到/需要金額比較 ${params[0].dataIndex === assetMarkpointX ? `<span style="color: pink; font-size: 24px"><strong>(已達投資年限)</strong></span>`: ''}
+            ${params[0].axisValueLabel} 歲 得到/需要金額比較 ${params[0].dataIndex === assetMarkpointX ? '<span style="color: pink; font-size: 24px"><strong>(已達投資年限)</strong></span>' : ''}
           </p>
           <section class="mb-0 pa-3 text-h6">
             ${colorSpan('#00BCD4')}<strong>預計得到金額</strong></span> <br />
@@ -570,21 +565,21 @@ export function assetLineChartOption (markpointSVGpath: string, markpointXY: any
         type: 'line',
         symbol: (value: any, params: any) => {
           if (YLinedata.better.length - 1 === params.dataIndex) {
-            return 'circle'
+            return 'circle';
           } else {
-            return 'none'
+            return 'none';
           }
         },
         symbolSize: 10,
         label: {
-          show:true,
-          position: [10,-15],
+          show: true,
+          position: [10, -15],
           fontSize: 16,
           formatter (params: any) {
             if (YLinedata.better.length - 1 === params.dataIndex) {
-              return '較好情況'
+              return '較好情況';
             } else {
-              return ''
+              return '';
             };
           }
         },
@@ -592,7 +587,7 @@ export function assetLineChartOption (markpointSVGpath: string, markpointXY: any
           color: 'none'
         },
         itemStyle: {
-          color: situationColor.normal
+          color: situationColor.better
         },
         areaStyle: {
           color: new echarts.graphic.LinearGradient(0, 0, 0, 0.7, [{
@@ -616,20 +611,20 @@ export function assetLineChartOption (markpointSVGpath: string, markpointXY: any
         type: 'line',
         symbol: (value: any, params: any) => {
           if (YLinedata.normal.length - 1 === params.dataIndex) {
-            return 'circle'
+            return 'circle';
           } else {
-            return 'none'
+            return 'none';
           }
         },
         label: {
-          show:true,
-          position: [10,-15],
+          show: true,
+          position: [10, -15],
           fontSize: 16,
           formatter (params: any) {
             if (YLinedata.better.length - 1 === params.dataIndex) {
-              return '一般情況'
+              return '一般情況';
             } else {
-              return ''
+              return '';
             };
           }
         },
@@ -645,7 +640,7 @@ export function assetLineChartOption (markpointSVGpath: string, markpointXY: any
           disabled: true
         },
         z: 20,
-        data: YLinedata.normal,
+        data: YLinedata.normal
       },
       {
         ...scatterSettings,
@@ -654,21 +649,21 @@ export function assetLineChartOption (markpointSVGpath: string, markpointXY: any
         type: 'line',
         symbol: (value: any, params: any) => {
           if (YLinedata.poor.length - 1 === params.dataIndex) {
-            return 'circle'
+            return 'circle';
           } else {
-            return 'none'
+            return 'none';
           }
         },
         symbolSize: 10,
         label: {
-          show:true,
-          position: [10,-15],
+          show: true,
+          position: [10, -15],
           fontSize: 16,
           formatter (params: any) {
             if (YLinedata.better.length - 1 === params.dataIndex) {
-              return '較差情況'
+              return '較差情況';
             } else {
-              return ''
+              return '';
             };
           }
         },
@@ -696,11 +691,11 @@ export function assetLineChartOption (markpointSVGpath: string, markpointXY: any
           symbolSize: 0,
           data: [
             [
-              { 
+              {
                 coord: assetCoord[0]
               },
               {
-                coord: [assetCoord[0][0],0]
+                coord: [assetCoord[0][0], 0]
               }
             ]
           ],
@@ -708,7 +703,7 @@ export function assetLineChartOption (markpointSVGpath: string, markpointXY: any
             type: 'solid',
             width: 3,
             color: '#CC9C50'
-          },
+          }
         },
         itemStyle: {
           opacity: 0
@@ -727,21 +722,21 @@ export function assetLineChartOption (markpointSVGpath: string, markpointXY: any
             backgroundColor: situationColor.normal,
             borderRadius: 5,
             padding: 8,
-            borderWidth:2,
+            borderWidth: 2,
             formatter (params: any) {
               return `資產預計成長到\nNTD $ ${toThousand(Number(assetCoord[1][1] / 10000))} 萬`;
             }
           },
           data: [
             {
-              coord: assetCoord[1],
+              coord: assetCoord[1]
             }
           ],
           itemStyle: {
             color: situationColor.poor
-          },
+          }
         },
-        z:30,
+        z: 30
       }
     ]
   };

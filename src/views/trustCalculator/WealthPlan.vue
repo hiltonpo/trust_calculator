@@ -16,7 +16,7 @@
                   :style="input.kyc === item.value ? '' : 'opacity:40%'"
                   :class="input.kyc === item.value ? 'white--text' : ''"
                   :color="input.kyc === item.value ? '#CC9C50' : '#F7F2E8'"
-                  v-for="(item, index) in riskText" 
+                  v-for="(item, index) in riskText"
                   :key="index"
                   @click="input.kyc = item.value">
                     {{ item.text }}
@@ -25,7 +25,7 @@
               </v-row>
               <!-- 目標設定: 現在年齡、投資期間 -->
               <h2 class="my-6 font-weight-bold ">目標設定</h2>
-              <div v-for="(option, index) in goalOptions" :key="index" class="justify pt-2 justify-center">
+              <div v-for="(option, index) in goalOptions" :key="index" class="optionSet justify pt-2 justify-center">
                 <v-row class="justify-space-between px-4 font-weight-medium">
                   <div>{{ option.name }}</div>
                   <div>
@@ -52,7 +52,7 @@
                 </v-row>
               </div>
               <!-- 投入金額：單筆、定期 -->
-              <v-row class="align-center px-4 mb-3">
+              <v-row class="switch align-center px-4 mb-3">
                 <h2 class="font-weight-bold mr-5">投入金額</h2>
                 <div class="d-flex mt-3">
                   <v-switch
@@ -74,24 +74,29 @@
 
               <!-- 單筆投入金額 -->
               <v-slide-y-transition>
-                <div v-if="switchSet.single" class="justify pt-2 justify-center" style="font-size: 17px">
+                <div v-if="switchSet.single" class="single justify pt-2 justify-center">
                   <v-row class="justify-space-between px-4 font-weight-medium">
                     <div>{{ investOptions[0].name }}</div>
                       <div class="d-flex align-baseline">
                       <span>NTD$</span>
                       <span>
-                        <span v-show="edit.single === false" class="font-weight-black">{{ thousand(input[investOptions[0].prop]) }}</span>                
+                        <span v-show="edit.single === false" class="font-weight-black mx-1">{{ thousand(input[investOptions[0].prop]) }}</span>
                         <v-form v-show="edit.single === true" class="text mt-3 mb-5">
                           <v-text-field
                             ref="inputSingle"
                             v-model="textSingle"
-                            inputmode="numeric" placeholder="輸入投資金額..." outlined
+                            inputmode="numeric"
+                            placeholder="輸入投資金額..."
+                            outlined
+                            background-color="white"
+                            rounded
+                            dense
                             :rules="[rules.singleMoney]"
                             >
                           </v-text-field>
                         </v-form>
                       </span>
-                      <span class="ml-2">{{ investOptions[0].unit }} </span>
+                      <span>{{ investOptions[0].unit }} </span>
                       <v-icon class="ml-2 cursor-pointer" color="grey" small @click.stop="switchEditState('single')">
                         {{ edit.single === false ? 'fas fa-edit' : 'fas fa-times-circle'}}
                       </v-icon>
@@ -115,26 +120,31 @@
                   </v-row>
                 </div>
               </v-slide-y-transition>
-              <!-- 定期定額 --> 
+              <!-- 定期定額 -->
               <v-slide-y-transition>
-                <div v-if="switchSet.regular" class="justify pt-2 justify-center" style="font-size: 17px">
+                <div v-if="switchSet.regular" class="regular justify pt-2 justify-center">
                   <v-row class="justify-space-between px-4 font-weight-medium">
                     <div>{{ investOptions[1].name }}</div>
                     <div class="d-flex align-baseline">
                       <span>NTD$</span>
                       <span>
-                        <span v-show="edit.regular === false" class="font-weight-black">{{ thousand(input[investOptions[1].prop]) }}</span>                
+                        <span v-show="edit.regular === false" class="font-weight-black mx-1">{{ thousand(input[investOptions[1].prop]) }}</span>
                         <v-form v-show="edit.regular === true" class="text mt-3">
                           <v-text-field
                             ref="inputRegular"
                             v-model="textRegular"
-                            inputmode="numeric" placeholder="輸入投資金額..." outlined
+                            inputmode="numeric"
+                            placeholder="輸入投資金額..."
+                            background-color="white"
+                            rounded
+                            dense
+                            outlined
                             :rules="[rules.regularMoney]"
                             >
                           </v-text-field>
                         </v-form>
                       </span>
-                      <span class="ml-2">{{ investOptions[1].unit }} </span>
+                      <span>{{ investOptions[1].unit }} </span>
                       <v-icon class="ml-2 cursor-pointer" color="grey" small @click.stop="switchEditState('regular')">
                         {{ edit.regular === false ? 'fas fa-edit' : 'fas fa-times-circle'}}
                       </v-icon>
@@ -158,32 +168,6 @@
                   </v-row>
                 </div>
               </v-slide-y-transition>
-              <!-- <div v-for="(option, index) in investOptions" :key="'option'+index" class="justify pt-2 justify-center">
-                <v-row class="justify-space-between px-4 font-weight-medium">
-                  <div>{{ option.name }}</div>
-                  <div>
-                    <span>NTD$</span>
-                    <span class="font-weight-black">{{ thousand(input[option.prop]) }}</span>
-                    <span class="ml-2">{{ option.unit }}</span>
-                  </div>
-                </v-row>
-                <v-row class="justify-center">
-                  <v-col cols="12" class="pr-0">
-                    <div class="slider">
-                      <v-slider
-                      v-model="input[option.prop]"
-                      :max="option.max"
-                      :min="option.min"
-                      :step="option.step"
-                      :thumb-color="thumbColor"
-                      :track-color="trackColor"
-                      :color="barColor"
-                      >
-                      </v-slider>
-                    </div>
-                  </v-col>
-                </v-row>
-              </div> -->
             </v-form>
             <!-- 資產模擬 -->
             <h2 class="my-6 font-weight-bold">資產模擬</h2>
@@ -194,21 +178,13 @@
                 :height="'600px'"
                 :lineChartOption="lineChartOption">
               </LineChart>
-              <!-- <div v-else style="height: 1000px;"></div> -->
             </v-row>
-            <!-- <v-row class="justify-center mb-8 text-h5 blue--text text--lighten-1">
-              <v-card class="mx-4" elevation="4" rounded="xl">
-                <div class="center-text pa-5" :class="warning ? 'warn' : '' ">
-                  <p v-html="textDetail" class="my-0"></p>
-                </div>
-              </v-card>
-            </v-row> -->
             <v-row class="mx-1">
               <v-card width="100%" elevation="4" rounded="xl">
                 <div class="text-legend pa-4">
                   <div class="mb-6 font-weight-bold">投資時間到時，預估資產累積: </div>
-                  <v-row style="padding: 2px;" v-for="(item, index) in text" :key="'text'+index">
-                    <div>
+                  <v-row style="padding: 2px;">
+                    <div v-for="(item, index) in text" :key="'text'+index" class="mr-sm-3">
                       <span :style="`display:inline-block;border-radius:10px;width:12px;height:12px;background-color:${item[0]};`"></span>
                       <span class="font-weight-medium" style="margin-left: 2px; font-size:14px">{{item[1]}}</span>
                     </div>
@@ -238,48 +214,15 @@
 </template>
 
 <style lang="scss" scoped>
-.v-container {
-  height: 100%;
-  max-width: min(95vw, 1400px);
 
-  @media screen and (max-width: 414px) {
-    max-width: 95vw;
-  }
-}
-
-.text-legend {
-  margin: 0 auto;
-  @media (min-width: 900px){
-    margin-right: 150px;
-  }
-  .text-content {
-    font-size: 18px;
-    @media (min-width: 900px){
-    font-size: 20px;
-  }
-  }
+.optionSet, .switch, .single, .regular {
+  font-size: 17px;
 }
 
 .container
 {
   max-width: 100%;
   width: 100%;
-}
-
-.center-text {
-  margin: 0 auto;
-  // border: 4px solid rgb(0, 89, 255);
-  // border-radius: 20px;
-  text-align: center;
-  &.warn {
-    border: 4px solid rgb(255, 0, 0);
-    @media (max-width: 900px){
-      font-size: 22px;
-    }
-  }
-  @media (max-width: 900px){
-    font-size: 22px;
-  }
 }
 
 .optionArea {
@@ -338,7 +281,7 @@ echarts.use([DatasetComponent, TooltipComponent, GridComponent, LegendComponent,
 @Component
 export default class WealthPlan extends Vue {
   // slider bar & track 顏色
-  private barColor = '#CC9C50' 
+  private barColor = '#CC9C50'
   private trackColor = '#FFFFFF'
   private thumbColor = '#F2EADA'
 
@@ -366,7 +309,7 @@ export default class WealthPlan extends Vue {
   {
     text: '穩健型',
     value: 1
-  }, 
+  },
   {
     text: '成長型',
     value: 2
@@ -387,7 +330,6 @@ export default class WealthPlan extends Vue {
     regular: false
   }
 
-
   // 現在年齡 + 投資時間 <= 100限制
   private rules = {
     lifeAge: (value: any) => {
@@ -395,10 +337,10 @@ export default class WealthPlan extends Vue {
     },
     required: (value: any) => !!value || '此欄位必填',
     regularMoney: (value: any) => {
-      return this.commasToNumber(value) >= 15000 || `定期定額不得小於NTD$ 15,000元`
+      return this.commasToNumber(value) >= 15000 || '定期定額不得小於NTD$ 15,000元';
     },
     singleMoney: (value: any) => {
-      return value >= 30 || `單筆投入不得小於NTD$ 30萬`
+      return this.commasToNumber(value) >= 30 || '單筆投入不得小於NTD$ 30萬';
     }
   };
 
@@ -420,20 +362,20 @@ export default class WealthPlan extends Vue {
   // 固定內建參數: 各風險等級囊括三種投資報酬率([較好、一般、較差])、通膨率、定存利率
   public constant: object | any = {
     Rinvest: [
-      [0.021, 0.013, 0.005],  // 保守 
-      [0.064, 0.049, 0.034],  // 穩健
-      [0.083, 0.065, 0.047],  // 成長
-      [0.103, 0.083, 0.063]   // 積極
-    ],
+      [0.021, 0.013, 0.005], // 保守
+      [0.064, 0.049, 0.034], // 穩健
+      [0.083, 0.065, 0.047], // 成長
+      [0.103, 0.083, 0.063] // 積極
+    ]
   };
 
   // 輸入參數 (給予初始預設值): 風險等級、現在年齡、預計投資期間、單筆投入、定期定額
   public input = {
-    kyc: 1,   
-    nowAge: 30,                            
-    invYear: 30,                            
+    kyc: 1,
+    nowAge: 30,
+    invYear: 30,
     invMoney: 30, // 萬
-    regMoney: 15000,  // 元 (定期先設為零，不確定金額限制)
+    regMoney: 15000 // 元 (定期先設為零，不確定金額限制)
   };
 
   private textSingle = this.thousand(this.input.invMoney);
@@ -441,14 +383,14 @@ export default class WealthPlan extends Vue {
 
   // 文字動態設置
   private textRender = (assetData: any, type: any) => {
-    const assetFixedData = assetData.map((item: any) => { return (item / 10000).toFixed(0); })
+    const assetFixedData = assetData.map((item: any) => { return (item / 10000).toFixed(0); });
     if (type === 'lint') {
       // return [`${retireAge}歲時，資產預期會成長到約TWD＄ ${toThousand(Number(assetFixed))} 萬`, `${retireAge}歲時，你需要的退休金目標約為TWD＄ ${toThousand(Number(retireFixed))} 萬`];
       return [
         ['#A6C7A5', `市場較好情況下，您可能累積到：NTD$ ${toThousand(Number(assetFixedData[0]))}萬`],
         ['#6BB169', `市場一般情況下，您可能累積到：NTD$ ${toThousand(Number(assetFixedData[1]))}萬`],
-        ['#438B41', `市場較差情況下，您可能累積到：NTD$ ${toThousand(Number(assetFixedData[2]))}萬`],
-      ]
+        ['#438B41', `市場較差情況下，您可能累積到：NTD$ ${toThousand(Number(assetFixedData[2]))}萬`]
+      ];
     }
   }
 
@@ -481,9 +423,9 @@ export default class WealthPlan extends Vue {
       unit: '年',
       step: 1,
       rule: this.rules
-    },
+    }
   ];
-  
+
   // 投入金額：單筆、定期
   private investOptions = [
     {
@@ -501,34 +443,15 @@ export default class WealthPlan extends Vue {
       min: 15000,
       unit: '元',
       step: 1000
-    },
+    }
   ]
 
   private switchEditState (type: string) {
     if (type === 'single') {
-      this.edit.single = !this.edit.single
+      this.edit.single = !this.edit.single;
     } else {
-      this.edit.regular = !this.edit.regular
+      this.edit.regular = !this.edit.regular;
     }
-    // const capitalizedKey = editKey[0].toUpperCase() + editKey.substring(1);
-    // const selectedInput = this.$refs[`input${capitalizedKey}`].$el.querySelector('input');
-
-    // if (boolean === true) {
-    //   const tempInput = document.createElement('input');
-    //   document.body.appendChild(tempInput);
-    //   tempInput.focus();
-    //   this.$set(this.edit, editKey, boolean);
-
-    //   setTimeout(() => {
-    //     selectedInput.focus();
-    //     selectedInput.click();
-    //     // selectedInput.select();
-    //     selectedInput.setSelectionRange(0, this[`slider${capitalizedKey}Commas`].length);
-    //     document.body.removeChild(tempInput);
-    //   }, 100);
-    // }
-
-    // if (boolean === false) this.$set(this.edit, editKey, boolean);
   }
 
   // 讓圖表RWD
@@ -544,42 +467,13 @@ export default class WealthPlan extends Vue {
     }, 50);
   }
 
-  // 最佳解：假如總提領金額 > 退休前累積資產(市場一般情況)，則計算單筆 或 定期定額 所需要調整的金額大小
-  // private optimalSolution (withdrawAll: any, assetBeforeRetire: any, year: any) {
-  //   const depositRatio = 1 + this.constant.Rdeposit; // 總定存投報率
-  //   const investRatio = 1 + this.constant.Rinvest.normal; // 總投資投報率
-  //   const totalDeposit = (t: number) => { // 累積定存資產
-  //     return this.input.deposit * 10000 * (depositRatio ** t);
-  //   };
-  //   if (withdrawAll > assetBeforeRetire) {
-  //     // 只調整單筆金額大小，定期定額設為常數
-  //     const deltaInv = () => {
-  //       return (withdrawAll - (totalDeposit(year) + 12 * this.input.regMoney * ((investRatio) ** (year + 1) - investRatio) / (investRatio - 1))) / (investRatio) ** year;
-  //     };
-  //     // 只調整定期定額金額大小，單筆設為常數
-  //     const deltaReg = () => {
-  //       return (withdrawAll - (totalDeposit(year) + this.input.invMoney * 10000 * investRatio ** year)) * (investRatio - 1) / (12 * ((investRatio) ** (year + 1) - investRatio));
-  //     };
-  //     this.$nextTick(() => {
-  //       const string = `<div class="pb-3">您需要將 定期定額投入金額 提升至<span class="red--text font-weight-black"> ${toThousand(Math.round(Number(deltaReg() / 1000)) * 1000)} </span>元 或</div>
-  //     <div> 單筆投入金額 提升至<span class="red--text font-weight-black"> ${toThousand(Number(deltaInv() / 10000))} </span>萬，將可以順利提領到<span class="green--text font-weight-bold"> ${this.input.lifeAge} </span>歲</div>`;
-  //       const complied = template(string);
-  //       this.textDetail = complied();
-  //       this.warning = true;
-  //     });
-  //   };
-
-  //   this.warning = false;
-  // }
-
   // 構圖：將參數整合並帶入echartsOption.ts
   private setLineChartData () {
-    console.log(this.input.regMoney)
     const [XLineData, YLineData, AssetAumData] = chartDataCalculation_Aum(this.input, this.situation, this.constant);
 
     // Y軸座標最大值Maximum 動態調整 避免過大造成圖表縮小不易閱讀
     const maximum = (assetMax: any) => {
-      const axisMax = () => { return Math.max(...assetMax).toString() };
+      const axisMax = () => { return Math.max(...assetMax).toString(); };
       const reset = (condition: any) => {
         if (condition === 'upToFive') {
           return [...axisMax()].map((item: any, index: any) => { if (index === 0) { return item; } else if (index === 1) { return '5'; } else { return '0'; } }).join('');
@@ -600,66 +494,62 @@ export default class WealthPlan extends Vue {
         [this.input.invYear, AssetAumData.normal[AssetAumData.normal.length - 1]],
         [this.input.invYear, AssetAumData.poor[AssetAumData.poor.length - 1]]
       ],
-      retireAge: this.input.nowAge + this.input.invYear,
+      retireAge: this.input.nowAge + this.input.invYear
     };
 
     // 帶入echartOptions => 五個參數代表: 圖表檔案、標記座標(累積資產最大值)、X軸資料陣列、Y軸資料陣列、Y軸最大值
     this.lineChartOption = assetLineChartOption('graph', markpointXY, XLineData, YLineData, maximum(YLineData.better), this.lineChartWidth);
 
-
     // 文字渲染 右上角 還有 中間
     this.$nextTick(() => {
       const retireAllData = (index: any) => {
-        const {better, normal, poor} = YLineData
-        return [better[index], normal[index], poor[index]]
-      }
+        const { better, normal, poor } = YLineData;
+        return [better[index], normal[index], poor[index]];
+      };
       this.text = this.textRender(retireAllData(this.input.invYear), 'lint');
     });
 
     // 圖表RWD
     this.chartsResize();
-    console.log(YLineData)
   }
 
   @Watch('edit.single')
-  private singleTurnText() {
+  private singleTurnText () {
     if (this.edit.single) {
-      this.investOptions[0].max = 9999
-      this.investOptions[0].min = 0
-      this.investOptions[0].step = 1
+      this.investOptions[0].max = 9999;
+      this.investOptions[0].min = 0;
+      this.investOptions[0].step = 1;
     } else {
-      this.investOptions[0].max = 3000
-      this.investOptions[0].min = 30
-      this.investOptions[0].step = 10
+      this.investOptions[0].max = 3000;
+      this.investOptions[0].min = 30;
+      this.investOptions[0].step = 10;
     }
-    this.textSingle = this.addCommas(this.input.invMoney)
+    this.textSingle = this.addCommas(this.input.invMoney);
   }
 
   @Watch('edit.regular')
-  private regularTurnText() {
+  private regularTurnText () {
     if (this.edit.regular) {
-      this.investOptions[1].max = 1000000
-      this.investOptions[1].min = 0
-      this.investOptions[1].step = 1
+      this.investOptions[1].max = 1000000;
+      this.investOptions[1].min = 0;
+      this.investOptions[1].step = 1;
     } else {
-      this.investOptions[1].max = 100000
-      this.investOptions[1].step = 1000
+      this.investOptions[1].max = 100000;
+      this.investOptions[1].step = 1000;
     }
-    this.textRegular = this.addCommas(this.input.regMoney)
+    this.textRegular = this.addCommas(this.input.regMoney);
   }
 
   @Watch('textSingle')
-  private textRenderToSingle() {
-    this.input.invMoney = this.commasToNumber(this.textSingle)
+  private textRenderToSingle () {
+    this.input.invMoney = this.commasToNumber(this.textSingle as any);
   }
-    
+
   @Watch('textRegular')
-  private textRenderToRegular() {
-    this.input.regMoney = this.commasToNumber(this.textRegular)
+  private textRenderToRegular () {
+    this.input.regMoney = this.commasToNumber(this.textRegular as any);
   }
 
-
-  
   @Watch('switchSet.single')
   @Watch('switchSet.regular')
   @Watch('input.kyc')
@@ -677,22 +567,22 @@ export default class WealthPlan extends Vue {
     this.textRegular = this.addCommas(this.input.regMoney);
     this.textSingle = this.addCommas(this.input.invMoney);
 
-    (this.$refs.form as Vue & { validate: () => boolean }).validate()
-    this.validation = (this.$refs.form as Vue & { validate: () => boolean }).validate()
+    (this.$refs.form as Vue & { validate: () => boolean }).validate();
+    this.validation = (this.$refs.form as Vue & { validate: () => boolean }).validate();
     setTimeout(() => {
       this.setLineChartData();
     }, 700);
   }
 
   @Watch('lineChartWidth')
-  private retest() {
+  private retest () {
     setTimeout(() => {
       this.setLineChartData();
     }, 700);
   }
 
   private mounted () {
-    this.lineChartWidth = this.$refs.trustLineChart.lineChart.getWidth()
+    this.lineChartWidth = (this.$refs.trustLineChart as any).lineChart.getWidth();
     this.setLineChartData();
     this.change();
 
@@ -700,13 +590,10 @@ export default class WealthPlan extends Vue {
     //   this.chartsResize();
     // }, 800);
     window.addEventListener('resize', () => {
-      this.lineChartWidth = this.$refs.trustLineChart.lineChart.getWidth();
+      this.lineChartWidth = (this.$refs.trustLineChart as any).lineChart.getWidth();
       this.chartsResize();
     });
-
-
   }
-
 }
 
 </script>
