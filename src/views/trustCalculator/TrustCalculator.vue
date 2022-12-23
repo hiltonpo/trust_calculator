@@ -5,8 +5,8 @@
         <v-container class="pa-0" fluid>
           <section class="index main-kv overflow-hidden">
             <!-- <div> -->
-              <div id="wrap" :class="isAnimated ? 'animated' : ''" style="margin: 0 auto;">
-                <svg viewbox="0 0 450 400" style="width:100%; height:100%; scale:1.1;">
+              <div id="wrap" :class="isAnimated ? 'animated' : ''">
+                <svg viewbox="20 0 450 400" class="pieChart" preserveAspectRatio="xMinYMin slice">
                   <circle class="outline" r="100" cx="210" cy="200" />
                   <circle class="pie-1" r="100" cx="210" cy="200" />
                   <circle class="pie-2" r="100" cx="210" cy="200" />
@@ -202,12 +202,27 @@
 
 // PRESENTATION
 #wrap {
-  // position: absolute;
-  top: 40%;
-  left: 63%;
-  transform: translate(-2%, 0%);
-  width: 500px;
+  margin: 0 auto;
+  width: 420px;
   height: 400px;
+}
+
+.pieChart {
+  width:100%; 
+  height:100%; 
+  scale:1.1; 
+  
+  @media screen and (max-width: 400px) {
+    transform: translate(-4vw, 0px);
+  }
+
+  @media screen and (max-width: 376px) {
+    transform: translate(-6vw, 0px);
+  }
+
+  @media screen and (max-width: 361px) {
+    transform: translate(-8vw, 0px);
+  }
 }
 
 </style>
