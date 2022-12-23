@@ -36,7 +36,7 @@
                 <v-row class="justify-space-between px-4 font-weight-medium">
                   <div>{{ option.name }}</div>
                   <div>
-                    <span v-if="option.prop === 'withdraw'">NTD$</span>
+                    <span v-if="option.prop === 'withdraw'">{{preffix}}</span>
                     <span class="font-weight-black mx-1">{{ thousand(input[option.prop]) }}</span>
                     <span>{{ option.unit }}</span>
                   </div>
@@ -49,9 +49,9 @@
                         :max="option.max"
                         :min="option.min"
                         :step="option.step"
-                        :thumb-color="thumbColor"
-                        :track-color="trackColor"
-                        :color="barColor"
+                        :thumb-color="sliderColor.thumbColor"
+                        :track-color="sliderColor.trackColor"
+                        :color="sliderColor.barColor"
                         :rules="
                           option.prop === 'nowAge'
                             ? [rules.nowAge]
@@ -90,7 +90,7 @@
               <v-row class="justify-space-between px-4 font-weight-medium">
                 <div>{{ investOptions[0].name }}</div>
                 <div class="d-flex align-baseline">
-                  <span>NTD$</span>
+                  <span>{{preffix}}</span>
                   <span>
                     <span v-show="edit.single === false" class="font-weight-black mx-1">{{
                       thousand(input[investOptions[0].prop])
@@ -130,9 +130,9 @@
                       :max="investOptions[0].max"
                       :min="investOptions[0].min"
                       :step="investOptions[0].step"
-                      :thumb-color="thumbColor"
-                      :track-color="trackColor"
-                      :color="barColor"
+                      :thumb-color="sliderColor.thumbColor"
+                      :track-color="sliderColor.trackColor"
+                      :color="sliderColor.barColor"
                     >
                     </v-slider>
                   </div>
@@ -149,7 +149,7 @@
               <v-row class="justify-space-between px-4 font-weight-medium">
                 <div>{{ investOptions[1].name }}</div>
                 <div class="d-flex align-baseline">
-                  <span>NTD$</span>
+                  <span>{{preffix}}</span>
                   <span>
                     <span v-show="edit.regular === false" class="font-weight-black mx-1">{{
                       thousand(input[investOptions[1].prop])
@@ -188,9 +188,9 @@
                       :max="investOptions[1].max"
                       :min="investOptions[1].min"
                       :step="investOptions[1].step"
-                      :thumb-color="thumbColor"
-                      :track-color="trackColor"
-                      :color="barColor"
+                      :thumb-color="sliderColor.thumbColor"
+                      :track-color="sliderColor.trackColor"
+                      :color="sliderColor.barColor"
                     >
                     </v-slider>
                   </div>
@@ -203,7 +203,7 @@
             <v-row class="justify-space-between px-4 font-weight-medium">
               <div>{{ investOptions[2].name }}</div>
               <div>
-                <span>NTD$</span>
+                <span>{{preffix}}</span>
                 <span class="font-weight-black mx-1">{{ thousand(input[investOptions[2].prop]) }}</span>
                 <span>{{ investOptions[2].unit }}</span>
               </div>
@@ -216,9 +216,9 @@
                     :max="investOptions[2].max"
                     :min="investOptions[2].min"
                     :step="investOptions[2].step"
-                    :thumb-color="thumbColor"
-                    :track-color="trackColor"
-                    :color="barColor"
+                    :thumb-color="sliderColor.thumbColor"
+                    :track-color="sliderColor.trackColor"
+                    :color="sliderColor.barColor"
                   >
                   </v-slider>
                 </div>
@@ -296,8 +296,8 @@
                 <div>定期定額提高至：</div>
               </v-col>
               <v-col class="d-flex flex-column align-end align-sm-center" cols="6">
-                <div>NTD $ {{ suggest[0] }} 萬</div>
-                <div>NTD $ {{ suggest[1] }} 元</div>
+                <div>{{preffix}} {{ suggest[0] }} 萬</div>
+                <div>{{preffix}} {{ suggest[1] }} 元</div>
               </v-col>
             </v-row>
           </div>
@@ -361,8 +361,8 @@
 
 <script lang="ts">
 import { Component, Vue, Watch, Prop } from 'vue-property-decorator';
-import { toThousand, chartDataCalculation } from '@/utility/utility';
-import { template } from 'lodash-es';
+import { toThousand, addCommas, commasToNumber } from '@/utility/utility';
+import { preffix, sliderColor, riskText, parameter, chartDataCalculation, optimalSolution } from '@/views/trustCalculator/trustFormula';
 import {
   DatasetComponent,
   GridComponent,
@@ -385,20 +385,21 @@ echarts.use([
 
 @Component
 export default class RetirePlan extends Vue {
+  // 貨幣單位
+  private preffix = preffix;
+
   // slider bar & track 顏色
-  private barColor = '#CC9C50';
-  private trackColor = '#FFFFFF';
-  private thumbColor = '#F2EADA';
+  private sliderColor = sliderColor;
+
   // 文字資料
   private text: any = [];
 
-  // 提醒警告
+  // 參數建議提醒
   private warning = false;
 
   // 圖表資料
   private lineChartOption = {};
   private lineChartWidth = 0;
-
   private validation = true;
 
   // 參數建議 (如果未達標) [單筆金額、定期金額]
@@ -411,12 +412,31 @@ export default class RetirePlan extends Vue {
   };
 
   private edit: any = {
-    fee: false,
     single: false,
     regular: false
   };
 
-  // 退休年齡限制
+  // 千分位
+  private thousand (val: any) {
+    return toThousand(val);
+  }
+
+  // 投資狀況
+  public situation = ['better', 'normal', 'poor', 'withdraw'];
+
+  // 風險屬性文字
+  private riskText = riskText;
+
+  // 固定內建參數: 三種投資報酬率(較好、一般、較差)、通膨率、定存利率
+  public constant: object | any = parameter('retire', 'constant')
+
+  // 輸入參數 (給予初始預設值): 風險等級、年齡區間、預期壽命、單筆投入、定期定額、其他退休準備(定存)、退休後每月提領金額
+  public input: object | any = parameter('retire', 'input')
+
+  // 單筆 和 定期 手動輸入顯示金額數字
+  private textSingle = toThousand(this.input.invMoney);
+  private textRegular = toThousand(this.input.regMoney);
+
   private rules = {
     nowAge: (value: any) => {
       return !(value > this.input.retireAge) || '不得大於退休年齡';
@@ -425,79 +445,12 @@ export default class RetirePlan extends Vue {
       return !(value < this.input.retireAge) || '不得小於退休年齡';
     },
     regularMoney: (value: any) => {
-      return this.commasToNumber(value) >= 15000 || '定期定額不得小於NTD$ 15,000元';
+      return commasToNumber(value) >= 15000 || `定期定額不得小於${preffix} 15,000元`;
     },
     singleMoney: (value: any) => {
-      return this.commasToNumber(value) >= 30 || '單筆投入不得小於NTD$ 30萬';
+      return commasToNumber(value) >= 30 || `單筆投入不得小於${preffix} 30萬`;
     }
   };
-
-  // 千分位
-  private thousand (val: any) {
-    return toThousand(val);
-  }
-  
-  // 千分位轉換number原型
-  private commasToNumber (commas: string) {
-    const value = commas.split(',').join('');
-    return Number(value) || 0;
-  }
-  
-  // 加上千分位逗點
-  private addCommas (money: number) {
-    if (isNaN(Number(money)) === false) return toThousand(money);
-    if (isNaN(Number(money)) !== false) return '0';
-  }
-
-  // 投資狀況
-  public situation = ['better', 'normal', 'poor', 'withdraw'];
-
-  // 風險屬性文字
-  private riskText = [
-    {
-      text: '保守型',
-      value: 0
-    },
-    {
-      text: '穩健型',
-      value: 1
-    },
-    {
-      text: '成長型',
-      value: 2
-    },
-    {
-      text: '積極型',
-      value: 3
-    }
-  ];
-
-  // 固定內建參數: 三種投資報酬率(較好、一般、較差)、通膨率、定存利率
-  public constant: object | any = {
-    Rinvest: [
-      [0.021, 0.013, 0.005], // 保守
-      [0.064, 0.049, 0.034], // 穩健
-      [0.083, 0.065, 0.047], // 成長
-      [0.103, 0.083, 0.063] // 積極
-    ],
-    Rinflation: 0.02,
-    Rdeposit: 0
-  };
-
-  // 輸入參數 (給予初始預設值): 風險等級、年齡區間、預期壽命、單筆投入、定期定額、其他退休準備(定存)、退休後每月提領金額
-  public input = {
-    kyc: 1,
-    nowAge: 35,
-    retireAge: 65,
-    lifeAge: 90,
-    invMoney: 100, // 萬
-    regMoney: 15000, // 元  (定期先設為零，不確定金額限制)
-    deposit: 300, // 萬
-    withdraw: 30000 // 元
-  };
-
-  private textSingle = this.thousand(this.input.invMoney);
-  private textRegular = this.thousand(this.input.regMoney);
 
   // 文字動態設置
   private textRender = (assetData: any, type: any) => {
@@ -508,15 +461,15 @@ export default class RetirePlan extends Vue {
       return [
         [
           '#A6C7A5',
-          `市場較好情況下，您可能累積到：NTD$ ${toThousand(Number(assetFixedData[0]))}萬`
+          `市場較好情況下，您可能累積到：${preffix} ${toThousand(Number(assetFixedData[0]))}萬`
         ],
         [
           '#6BB169',
-          `市場一般情況下，您可能累積到：NTD$ ${toThousand(Number(assetFixedData[1]))}萬`
+          `市場一般情況下，您可能累積到：${preffix} ${toThousand(Number(assetFixedData[1]))}萬`
         ],
         [
           '#438B41',
-          `市場較差情況下，您可能累積到：NTD$ ${toThousand(Number(assetFixedData[2]))}萬`
+          `市場較差情況下，您可能累積到：${preffix} ${toThousand(Number(assetFixedData[2]))}萬`
         ]
       ];
     }
@@ -618,46 +571,6 @@ export default class RetirePlan extends Vue {
     }, 50);
   }
 
-  // 最佳解：假如總提領金額 > 退休前累積資產(市場一般情況)，則計算單筆 或 定期定額 所需要調整的金額大小
-  private optimalSolution (withdrawAll: any, assetBeforeRetire: any, year: any) {
-    const depositRatio = 1 + this.constant.Rdeposit; // 總定存投報率
-    const investRatio = 1 + this.constant.Rinvest[this.input.kyc][1]; // 總投資投報率
-    const totalDeposit = (t: number) => {
-      // 累積定存資產
-      return this.input.deposit * 10000 * depositRatio ** t;
-    };
-    if (withdrawAll > assetBeforeRetire) {
-      // 只調整單筆金額大小，定期定額設為常數
-      const deltaInv = () => {
-        return (
-          (withdrawAll -
-            (totalDeposit(year) +
-              (12 * this.input.regMoney * (investRatio ** (year + 1) - investRatio)) /
-                (investRatio - 1))) /
-          investRatio ** year
-        );
-      };
-      // 只調整定期定額金額大小，單筆設為常數
-      const deltaReg = () => {
-        return (
-          ((withdrawAll -
-            (totalDeposit(year) + this.input.invMoney * 10000 * investRatio ** year)) *
-            (investRatio - 1)) /
-          (12 * (investRatio ** (year + 1) - investRatio))
-        );
-      };
-      this.$nextTick(() => {
-        this.warning = true;
-        this.suggest = [
-          toThousand(Number(deltaInv() / 10000)),
-          toThousand(Math.round(Number(deltaReg() / 1000)) * 1000)
-        ];
-      });
-    }
-
-    this.warning = false;
-  }
-
   // 構圖：將參數整合並帶入echartsOption.ts
   private setLineChartData () {
     const [XLineData, YLineData, beforeRetireAssetData, afterRetireAssetData, withdrawAll] =
@@ -734,11 +647,14 @@ export default class RetirePlan extends Vue {
     });
 
     // 當總退休資產小於總提領金額，提醒需要調整單筆或定期之金額
-    this.optimalSolution(
+    const [warning, suggest]: Array<any> = optimalSolution(
       withdrawAll,
       afterRetireAssetData.normal.shift(),
       this.input.retireAge - this.input.nowAge
-    );
+    )(this.constant, this.input);
+
+    this.warning = warning;
+    this.suggest = suggest;
 
     // 圖表RWD
     this.chartsResize();
@@ -755,7 +671,7 @@ export default class RetirePlan extends Vue {
       this.investOptions[0].min = 30;
       this.investOptions[0].step = 10;
     }
-    this.textSingle = this.addCommas(this.input.invMoney);
+    this.textSingle = addCommas(this.input.invMoney);
   }
 
   @Watch('edit.regular')
@@ -768,17 +684,17 @@ export default class RetirePlan extends Vue {
       this.investOptions[1].max = 100000;
       this.investOptions[1].step = 1000;
     }
-    this.textRegular = this.addCommas(this.input.regMoney);
+    this.textRegular = addCommas(this.input.regMoney);
   }
 
   @Watch('textSingle')
   private textRenderToSingle () {
-    this.input.invMoney = this.commasToNumber(this.textSingle as any);
+    this.input.invMoney = commasToNumber(this.textSingle as any);
   }
 
   @Watch('textRegular')
   private textRenderToRegular () {
-    this.input.regMoney = this.commasToNumber(this.textRegular as any);
+    this.input.regMoney = commasToNumber(this.textRegular as any);
   }
 
   private mounted () {
@@ -813,8 +729,8 @@ export default class RetirePlan extends Vue {
       this.input.regMoney = 0;
     }
 
-    this.textRegular = this.addCommas(this.input.regMoney);
-    this.textSingle = this.addCommas(this.input.invMoney);
+    this.textRegular = addCommas(this.input.regMoney);
+    this.textSingle = addCommas(this.input.invMoney);
 
     (this.$refs.form as Vue & { validate: () => boolean }).validate();
     this.validation = (this.$refs.form as Vue & { validate: () => boolean }).validate();

@@ -3,7 +3,7 @@ import { map, template } from 'lodash-es';
 
 // import smileFace from '@/assets/img/smileFace.svg';
 import { toThousand } from '@/utility/utility';
-import { preffix } from '@/utility/utility';
+import { preffix } from '@/views/trustCalculator/trustFormula';
 import 'echarts/lib/component/markLine';
 import 'echarts/lib/component/markPoint';
 import { start } from 'repl';
@@ -158,7 +158,7 @@ export function retireLineChartOption (markpointSVGpath: string, markpointXY: an
             return toThousand(params / 10000) + ' 萬';
           },
           margin: 10,
-          fontSize: 12,
+          fontSize: 12
           // rotate:20
         },
         splitLine: {

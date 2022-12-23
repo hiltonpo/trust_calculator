@@ -41,9 +41,9 @@
                       :max="option.max"
                       :min="option.min"
                       :step="option.step"
-                      :thumb-color="thumbColor"
-                      :track-color="trackColor"
-                      :color="barColor"
+                      :thumb-color="sliderColor.thumbColor"
+                      :track-color="sliderColor.trackColor"
+                      :color="sliderColor.barColor"
                       :rules="option.prop === 'invYear' ? [rules.lifeAge] : []"
                       >
                       </v-slider>
@@ -78,7 +78,7 @@
                   <v-row class="justify-space-between px-4 font-weight-medium">
                     <div>{{ investOptions[0].name }}</div>
                       <div class="d-flex align-baseline">
-                      <span>NTD$</span>
+                      <span>{{preffix}}</span>
                       <span>
                         <span v-show="edit.single === false" class="font-weight-black mx-1">{{ thousand(input[investOptions[0].prop]) }}</span>
                         <v-form v-show="edit.single === true" class="text mt-3 mb-5">
@@ -110,9 +110,9 @@
                         :max="investOptions[0].max"
                         :min="investOptions[0].min"
                         :step="investOptions[0].step"
-                        :thumb-color="thumbColor"
-                        :track-color="trackColor"
-                        :color="barColor"
+                        :thumb-color="sliderColor.thumbColor"
+                        :track-color="sliderColor.trackColor"
+                        :color="sliderColor.barColor"
                         >
                         </v-slider>
                       </div>
@@ -126,7 +126,7 @@
                   <v-row class="justify-space-between px-4 font-weight-medium">
                     <div>{{ investOptions[1].name }}</div>
                     <div class="d-flex align-baseline">
-                      <span>NTD$</span>
+                      <span>{{preffix}}</span>
                       <span>
                         <span v-show="edit.regular === false" class="font-weight-black mx-1">{{ thousand(input[investOptions[1].prop]) }}</span>
                         <v-form v-show="edit.regular === true" class="text mt-3">
@@ -158,9 +158,9 @@
                         :max="investOptions[1].max"
                         :min="investOptions[1].min"
                         :step="investOptions[1].step"
-                        :thumb-color="thumbColor"
-                        :track-color="trackColor"
-                        :color="barColor"
+                        :thumb-color="sliderColor.thumbColor"
+                        :track-color="sliderColor.trackColor"
+                        :color="sliderColor.barColor"
                         >
                         </v-slider>
                       </div>
@@ -196,10 +196,6 @@
                   </v-row>
                 </div>
               </v-card>
-            </v-row>
-            <v-row v-if="warning" class="justify-center py-10 text-center font-weight-bold" style="color:#837151">
-              <div>距離您需要的退休金還有一點點距離</div>
-              <div>請參考以下建議調整參數，提高達成機率！</div>
             </v-row>
           </section>
           <div class="optionArea px-4">
@@ -260,7 +256,8 @@ i, button {
 
 <script lang="ts">
 import { Component, Vue, Watch, Prop } from 'vue-property-decorator';
-import { toThousand, chartDataCalculation_Aum } from '@/utility/utility';
+import { toThousand, addCommas, commasToNumber } from '@/utility/utility';
+import { preffix, sliderColor, riskText, parameter, chartDataCalculation_Aum } from '@/views/trustCalculator/trustFormula';
 import { template } from 'lodash-es';
 import {
   DatasetComponent,
@@ -280,43 +277,25 @@ echarts.use([DatasetComponent, TooltipComponent, GridComponent, LegendComponent,
 
 @Component
 export default class WealthPlan extends Vue {
+  // 貨幣單位
+  private preffix = preffix;
+
   // slider bar & track 顏色
-  private barColor = '#CC9C50'
-  private trackColor = '#FFFFFF'
-  private thumbColor = '#F2EADA'
+  private sliderColor = sliderColor;
 
   // 文字資料
   private text: any = [];
 
-  // 提醒警告
-  private warning = false;
-
   // 圖表資料
   private lineChartOption = {};
   private lineChartWidth = 0;
-
   private validation = true;
 
   // 投資狀況
   public situation = ['better', 'normal', 'poor']
 
   // 風險屬性文字
-  private riskText = [{
-    text: '保守型',
-    value: 0
-  },
-  {
-    text: '穩健型',
-    value: 1
-  },
-  {
-    text: '成長型',
-    value: 2
-  },
-  {
-    text: '積極型',
-    value: 3
-  }]
+  private riskText = riskText
 
   // 單筆、定期開關
   private switchSet = {
@@ -329,67 +308,42 @@ export default class WealthPlan extends Vue {
     regular: false
   }
 
-  // 現在年齡 + 投資時間 <= 100限制
+  // 千分位
+  private thousand (val: any) {
+    return toThousand(val);
+  };
+
+  // 固定內建參數: 各風險等級囊括三種投資報酬率([較好、一般、較差])、通膨率、定存利率
+  public constant: object | any = parameter('wealth', 'constant');
+
+  // 輸入參數 (給予初始預設值): 風險等級、現在年齡、預計投資期間、單筆投入、定期定額
+  public input: object | any = parameter('wealth', 'input');
+
+  // 單筆 和 定期 手動輸入顯示金額數字
+  private textSingle = toThousand(this.input.invMoney);
+  private textRegular = toThousand(this.input.regMoney);
+
   private rules = {
     lifeAge: (value: any) => {
       return (value <= 120 - this.input.nowAge) || `不得大於${120 - this.input.nowAge}年`;
     },
     required: (value: any) => !!value || '此欄位必填',
     regularMoney: (value: any) => {
-      return this.commasToNumber(value) >= 15000 || '定期定額不得小於NTD$ 15,000元';
+      return commasToNumber(value) >= 15000 || `定期定額不得小於${preffix} 15,000元`;
     },
     singleMoney: (value: any) => {
-      return this.commasToNumber(value) >= 30 || '單筆投入不得小於NTD$ 30萬';
+      return commasToNumber(value) >= 30 || `單筆投入不得小於${preffix} 30萬`;
     }
   };
-
-  // 千分位
-  private thousand (val: any) {
-    return toThousand(val);
-  };
-
-  // 千分位轉換number原型
-  private commasToNumber (commas: string) {
-    const value = commas.split(',').join('');
-    return Number(value) || 0;
-  }
-
-  // 加上千分位逗點
-  private addCommas (money: number) {
-    if (isNaN(Number(money)) === false) return toThousand(money);
-    if (isNaN(Number(money)) !== false) return '0';
-  }
-
-  // 固定內建參數: 各風險等級囊括三種投資報酬率([較好、一般、較差])、通膨率、定存利率
-  public constant: object | any = {
-    Rinvest: [
-      [0.021, 0.013, 0.005], // 保守
-      [0.064, 0.049, 0.034], // 穩健
-      [0.083, 0.065, 0.047], // 成長
-      [0.103, 0.083, 0.063] // 積極
-    ]
-  };
-
-  // 輸入參數 (給予初始預設值): 風險等級、現在年齡、預計投資期間、單筆投入、定期定額
-  public input = {
-    kyc: 1,
-    nowAge: 30,
-    invYear: 30,
-    invMoney: 30, // 萬
-    regMoney: 15000 // 元 (定期先設為零，不確定金額限制)
-  };
-
-  private textSingle = this.thousand(this.input.invMoney);
-  private textRegular = this.thousand(this.input.regMoney);
 
   // 文字動態設置
   private textRender = (assetData: any, type: any) => {
     const assetFixedData = assetData.map((item: any) => { return (item / 10000).toFixed(0); });
     if (type === 'lint') {
       return [
-        ['#A6C7A5', `市場較好情況下，您可能累積到：NTD$ ${toThousand(Number(assetFixedData[0]))}萬`],
-        ['#6BB169', `市場一般情況下，您可能累積到：NTD$ ${toThousand(Number(assetFixedData[1]))}萬`],
-        ['#438B41', `市場較差情況下，您可能累積到：NTD$ ${toThousand(Number(assetFixedData[2]))}萬`]
+        ['#A6C7A5', `市場較好情況下，您可能累積到：${preffix} ${toThousand(Number(assetFixedData[0]))}萬`],
+        ['#6BB169', `市場一般情況下，您可能累積到：${preffix} ${toThousand(Number(assetFixedData[1]))}萬`],
+        ['#438B41', `市場較差情況下，您可能累積到：${preffix} ${toThousand(Number(assetFixedData[2]))}萬`]
       ];
     }
   }
@@ -524,7 +478,7 @@ export default class WealthPlan extends Vue {
       this.investOptions[0].min = 30;
       this.investOptions[0].step = 10;
     }
-    this.textSingle = this.addCommas(this.input.invMoney);
+    this.textSingle = addCommas(this.input.invMoney);
   }
 
   @Watch('edit.regular')
@@ -537,17 +491,17 @@ export default class WealthPlan extends Vue {
       this.investOptions[1].max = 100000;
       this.investOptions[1].step = 1000;
     }
-    this.textRegular = this.addCommas(this.input.regMoney);
+    this.textRegular = addCommas(this.input.regMoney);
   }
 
   @Watch('textSingle')
   private textRenderToSingle () {
-    this.input.invMoney = this.commasToNumber(this.textSingle as any);
+    this.input.invMoney = commasToNumber(this.textSingle as any);
   }
 
   @Watch('textRegular')
   private textRenderToRegular () {
-    this.input.regMoney = this.commasToNumber(this.textRegular as any);
+    this.input.regMoney = commasToNumber(this.textRegular as any);
   }
 
   @Watch('switchSet.single')
@@ -564,8 +518,8 @@ export default class WealthPlan extends Vue {
     if (!this.switchSet.regular) {
       this.input.regMoney = 0;
     };
-    this.textRegular = this.addCommas(this.input.regMoney);
-    this.textSingle = this.addCommas(this.input.invMoney);
+    this.textRegular = addCommas(this.input.regMoney);
+    this.textSingle = addCommas(this.input.invMoney);
 
     (this.$refs.form as Vue & { validate: () => boolean }).validate();
     this.validation = (this.$refs.form as Vue & { validate: () => boolean }).validate();

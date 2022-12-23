@@ -18,7 +18,7 @@ import * as echarts from 'echarts/core';
 import { forEach } from 'lodash-es';
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 
-import { initEchartsWhenMounted, renderEchartsDom } from '@/utility/utility';
+import { initEchartsWhenMounted, renderEchartsDom } from '@/views/trustCalculator/trustFormula';
 
 @Component
 export default class LineChart extends Vue {
