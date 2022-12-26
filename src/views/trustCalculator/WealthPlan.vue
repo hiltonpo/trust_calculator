@@ -75,18 +75,18 @@
               <!-- 單筆投入金額 -->
               <v-slide-y-transition>
                 <div v-if="switchSet.single" class="single justify pt-2 justify-center">
-                  <v-row class="justify-space-between px-4 font-weight-medium">
+                  <v-row class="justify-space-between align-baseline px-4 font-weight-medium">
                     <div>{{ investOptions[0].name }}</div>
                       <div class="d-flex align-baseline">
                       <span>{{preffix}}</span>
                       <span>
                         <span v-show="edit.single === false" class="font-weight-black mx-1">{{ thousand(input[investOptions[0].prop]) }}</span>
-                        <v-form v-show="edit.single === true" class="text mt-3 mb-5">
+                        <v-form v-show="edit.single === true" class="text mt-3 mb-5 px-1" style="width: 35vw;">
                           <v-text-field
                             ref="inputSingle"
                             v-model="textSingle"
                             inputmode="numeric"
-                            placeholder="輸入投資金額..."
+                            placeholder="請輸入金額"
                             outlined
                             background-color="white"
                             rounded
@@ -98,7 +98,7 @@
                       </span>
                       <span>{{ investOptions[0].unit }} </span>
                       <v-icon class="ml-2 cursor-pointer" color="black" small @click.stop="switchEditState('single')">
-                        {{ edit.single === false ? 'fas fa-edit' : 'fas fa-times-circle'}}
+                        {{ edit.single === false ? 'fas fa-edit' : 'fas fa-sliders-h'}}
                       </v-icon>
                     </div>
                   </v-row>
@@ -123,18 +123,18 @@
               <!-- 定期定額 -->
               <v-slide-y-transition>
                 <div v-if="switchSet.regular" class="regular justify pt-2 justify-center">
-                  <v-row class="justify-space-between px-4 font-weight-medium">
+                  <v-row class="justify-space-between align-baseline px-4 font-weight-medium">
                     <div>{{ investOptions[1].name }}</div>
                     <div class="d-flex align-baseline">
                       <span>{{preffix}}</span>
                       <span>
                         <span v-show="edit.regular === false" class="font-weight-black mx-1">{{ thousand(input[investOptions[1].prop]) }}</span>
-                        <v-form v-show="edit.regular === true" class="text mt-3">
+                        <v-form v-show="edit.regular === true" class="text mt-3 px-1" style="width: 30.4vw;">
                           <v-text-field
                             ref="inputRegular"
                             v-model="textRegular"
                             inputmode="numeric"
-                            placeholder="輸入投資金額..."
+                            placeholder="請輸入金額"
                             background-color="white"
                             rounded
                             dense
@@ -146,7 +146,7 @@
                       </span>
                       <span>{{ investOptions[1].unit }} </span>
                       <v-icon class="ml-2 cursor-pointer" color="black" small @click.stop="switchEditState('regular')">
-                        {{ edit.regular === false ? 'fas fa-edit' : 'fas fa-times-circle'}}
+                        {{ edit.regular === false ? 'fas fa-edit' : 'fas fa-sliders-h'}}
                       </v-icon>
                     </div>
                   </v-row>
@@ -248,10 +248,15 @@ i, button {
   border: 4px #CC9C50 solid !important;
 }
 
-::v-deep .v-messages__message.message-transition-enter-to, ::v-deep .v-messages.theme--light.error--text {
-  font-size: 14px !important;
+::v-deep .v-messages__message {
+  font-size: 12px !important;
+  line-height: 14px !important;
+  min-width: 100px;
 }
 
+::v-deep .theme--light.v-input input {
+  text-align: center;
+}
 </style>
 
 <script lang="ts">
@@ -329,11 +334,11 @@ export default class WealthPlan extends Vue {
     },
     required: (value: any) => !!value || '此欄位必填',
     regularMoney: (value: any) => {
-      return commasToNumber(value) >= 15000 || `定期定額不得小於${preffix} 15,000元`;
+      return commasToNumber(value) >= 3500 || `定期定額不得小於${preffix} 3,500元`;
     },
     singleMoney: (value: any) => {
-      return commasToNumber(value) >= 30 || `單筆投入不得小於${preffix} 30萬`;
-    }
+      return commasToNumber(value) >= 35000 || `單筆投入不得小於${preffix} 35,000元`;
+    },
   };
 
   // 文字動態設置
@@ -385,18 +390,18 @@ export default class WealthPlan extends Vue {
     {
       name: '單筆投入金額',
       prop: 'invMoney',
-      max: 3000,
-      min: 30,
-      unit: '萬',
-      step: 10
+      max: 1000000,
+      min: 35000,
+      unit: '元',
+      step: 1000
     },
     {
       name: '定期定額投入金額',
       prop: 'regMoney',
-      max: 100000,
-      min: 15000,
+      max: 35000,
+      min: 3500,
       unit: '元',
-      step: 1000
+      step: 500
     }
   ]
 
@@ -470,13 +475,13 @@ export default class WealthPlan extends Vue {
   @Watch('edit.single')
   private singleTurnText () {
     if (this.edit.single) {
-      this.investOptions[0].max = 9999;
+      this.investOptions[0].max = 3500000;
       this.investOptions[0].min = 0;
       this.investOptions[0].step = 1;
     } else {
-      this.investOptions[0].max = 3000;
-      this.investOptions[0].min = 30;
-      this.investOptions[0].step = 10;
+      this.investOptions[0].max = 1000000;
+      this.investOptions[0].min = 35000;
+      this.investOptions[0].step = 1000;
     }
     this.textSingle = addCommas(this.input.invMoney);
   }
@@ -484,12 +489,13 @@ export default class WealthPlan extends Vue {
   @Watch('edit.regular')
   private regularTurnText () {
     if (this.edit.regular) {
-      this.investOptions[1].max = 1000000;
+      this.investOptions[1].max = 350000;
       this.investOptions[1].min = 0;
       this.investOptions[1].step = 1;
     } else {
-      this.investOptions[1].max = 100000;
-      this.investOptions[1].step = 1000;
+      this.investOptions[1].max = 35000;
+      this.investOptions[1].min = 3500;
+      this.investOptions[1].step = 500;
     }
     this.textRegular = addCommas(this.input.regMoney);
   }

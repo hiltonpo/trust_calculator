@@ -87,7 +87,7 @@
               v-if="switchSet.single"
               class="single justify pt-2 justify-center"
             >
-              <v-row class="justify-space-between px-4 font-weight-medium">
+              <v-row class="justify-space-between align-baseline px-4 font-weight-medium">
                 <div>{{ investOptions[0].name }}</div>
                 <div class="d-flex align-baseline">
                   <span>{{preffix}}</span>
@@ -95,12 +95,12 @@
                     <span v-show="edit.single === false" class="font-weight-black mx-1">{{
                       thousand(input[investOptions[0].prop])
                     }}</span>
-                    <v-form v-show="edit.single === true" class="text mt-3 mb-5">
+                    <v-form v-show="edit.single === true" class="text mt-3 mb-5 px-1" style="width: 35vw;">
                       <v-text-field
                         ref="inputSingle"
                         v-model="textSingle"
                         inputmode="numeric"
-                        placeholder="輸入投資金額..."
+                        placeholder="請輸入金額"
                         color="cyan"
                         background-color="white"
                         rounded
@@ -118,7 +118,7 @@
                     small
                     @click.stop="switchEditState('single')"
                   >
-                    {{ edit.single === false ? "fas fa-edit" : "fas fa-times-circle" }}
+                    {{ edit.single === false ? "fas fa-edit" : "fas fa-sliders-h" }}
                   </v-icon>
                 </div>
               </v-row>
@@ -146,7 +146,7 @@
               v-if="switchSet.regular"
               class="regular justify pt-2 justify-center"
             >
-              <v-row class="justify-space-between px-4 font-weight-medium">
+              <v-row class="justify-space-between align-baseline px-4 font-weight-medium">
                 <div>{{ investOptions[1].name }}</div>
                 <div class="d-flex align-baseline">
                   <span>{{preffix}}</span>
@@ -154,12 +154,12 @@
                     <span v-show="edit.regular === false" class="font-weight-black mx-1">{{
                       thousand(input[investOptions[1].prop])
                     }}</span>
-                    <v-form v-show="edit.regular === true" class="text mb-6 mt-3">
+                    <v-form v-show="edit.regular === true" class="text mb-6 mt-3 px-1" style="width: 30.4vw;">
                       <v-text-field
                         ref="inputRegular"
                         v-model="textRegular"
                         inputmode="numeric"
-                        placeholder="輸入投資金額..."
+                        placeholder="請輸入金額"
                         background-color="white"
                         rounded
                         dense
@@ -176,7 +176,7 @@
                     small
                     @click.stop="switchEditState('regular')"
                   >
-                    {{ edit.regular === false ? "fas fa-edit" : "fas fa-times-circle" }}
+                    {{ edit.regular === false ? "fas fa-edit" : "fas fa-sliders-h" }}
                   </v-icon>
                 </div>
               </v-row>
@@ -296,8 +296,8 @@
                 <div>定期定額提高至：</div>
               </v-col>
               <v-col class="d-flex flex-column align-end align-sm-center" cols="6">
-                <div>{{preffix}} {{ suggest[0] }} 萬</div>
-                <div>{{preffix}} {{ suggest[1] }} 元</div>
+                <div>約{{preffix}} {{ suggest[0] }} 元</div>
+                <div>約{{preffix}} {{ suggest[1] }} 元</div>
               </v-col>
             </v-row>
           </div>
@@ -353,9 +353,14 @@
   border: 4px #cc9c50 solid !important;
 }
 
-::v-deep .v-messages__message.message-transition-enter-to,
-::v-deep .v-messages.theme--light.error--text {
-  font-size: 12px !important;
+::v-deep .v-messages__message {
+  line-height: 14px !important;
+  min-width: 100px;
+}
+
+::v-deep .theme--light.v-input input {
+  text-align: center;
+  
 }
 </style>
 
@@ -437,6 +442,9 @@ export default class RetirePlan extends Vue {
   private textSingle = toThousand(this.input.invMoney);
   private textRegular = toThousand(this.input.regMoney);
 
+  // 整數regex check
+  private intCheck = /^[0-9]+$/g;
+
   private rules = {
     nowAge: (value: any) => {
       return !(value > this.input.retireAge) || '不得大於退休年齡';
@@ -445,11 +453,11 @@ export default class RetirePlan extends Vue {
       return !(value < this.input.retireAge) || '不得小於退休年齡';
     },
     regularMoney: (value: any) => {
-      return commasToNumber(value) >= 15000 || `定期定額不得小於${preffix} 15,000元`;
+      return commasToNumber(value) >= 3500 || `定期定額不得小於${preffix} 3,500元`;
     },
     singleMoney: (value: any) => {
-      return commasToNumber(value) >= 30 || `單筆投入不得小於${preffix} 30萬`;
-    }
+      return commasToNumber(value) >= 35000 || `單筆投入不得小於${preffix} 35,000元`;
+    },
   };
 
   // 文字動態設置
@@ -515,7 +523,7 @@ export default class RetirePlan extends Vue {
     {
       name: '退休後每月提領金額',
       prop: 'withdraw',
-      max: 200000,
+      max: 20000,
       min: 0,
       unit: '元',
       step: 1000
@@ -527,26 +535,26 @@ export default class RetirePlan extends Vue {
     {
       name: '單筆投入金額',
       prop: 'invMoney',
-      max: 3000,
-      min: 30,
-      unit: '萬',
-      step: 10
-    },
-    {
-      name: '定期定額投入金額',
-      prop: 'regMoney',
-      max: 100000,
-      min: 15000,
+      max: 1000000,
+      min: 35000,
       unit: '元',
       step: 1000
     },
     {
+      name: '定期定額投入金額',
+      prop: 'regMoney',
+      max: 35000,
+      min: 3500,
+      unit: '元',
+      step: 500
+    },
+    {
       name: '其他現金準備',
       prop: 'deposit',
-      max: 2000,
+      max: 1000000,
       min: 0,
-      unit: '萬',
-      step: 5
+      unit: '元',
+      step: 10000
     }
   ];
 
@@ -649,10 +657,10 @@ export default class RetirePlan extends Vue {
     // 當總退休資產小於總提領金額，提醒需要調整單筆或定期之金額
     const [warning, suggest]: Array<any> = optimalSolution(
       withdrawAll,
-      afterRetireAssetData.normal.shift(),
+      YLineData.normal[this.input.retireAge - this.input.nowAge],
       this.input.retireAge - this.input.nowAge
     )(this.constant, this.input);
-
+    
     this.warning = warning;
     this.suggest = suggest;
 
@@ -663,13 +671,13 @@ export default class RetirePlan extends Vue {
   @Watch('edit.single')
   private singleTurnText () {
     if (this.edit.single) {
-      this.investOptions[0].max = 9999;
+      this.investOptions[0].max = 3500000;
       this.investOptions[0].min = 0;
       this.investOptions[0].step = 1;
     } else {
-      this.investOptions[0].max = 3000;
-      this.investOptions[0].min = 30;
-      this.investOptions[0].step = 10;
+      this.investOptions[0].max = 1000000;
+      this.investOptions[0].min = 35000;
+      this.investOptions[0].step = 1000;
     }
     this.textSingle = addCommas(this.input.invMoney);
   }
@@ -677,12 +685,13 @@ export default class RetirePlan extends Vue {
   @Watch('edit.regular')
   private regularTurnText () {
     if (this.edit.regular) {
-      this.investOptions[1].max = 1000000;
+      this.investOptions[1].max = 350000;
       this.investOptions[1].min = 0;
       this.investOptions[1].step = 1;
     } else {
-      this.investOptions[1].max = 100000;
-      this.investOptions[1].step = 1000;
+      this.investOptions[1].max = 35000;
+      this.investOptions[1].min = 3500;
+      this.investOptions[1].step = 500;
     }
     this.textRegular = addCommas(this.input.regMoney);
   }

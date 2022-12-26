@@ -264,7 +264,7 @@ export default class TrustCalculator extends Vue {
 
   private isAnimated = false
 
-  private plan = 0;
+  private plan = 1;
 
   private choosePlan (val: any) {
     this.plan = val;

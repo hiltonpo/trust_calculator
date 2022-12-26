@@ -6,7 +6,6 @@ import { toThousand } from '@/utility/utility';
 import { preffix } from '@/views/trustCalculator/trustFormula';
 import 'echarts/lib/component/markLine';
 import 'echarts/lib/component/markPoint';
-import { start } from 'repl';
 
 const chartColor: any = {
   alpha: '#16b6d2',
@@ -93,22 +92,22 @@ export function retireLineChartOption (markpointSVGpath: string, markpointXY: an
           </div>
         </div>`;
         const compiled = template(string, { imports: { toThousand: toThousand } });
-        // return `<div class="text-caption">
-        //   <p class="pa-2 text-center mb-0 text-h5" style="background-color: #37406C;">
-        //     ${params[0].axisValueLabel} 歲 得到/需要金額比較
-        //   </p>
-        //   <section class="mb-0 pa-3 text-h6">
-        //     ${colorSpan('#00BCD4')}<strong>預計得到金額</strong></span> <br />
-        //     ${compiled({ name: params[0].seriesName, value: params[0].data })}
-        //     ${compiled({ name: params[1].seriesName, value: params[1].data })}
-        //     ${compiled({ name: params[2].seriesName, value: params[2].data })}
-        //     <div>
-        //     ${params[3].data ? `${colorSpan('#FF8F00')}預計需要金額</span> <br />
-        //     ${compiled({ name: '退休總花費金額', value: params[3].data })}` : ''}
-        //     </div>
-        //   </section>
-        // </div>`;
-        return '';
+        return `<div class="text-caption">
+          <p class="pa-2 text-center mb-0 text-h5" style="background-color: #37406C;">
+            ${params[0].axisValueLabel} 歲 得到/需要金額比較
+          </p>
+          <section class="mb-0 pa-3 text-h6">
+            ${colorSpan('#00BCD4')}<strong>預計得到金額</strong></span> <br />
+            ${compiled({ name: params[0].seriesName, value: params[0].data })}
+            ${compiled({ name: params[1].seriesName, value: params[1].data })}
+            ${compiled({ name: params[2].seriesName, value: params[2].data })}
+            <div>
+            ${params[3].data ? `${colorSpan('#FF8F00')}預計需要金額</span> <br />
+            ${compiled({ name: '退休總花費金額', value: params[3].data })}` : ''}
+            </div>
+          </section>
+        </div>`;
+        // return '';
       }
     },
     grid: {
@@ -403,7 +402,7 @@ export function retireLineChartOption (markpointSVGpath: string, markpointXY: an
                   padding: 8,
                   borderWidth: 2,
                   formatter (params: any) {
-                    return `您需要的退休金\n NTD $ ${toThousand(Number(withdrawCoord[1] / 10000))} 萬`;
+                    return `您需要的退休金\n ${preffix} ${toThousand(Number(withdrawCoord[1] / 10000))} 萬`;
                   }
                 }
               },
@@ -537,7 +536,7 @@ export function assetLineChartOption (markpointSVGpath: string, markpointXY: any
         },
         axisLine: {
           onZero: false
-        }
+        },
       }
     ],
     yAxis: [
@@ -570,7 +569,7 @@ export function assetLineChartOption (markpointSVGpath: string, markpointXY: any
           show: false
         },
         max: max,
-        z: -1
+        z: 30
       }
     ],
     series: [
@@ -741,7 +740,7 @@ export function assetLineChartOption (markpointSVGpath: string, markpointXY: any
             padding: 8,
             borderWidth: 2,
             formatter (params: any) {
-              return `資產預計成長到\nNTD $ ${toThousand(Number(assetCoord[1][1] / 10000))} 萬`;
+              return `資產預計成長到\n${preffix} ${toThousand(Number(assetCoord[1][1] / 10000))} 萬`;
             }
           },
           data: [

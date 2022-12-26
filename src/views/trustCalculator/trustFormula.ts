@@ -1,7 +1,7 @@
 import * as echarts from 'echarts/core';
 import { toThousand } from '@/utility/utility';
 
-export const preffix = 'NTD$';
+export const preffix = 'USD$';
 export const suffix = {
   year: '年',
   old: '歲',
@@ -55,10 +55,10 @@ const retireInput = {
   nowAge: 35,
   retireAge: 65,
   lifeAge: 90,
-  invMoney: 100, // 萬
-  regMoney: 15000, // 元
-  deposit: 300, // 萬
-  withdraw: 30000 // 元
+  invMoney: 100000, // 元
+  regMoney: 5000, // 元
+  deposit: 10000, // 元
+  withdraw: 5000 // 元
 };
 
 // 累積財富計畫固定參數 三種投資報酬率(較好、一般、較差)
@@ -71,8 +71,8 @@ const wealthInput = {
   kyc: 1,
   nowAge: 30,
   invYear: 30,
-  invMoney: 30, // 萬
-  regMoney: 15000 // 元
+  invMoney: 100000, // 萬
+  regMoney: 5000 // 元
 };
 
 // 參數設置
@@ -102,10 +102,10 @@ function assetBeforeRetire (input: any, constant: any) {
     const depositRatio = 1 + constant.Rdeposit; // 總定存投報率
     const investRatio = 1 + r; // 總投資投報率
     const totalDeposit = (t: number) => { // 累積定存資產
-      return input.deposit * 10000 * (depositRatio ** year);
+      return input.deposit * (depositRatio ** year);
     };
     const recrusionAssetBefore: any = (year: number, r: number) => { // 累積投資資產
-      const inital = input.invMoney * 10000; // 初始單筆金額
+      const inital = input.invMoney; // 初始單筆金額
       const totalRegMoney = input.regMoney * 12; // 每年定期總額
       const total = (inital + totalRegMoney) * investRatio; // 當年度投資資產 = (初始單筆金額+每年定期累積金額)X年化報酬率
       if (year === 0) {
@@ -131,7 +131,7 @@ function assetAfterRetire (input: any, constant: any) {
     const assetB4Retire = assetBeforeRetire(input, constant)(investYear, r); // 退休前累積資產
 
     // 總加權報酬率(退休後使用的報酬率) = 1 + (累積投資資產 X 總投資投報率 + 累積定存資產 X 總定存投報率) / 總累積資產
-    const avgRatio = 1 + (assetB4Retire * r - input.deposit * 10000 * (depositRatio ** investYear) * investRatio + input.deposit * 10000 * (depositRatio ** investYear) * depositRatio) / assetB4Retire;
+    const avgRatio = 1 + (assetB4Retire * r - input.deposit * (depositRatio ** investYear) * investRatio + input.deposit * (depositRatio ** investYear) * depositRatio) / assetB4Retire;
 
     const recrusionAssetAfter: any = (year: number, r: number) => {
       const inital = assetBeforeRetire(input, constant)(investYear, r); // 初始退休累積資產
@@ -156,7 +156,7 @@ export function optimalSolution (withdrawAll: any, assetBeforeRetire: any, year:
     const investRatio = 1 + constant.Rinvest[input.kyc][1]; // 總投資投報率
     const totalDeposit = (t: number) => {
       // 累積定存資產
-      return input.deposit * 10000 * depositRatio ** t;
+      return input.deposit * depositRatio ** t;
     };
     if (withdrawAll > assetBeforeRetire) {
       // 只調整單筆金額大小，定期定額設為常數
@@ -173,13 +173,13 @@ export function optimalSolution (withdrawAll: any, assetBeforeRetire: any, year:
       const deltaReg = () => {
         return (
           ((withdrawAll -
-            (totalDeposit(year) + input.invMoney * 10000 * investRatio ** year)) *
+            (totalDeposit(year) + input.invMoney * investRatio ** year)) *
             (investRatio - 1)) /
           (12 * (investRatio ** (year + 1) - investRatio))
         );
       };
 
-      return [true, [toThousand(Number(deltaInv() / 10000)), toThousand(Math.round(Number(deltaReg() / 1000)) * 1000)]];
+      return [true, [toThousand(Math.round(Number(deltaInv() / 1000)) * 1000), toThousand(Math.round(Number(deltaReg() / 1000)) * 1000)]];
     }
 
     return [false, []];
@@ -234,7 +234,7 @@ function asset_Aum (input: any, constant: any) {
   return (year: number, r: number) => {
     const investRatio = 1 + r; // 總投資投報率
     const recrusionAsset_Aum: any = (year: number, r: number) => { // 累積投資資產
-      const inital = input.invMoney * 10000; // 初始單筆金額
+      const inital = input.invMoney; // 初始單筆金額
       const totalRegMoney = input.regMoney * 12; // 每年定期總額
       const total = (inital + totalRegMoney) * investRatio; // 當年度投資資產 = (初始單筆金額+每年定期累積金額)X年化報酬率
       if (year === 0) {
