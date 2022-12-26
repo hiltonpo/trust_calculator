@@ -360,7 +360,7 @@
 
 ::v-deep .theme--light.v-input input {
   text-align: center;
-  
+
 }
 </style>
 
@@ -457,7 +457,7 @@ export default class RetirePlan extends Vue {
     },
     singleMoney: (value: any) => {
       return commasToNumber(value) >= 35000 || `單筆投入不得小於${preffix} 35,000元`;
-    },
+    }
   };
 
   // 文字動態設置
@@ -660,7 +660,7 @@ export default class RetirePlan extends Vue {
       YLineData.normal[this.input.retireAge - this.input.nowAge],
       this.input.retireAge - this.input.nowAge
     )(this.constant, this.input);
-    
+
     this.warning = warning;
     this.suggest = suggest;
 

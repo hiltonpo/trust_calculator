@@ -338,7 +338,7 @@ export default class WealthPlan extends Vue {
     },
     singleMoney: (value: any) => {
       return commasToNumber(value) >= 35000 || `單筆投入不得小於${preffix} 35,000元`;
-    },
+    }
   };
 
   // 文字動態設置

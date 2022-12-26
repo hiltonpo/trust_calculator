@@ -536,7 +536,7 @@ export function assetLineChartOption (markpointSVGpath: string, markpointXY: any
         },
         axisLine: {
           onZero: false
-        },
+        }
       }
     ],
     yAxis: [
