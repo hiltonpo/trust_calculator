@@ -83,31 +83,31 @@ export function retireLineChartOption (markpointSVGpath: string, markpointXY: an
       },
       // extraCssText: 'width:550px;max-height:350px;',
       formatter: (params: any) => {
-        const colorSpan = (color: string) => `<span style="display:inline-block;margin-right:5px;border-radius:10px;width:9px;height:9px;background-color:${color}">
-        </span><span style="color: ${color};">`;
-        const string = `<div class="d-flex flex-wrap justify-space-between pb-2">
-          <span class="mr-2"><%= name %></span>
-          <div class="d-flex flex-wrap justify-space-between" style="min-width: 100px">
-            <span class="mr-1">${preffix}</span><span><% print(toThousand(value)); %></span>
-          </div>
-        </div>`;
-        const compiled = template(string, { imports: { toThousand: toThousand } });
-        return `<div class="text-caption">
-          <p class="pa-2 text-center mb-0 text-h5" style="background-color: #37406C;">
-            ${params[0].axisValueLabel} 歲 得到/需要金額比較
-          </p>
-          <section class="mb-0 pa-3 text-h6">
-            ${colorSpan('#00BCD4')}<strong>預計得到金額</strong></span> <br />
-            ${compiled({ name: params[0].seriesName, value: params[0].data })}
-            ${compiled({ name: params[1].seriesName, value: params[1].data })}
-            ${compiled({ name: params[2].seriesName, value: params[2].data })}
-            <div>
-            ${params[3].data ? `${colorSpan('#FF8F00')}預計需要金額</span> <br />
-            ${compiled({ name: '退休總花費金額', value: params[3].data })}` : ''}
-            </div>
-          </section>
-        </div>`;
-        // return '';
+        // const colorSpan = (color: string) => `<span style="display:inline-block;margin-right:5px;border-radius:10px;width:9px;height:9px;background-color:${color}">
+        // </span><span style="color: ${color};">`;
+        // const string = `<div class="d-flex flex-wrap justify-space-between pb-2">
+        //   <span class="mr-2"><%= name %></span>
+        //   <div class="d-flex flex-wrap justify-space-between" style="min-width: 100px">
+        //     <span class="mr-1">${preffix}</span><span><% print(toThousand(value)); %></span>
+        //   </div>
+        // </div>`;
+        // const compiled = template(string, { imports: { toThousand: toThousand } });
+        // return `<div class="text-caption">
+        //   <p class="pa-2 text-center mb-0 text-h5" style="background-color: #37406C;">
+        //     ${params[0].axisValueLabel} 歲 得到/需要金額比較
+        //   </p>
+        //   <section class="mb-0 pa-3 text-h6">
+        //     ${colorSpan('#00BCD4')}<strong>預計得到金額</strong></span> <br />
+        //     ${compiled({ name: params[0].seriesName, value: params[0].data })}
+        //     ${compiled({ name: params[1].seriesName, value: params[1].data })}
+        //     ${compiled({ name: params[2].seriesName, value: params[2].data })}
+        //     <div>
+        //     ${params[3].data ? `${colorSpan('#FF8F00')}預計需要金額</span> <br />
+        //     ${compiled({ name: '退休總花費金額', value: params[3].data })}` : ''}
+        //     </div>
+        //   </section>
+        // </div>`;
+        return '';
       }
     },
     grid: {
