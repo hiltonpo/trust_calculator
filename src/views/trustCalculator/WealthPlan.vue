@@ -45,6 +45,7 @@
                       :track-color="sliderColor.trackColor"
                       :color="sliderColor.barColor"
                       :rules="option.prop === 'invYear' ? [rules.lifeAge] : []"
+                      @mouseup="sliderFinish"
                       >
                       </v-slider>
                     </div>
@@ -92,6 +93,7 @@
                             rounded
                             dense
                             :rules="[rules.singleMoney]"
+                            @change="sliderFinish"
                             >
                           </v-text-field>
                         </v-form>
@@ -113,6 +115,7 @@
                         :thumb-color="sliderColor.thumbColor"
                         :track-color="sliderColor.trackColor"
                         :color="sliderColor.barColor"
+                        @mouseup="sliderFinish"
                         >
                         </v-slider>
                       </div>
@@ -140,6 +143,7 @@
                             dense
                             outlined
                             :rules="[rules.regularMoney]"
+                            @change="sliderFinish"
                             >
                           </v-text-field>
                         </v-form>
@@ -161,6 +165,7 @@
                         :thumb-color="sliderColor.thumbColor"
                         :track-color="sliderColor.trackColor"
                         :color="sliderColor.barColor"
+                        @mouseup="sliderFinish"
                         >
                         </v-slider>
                       </div>
@@ -406,6 +411,7 @@ export default class WealthPlan extends Vue {
   ]
 
   private switchEditState (type: string) {
+    this.sliderFinish();
     if (type === 'single') {
       this.edit.single = !this.edit.single;
     } else {
@@ -510,20 +516,14 @@ export default class WealthPlan extends Vue {
     this.input.regMoney = commasToNumber(this.textRegular as any);
   }
 
-  @Watch('switchSet.single')
-  @Watch('switchSet.regular')
-  @Watch('input.kyc')
-  @Watch('input.nowAge')
-  @Watch('input.invYear')
-  @Watch('input.invMoney')
-  @Watch('input.regMoney')
-  private change () {
+  private sliderFinish () {
     if (!this.switchSet.single) {
       this.input.invMoney = 0;
-    };
+    }
     if (!this.switchSet.regular) {
       this.input.regMoney = 0;
-    };
+    }
+
     this.textRegular = addCommas(this.input.regMoney);
     this.textSingle = addCommas(this.input.invMoney);
 
@@ -532,6 +532,38 @@ export default class WealthPlan extends Vue {
     setTimeout(() => {
       this.setLineChartData();
     }, 700);
+  }
+
+  @Watch('switchSet.single')
+  @Watch('switchSet.regular')
+  @Watch('input.kyc')
+  // @Watch('input.nowAge')
+  // @Watch('input.invYear')
+  // @Watch('input.invMoney')
+  // @Watch('input.regMoney')
+  private change () {
+    this.sliderFinish();
+    // if (!this.switchSet.single) {
+    //   this.input.invMoney = 0;
+    // };
+    // if (!this.switchSet.regular) {
+    //   this.input.regMoney = 0;
+    // };
+    // this.textRegular = addCommas(this.input.regMoney);
+    // this.textSingle = addCommas(this.input.invMoney);
+
+    // (this.$refs.form as Vue & { validate: () => boolean }).validate();
+    // this.validation = (this.$refs.form as Vue & { validate: () => boolean }).validate();
+    // setTimeout(() => {
+    //   this.setLineChartData();
+    // }, 700);
+  }
+
+  @Watch('input.invMoney')
+  @Watch('input.regMoney')
+  private addComma () {
+    this.textRegular = addCommas(this.input.regMoney);
+    this.textSingle = addCommas(this.input.invMoney);
   }
 
   @Watch('lineChartWidth')
@@ -544,7 +576,8 @@ export default class WealthPlan extends Vue {
   private mounted () {
     this.lineChartWidth = (this.$refs.trustLineChart as any).lineChart.getWidth();
     this.setLineChartData();
-    this.change();
+    // this.change();
+    this.sliderFinish();
 
     // setTimeout(() => {
     //   this.chartsResize();

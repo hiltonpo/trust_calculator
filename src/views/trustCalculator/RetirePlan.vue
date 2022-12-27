@@ -59,6 +59,7 @@
                             ? [rules.lifeAge]
                             : []
                         "
+                        @mouseup="sliderFinish"
                       >
                       </v-slider>
                     </div>
@@ -107,6 +108,7 @@
                         dense
                         outlined
                         :rules="[rules.singleMoney]"
+                        @change="sliderFinish"
                       >
                       </v-text-field>
                     </v-form>
@@ -133,6 +135,7 @@
                       :thumb-color="sliderColor.thumbColor"
                       :track-color="sliderColor.trackColor"
                       :color="sliderColor.barColor"
+                      @mouseup="sliderFinish"
                     >
                     </v-slider>
                   </div>
@@ -165,6 +168,7 @@
                         dense
                         outlined
                         :rules="[rules.regularMoney]"
+                        @change="sliderFinish"
                       >
                       </v-text-field>
                     </v-form>
@@ -191,6 +195,7 @@
                       :thumb-color="sliderColor.thumbColor"
                       :track-color="sliderColor.trackColor"
                       :color="sliderColor.barColor"
+                      @mouseup="sliderFinish"
                     >
                     </v-slider>
                   </div>
@@ -219,6 +224,7 @@
                     :thumb-color="sliderColor.thumbColor"
                     :track-color="sliderColor.trackColor"
                     :color="sliderColor.barColor"
+                    @mouseup="sliderFinish"
                   >
                   </v-slider>
                 </div>
@@ -390,6 +396,10 @@ echarts.use([
 
 @Component
 export default class RetirePlan extends Vue {
+  private test () {
+    console.log('123');
+  }
+
   // 貨幣單位
   private preffix = preffix;
 
@@ -559,6 +569,7 @@ export default class RetirePlan extends Vue {
   ];
 
   private switchEditState (type: string) {
+    this.sliderFinish();
     if (type === 'single') {
       this.edit.single = !this.edit.single;
     } else {
@@ -709,7 +720,8 @@ export default class RetirePlan extends Vue {
   private mounted () {
     this.lineChartWidth = (this.$refs.trustLineChart as any).lineChart.getWidth();
     this.setLineChartData();
-    this.change();
+    // this.change();
+    this.sliderFinish();
 
     // setTimeout(() => {
     //   this.chartsResize();
@@ -720,17 +732,7 @@ export default class RetirePlan extends Vue {
     });
   }
 
-  @Watch('switchSet.single')
-  @Watch('switchSet.regular')
-  @Watch('input.kyc')
-  @Watch('input.nowAge')
-  @Watch('input.retireAge')
-  @Watch('input.lifeAge')
-  @Watch('input.invMoney')
-  @Watch('input.regMoney')
-  @Watch('input.deposit')
-  @Watch('input.withdraw')
-  private change () {
+  private sliderFinish () {
     if (!this.switchSet.single) {
       this.input.invMoney = 0;
     }
@@ -746,6 +748,42 @@ export default class RetirePlan extends Vue {
     setTimeout(() => {
       this.setLineChartData();
     }, 700);
+  }
+
+  @Watch('switchSet.single')
+  @Watch('switchSet.regular')
+  @Watch('input.kyc')
+  // @Watch('input.nowAge')
+  // @Watch('input.retireAge')
+  // @Watch('input.lifeAge')
+  // @Watch('input.invMoney')
+  // @Watch('input.regMoney')
+  // @Watch('input.deposit')
+  // @Watch('input.withdraw')
+  private change () {
+    this.sliderFinish();
+    // if (!this.switchSet.single) {
+    //   this.input.invMoney = 0;
+    // }
+    // if (!this.switchSet.regular) {
+    //   this.input.regMoney = 0;
+    // }
+
+    // this.textRegular = addCommas(this.input.regMoney);
+    // this.textSingle = addCommas(this.input.invMoney);
+
+    // (this.$refs.form as Vue & { validate: () => boolean }).validate();
+    // this.validation = (this.$refs.form as Vue & { validate: () => boolean }).validate();
+    // setTimeout(() => {
+    //   this.setLineChartData();
+    // }, 700);
+  }
+
+  @Watch('input.invMoney')
+  @Watch('input.regMoney')
+  private addComma () {
+    this.textRegular = addCommas(this.input.regMoney);
+    this.textSingle = addCommas(this.input.invMoney);
   }
 
   @Watch('lineChartWidth')
