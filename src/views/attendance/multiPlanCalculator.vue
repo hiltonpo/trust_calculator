@@ -258,7 +258,7 @@ Vue.component('WealthPlan', WealthPlan);
     };
   }
 })
-export default class TrustCalculator extends Vue {
+export default class goalCalculator extends Vue {
   private RetirePlan = RetirePlan;
   private WealthPlan = WealthPlan;
 
