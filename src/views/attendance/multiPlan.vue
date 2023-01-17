@@ -267,7 +267,7 @@ i, button {
 <script lang="ts">
 import { Component, Vue, Watch, Prop } from 'vue-property-decorator';
 import { toThousand, addCommas, commasToNumber } from '@/utility/utility';
-import { preffix, sliderColor, riskText, parameter, chartDataCalculation_Aum } from '@/views/attendance/multiPlanFormula';
+import { preffix, sliderColor, riskText, parameter, chartDataCalculation_Aum } from '@/views/trustCalculator/trustFormula';
 import { template } from 'lodash-es';
 import {
   DatasetComponent,
