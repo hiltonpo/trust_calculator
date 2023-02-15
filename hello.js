@@ -1,5 +1,5 @@
-function fool(a) {
-    console.log('a is:' + a + ' in fool()');
+function fool (a) {
+  console.log('a is:' + a + ' in fool()');
 }
 
 const a = 1;

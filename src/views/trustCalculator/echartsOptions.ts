@@ -14,11 +14,53 @@ const chartColor: any = {
   grid: '#eee'
 };
 
-const situationColor: any = {
-  better: '#A6C7A5',
+// function situationColor() {
+//   const type = company();
+//   if (type === 'ENOCH') {
+//     return enochColor
+//   } 
+//   // else if (type === 'Attendance') {
+
+//   // } else if (type === 'GoodBigMoney') {
+    
+//   // } else if (type === 'ForeverPeace') {
+    
+//   // } 
+//   else {
+//     return goldenColor
+//   }
+// }
+
+const retireColor: any = {
+  better: '#438B41',
   normal: '#6BB169',
-  poor: '#438B41'
+  poor: '#A6C7A5'
 };
+
+const assetColor: any = {
+  better: '#FF7696',
+  normal: '#FF9FB5',
+  poor: '#FCBECA'
+};
+
+const markLineColor: any = {
+  golden: '#CC9C50',
+  ENOCH: '#D35A23'
+}
+
+const bgColor: any = {
+  golden: '#F2EADA',
+  ENOCH: '#F7F8F7'
+}
+
+function colorSet(color: any) {
+  const type = location.search.split('?type=');
+  if (type.length === 1) {
+    return color['golden']
+  } else {
+    return color[type[1]];
+  }
+}
 
 // 退休計畫 圖表的 echart 設定檔
 export function retireLineChartOption (markpointSVGpath: string, markpointXY: any, XLinedata: any, YLinedata: any, max: number, chartWidth: any) {
@@ -210,7 +252,7 @@ export function retireLineChartOption (markpointSVGpath: string, markpointXY: an
             }
           ],
           itemStyle: {
-            color: situationColor.better
+            color: retireColor.better
           }
         },
         lineStyle: {
@@ -222,10 +264,10 @@ export function retireLineChartOption (markpointSVGpath: string, markpointXY: an
         areaStyle: {
           color: new echarts.graphic.LinearGradient(0, 0, 0, 0.7, [{
             offset: 0,
-            color: '#A6C7A5'
+            color: '#E4E4D0'
           }, {
             offset: 1,
-            color: '#A6C7A5'
+            color: '#E4E4D0'
           }])
         },
         emphasis: {
@@ -268,7 +310,7 @@ export function retireLineChartOption (markpointSVGpath: string, markpointXY: an
             }
           ],
           itemStyle: {
-            color: situationColor.normal
+            color: retireColor.normal
           }
         },
         lineStyle: {
@@ -316,7 +358,7 @@ export function retireLineChartOption (markpointSVGpath: string, markpointXY: an
             }
           ],
           itemStyle: {
-            color: situationColor.poor
+            color: retireColor.poor
           }
         },
         lineStyle: {
@@ -326,7 +368,7 @@ export function retireLineChartOption (markpointSVGpath: string, markpointXY: an
           color: 'none'
         },
         areaStyle: {
-          color: '#F2EADA', // color of the background
+          color: colorSet(bgColor), // color of the background
           opacity: 1 // <--- solution
         },
         emphasis: {
@@ -348,7 +390,7 @@ export function retireLineChartOption (markpointSVGpath: string, markpointXY: an
             }
           ],
           itemStyle: {
-            color: '#CC9C50'
+            color: colorSet(markLineColor)
           }
         },
         symbolSize: 50,
@@ -388,18 +430,18 @@ export function retireLineChartOption (markpointSVGpath: string, markpointXY: an
                 lineStyle: {
                   type: 'dotted',
                   width: 2,
-                  color: '#CC9C50'
+                  color: colorSet(markLineColor)
                 },
                 label: {
                   show: true,
                   position: 'end',
                   fontWeight: 'bold',
-                  fontSize: '16px',
+                  fontSize: '15px',
                   // distance: 2,
                   color: '#FFFFFF',
-                  backgroundColor: '#CC9C50',
+                  backgroundColor: colorSet(markLineColor),
                   borderRadius: 5,
-                  padding: 8,
+                  padding: 10,
                   borderWidth: 2,
                   formatter (params: any) {
                     return `您需要的退休金\n ${preffix} ${toThousand(Number(withdrawCoord[1] / 10000))} 萬`;
@@ -414,7 +456,7 @@ export function retireLineChartOption (markpointSVGpath: string, markpointXY: an
           lineStyle: {
             type: 'solid',
             width: 3,
-            color: '#CC9C50'
+            color: colorSet(markLineColor)
           }
         },
         itemStyle: {
@@ -509,7 +551,7 @@ export function assetLineChartOption (markpointSVGpath: string, markpointXY: any
       }
     },
     grid: {
-      left: '2%',
+      left: '3.7%',
       right: '4%',
       bottom: '4%',
       containLabel: true
@@ -569,7 +611,7 @@ export function assetLineChartOption (markpointSVGpath: string, markpointXY: any
           show: false
         },
         max: max,
-        z: 30
+        z: 0
       }
     ],
     series: [
@@ -603,15 +645,15 @@ export function assetLineChartOption (markpointSVGpath: string, markpointXY: any
           color: 'none'
         },
         itemStyle: {
-          color: situationColor.better
+          color: assetColor.better
         },
         areaStyle: {
           color: new echarts.graphic.LinearGradient(0, 0, 0, 0.7, [{
             offset: 0,
-            color: '#A6C7A5'
+            color: '#F2DDD2'
           }, {
             offset: 1,
-            color: '#A6C7A5'
+            color: '#F2DDD2'
           }])
         },
         emphasis: {
@@ -647,10 +689,10 @@ export function assetLineChartOption (markpointSVGpath: string, markpointXY: any
         showSymbol: true,
         symbolSize: 10,
         lineStyle: {
-          color: '#438B41'
+          color: '#FBA4B5'
         },
         itemStyle: {
-          color: situationColor.normal
+          color: assetColor.normal
         },
         emphasis: {
           disabled: true
@@ -687,10 +729,10 @@ export function assetLineChartOption (markpointSVGpath: string, markpointXY: any
           color: 'none'
         },
         itemStyle: {
-          color: situationColor.poor
+          color: assetColor.poor
         },
         areaStyle: {
-          color: '#F2EADA', // color of the background
+          color: colorSet(bgColor), // color of the background
           opacity: 1 // <--- solution
         },
         emphasis: {
@@ -718,7 +760,7 @@ export function assetLineChartOption (markpointSVGpath: string, markpointXY: any
           lineStyle: {
             type: 'solid',
             width: 3,
-            color: '#CC9C50'
+            color: '#8D8B8C'
           }
         },
         itemStyle: {
@@ -733,11 +775,11 @@ export function assetLineChartOption (markpointSVGpath: string, markpointXY: any
             show: true,
             position: [-120, -70],
             fontWeight: 'bold',
-            fontSize: '16px',
+            fontSize: '15px',
             color: '#FFFFFF',
-            backgroundColor: situationColor.normal,
+            backgroundColor: '#FBA4B5',
             borderRadius: 5,
-            padding: 8,
+            padding: 10,
             borderWidth: 2,
             formatter (params: any) {
               return `資產預計成長到\n${preffix} ${toThousand(Number(assetCoord[1][1] / 10000))} 萬`;
@@ -749,7 +791,7 @@ export function assetLineChartOption (markpointSVGpath: string, markpointXY: any
             }
           ],
           itemStyle: {
-            color: situationColor.poor
+            color: assetColor.poor
           }
         },
         z: 30

@@ -2,7 +2,7 @@
     <v-app>
       <v-main class="pt-0">
         <v-container fluid class="px-0 pt-0">
-          <section class="optionArea px-4">
+          <section class="px-4" :class="`optionArea-${company} text-${company}`">
             <v-form ref="form">
               <!-- 風險等級 -->
               <h2 class="py-6 font-weight-bold">風險等級</h2>
@@ -15,7 +15,7 @@
                   depressed
                   :style="input.kyc === item.value ? '' : 'opacity:40%'"
                   :class="input.kyc === item.value ? 'white--text' : ''"
-                  :color="input.kyc === item.value ? '#CC9C50' : '#F7F2E8'"
+                  :color="input.kyc === item.value ? `${sliderColor.barColor}` : '#F7F2E8'"
                   v-for="(item, index) in riskText"
                   :key="index"
                   @click="input.kyc = item.value">
@@ -35,7 +35,7 @@
                 </v-row>
                 <v-row class="justify-center">
                   <v-col cols="12" class="pr-0">
-                    <div class="slider">
+                    <div :class="`slider-${company}`">
                       <v-slider
                       v-model="input[option.prop]"
                       :max="option.max"
@@ -106,7 +106,7 @@
                   </v-row>
                   <v-row v-show="edit.single === false" class="justify-center">
                     <v-col cols="12" class="pr-0">
-                      <div class="slider">
+                      <div :class="`slider-${company}`">
                         <v-slider
                         v-model="input.invMoney"
                         :max="investOptions[0].max"
@@ -156,7 +156,7 @@
                   </v-row>
                   <v-row v-show="edit.regular === false" class="justify-center">
                     <v-col cols="12" class="pr-0">
-                      <div class="slider">
+                      <div :class="`slider-${company}`">
                         <v-slider
                         v-model="input.regMoney"
                         :max="investOptions[1].max"
@@ -175,8 +175,8 @@
               </v-slide-y-transition>
             </v-form>
             <!-- 資產模擬 -->
-            <h2 class="my-6 font-weight-bold">資產模擬</h2>
-            <v-row class="graph justify-center pb-6 mx-auto">
+            <h2 class="mt-8 font-weight-bold">資產模擬</h2>
+            <v-row class="graph justify-center pb-6 px-0">
               <LineChart
                 chartID="trustLineChart"
                 ref="trustLineChart"
@@ -186,7 +186,7 @@
             </v-row>
             <v-row class="mx-1">
               <v-card width="100%" elevation="4" rounded="xl">
-                <div class="text-legend pa-4">
+                <div class="pa-4" :class="`text-${company}`">
                   <div class="mb-6 font-weight-bold">投資時間到時，預估資產累積: </div>
                   <v-row style="padding: 2px;">
                     <div v-for="(item, index) in text" :key="'text'+index" class="mr-sm-3">
@@ -196,14 +196,14 @@
                   </v-row>
                   <v-row class="mt-5 mb-3" style="font-size:12px; color:#707070;">
                     <div>* 報酬率假設：</div>
-                    <div>較好情況為年化報酬率 {{ (constant.Rinvest[input.kyc][0] * 100).toFixed(1) }}%；一般情況為年化報酬率 {{ (constant.Rinvest[input.kyc][1] * 100).toFixed(1) }}%;</div>
+                    <div>較好情況為年化報酬率{{ (constant.Rinvest[input.kyc][0] * 100).toFixed(1) }}%；一般情況為年化報酬率{{ (constant.Rinvest[input.kyc][1] * 100).toFixed(1) }}%;</div>
                     <div>較差情況為年化報酬率{{ (constant.Rinvest[input.kyc][2] * 100).toFixed(1) }}%。每年提領金額以通膨率 2% 增加</div>
                   </v-row>
                 </div>
               </v-card>
             </v-row>
           </section>
-          <div class="optionArea px-4">
+          <div class="px-4" :class="`optionArea-${company}`">
             <v-row class="py-8 px-5" style="font-size: 12px; color:#707070;">
               * 重要聲明： 投資人因不同時間進場，將有不同之投資績效，過去之績效亦不代表未來績效之保證。以過去績效進行模擬投資組合之報酬率時，僅為歷史資料模擬投資組合之結果，不代表本投資組合之實際報酬率及未來績效保證，不同時間進行模擬操作，結果可能不同。
               <div>阿爾發投顧自當盡力提供正確資訊，所載資料均來自或本諸我們相信可靠之來源，但對其完整性、即時性和正確性不做任何擔保，如有錯漏或疏忽，本公司或關係企業與其任何董事或受僱人等，對此不負任何法律責任。模擬之結果僅供參考，無法保證準確性，未來實際狀況可能與模擬數值有所落差。</div>
@@ -215,6 +215,20 @@
 </template>
 
 <style lang="scss" scoped>
+$area-colors: (
+  Golden: #f2eada,
+  ENOCH: #F7F8F7,
+);
+
+$text-colors: (
+  Golden: black,
+  ENOCH: #074163,
+);
+
+$thumb-colors: (
+  Golden: #cc9c50,
+  ENOCH: #D35A23,
+);
 
 .optionSet, .switch, .single, .regular {
   font-size: 17px;
@@ -226,9 +240,29 @@
   width: 100%;
 }
 
-.optionArea {
-  background-color: #F2EADA;
+@each $key, $value in $area-colors {
+  .optionArea-#{$key} {
+    background-color: $value;
+  }
 }
+
+@each $key, $value in $text-colors {
+  .text-#{$key} {
+    color: $value;
+  }
+}
+
+@each $key, $value in $thumb-colors {
+  ::v-deep .slider-#{$key} .v-slider__thumb {
+    width: 30px !important;
+    height: 30px !important;
+    border: 8px $value solid !important;
+  }
+}
+
+// .optionArea {
+//   background-color: #F2EADA;
+// }
 
 i, button {
   &.cursor-pointer:hover {
@@ -247,10 +281,6 @@ i, button {
 
 ::v-deep .v-slider__track-background.grey.lighten-2, ::v-deep .v-slider__track-fill, ::v-deep .v-slider__track-background.primary.lighten-3 {
   border-radius: 45px;
-}
-
-::v-deep .v-slider__thumb {
-  border: 4px #CC9C50 solid !important;
 }
 
 ::v-deep .v-messages__message {
@@ -287,11 +317,15 @@ echarts.use([DatasetComponent, TooltipComponent, GridComponent, LegendComponent,
 
 @Component
 export default class WealthPlan extends Vue {
+  @Prop({ default: 'Golden' }) type!: string;
+  // 哪家公司的試算工具
+  private company = this.type;
+
   // 貨幣單位
   private preffix = preffix;
 
   // slider bar & track 顏色
-  private sliderColor = sliderColor;
+  private sliderColor = sliderColor(this.company);
 
   // 文字資料
   private text: any = [];
@@ -351,9 +385,9 @@ export default class WealthPlan extends Vue {
     const assetFixedData = assetData.map((item: any) => { return (item / 10000).toFixed(0); });
     if (type === 'lint') {
       return [
-        ['#A6C7A5', `市場較好情況下，您可能累積到：${preffix} ${toThousand(Number(assetFixedData[0]))}萬`],
-        ['#6BB169', `市場一般情況下，您可能累積到：${preffix} ${toThousand(Number(assetFixedData[1]))}萬`],
-        ['#438B41', `市場較差情況下，您可能累積到：${preffix} ${toThousand(Number(assetFixedData[2]))}萬`]
+        ['#FF7696', `市場較好情況下，您可能累積到：${preffix} ${toThousand(Number(assetFixedData[0]))}萬`],
+        ['#FF9FB5', `市場一般情況下，您可能累積到：${preffix} ${toThousand(Number(assetFixedData[1]))}萬`],
+        ['#FCBECA', `市場較差情況下，您可能累積到：${preffix} ${toThousand(Number(assetFixedData[2]))}萬`]
       ];
     }
   }

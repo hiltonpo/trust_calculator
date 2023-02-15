@@ -11,10 +11,20 @@ export const suffix = {
 };
 
 // slider配色
-export const sliderColor = {
-  barColor: '#CC9C50',
-  trackColor: '#FFFFFF',
-  thumbColor: '#F2EADA'
+export function sliderColor(company: any) {
+  if (company === 'ENOCH') {
+    return {
+      barColor: '#D35A23',
+      trackColor: '#FFFFFF',
+      thumbColor: '#F2EADA'
+    }
+  } else {
+    return {
+      barColor: '#CC9C50',
+      trackColor: '#FFFFFF',
+      thumbColor: '#F2EADA'
+    }
+  }
 };
 
 // 風險屬性

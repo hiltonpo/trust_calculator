@@ -3,33 +3,33 @@
       <MainTopBar></MainTopBar>
       <v-main class="pb-0">
         <v-container class="pa-0" fluid>
-          <section class="index main-kv overflow-hidden">
+          <section class="main-kv overflow-hidden" :class="`index-${company}`">
             <!-- <div> -->
               <div id="wrap" :class="isAnimated ? 'animated' : ''">
                 <svg viewbox="20 0 450 400" class="pieChart" preserveAspectRatio="xMinYMin slice">
                   <circle class="outline" r="100" cx="210" cy="200" />
-                  <circle class="pie-1" r="100" cx="210" cy="200" />
-                  <circle class="pie-2" r="100" cx="210" cy="200" />
-                  <circle class="pie-3" r="100" cx="210" cy="200" />
-                  <circle class="pie-4" r="100" cx="210" cy="200" />
-                  <circle class="pie-5" r="100" cx="210" cy="200" />
-                  <circle class="pie-6" r="100" cx="210" cy="200" />
+                  <circle :class="`pie-1-${company}`" r="100" cx="210" cy="200" />
+                  <circle :class="`pie-2-${company}`" r="100" cx="210" cy="200" />
+                  <circle :class="`pie-3-${company}`" r="100" cx="210" cy="200" />
+                  <circle :class="`pie-4-${company}`" r="100" cx="210" cy="200" />
+                  <circle :class="`pie-5-${company}`" r="100" cx="210" cy="200" />
+                  <circle :class="`pie-6-${company}`" r="100" cx="210" cy="200" />
                   <circle id="helper" style="display:none;" r="110" cy="200" cx="205" stroke-width="1" stroke="blue" fill="none" />
                   <circle id="helper" style="display:none;" r="150" cy="200" cx="205" stroke-width="1" stroke="blue" fill="none" />
                 </svg>
               </div>
             <!-- </div> -->
             <div style="padding-bottom: 80px;">
-              <v-row class="flex-column align-center" style="font-size: 24px">
+              <v-row :class="company === 'ENOCH' ? 'enoch': ''" class="flex-column align-center" style="font-size: 24px; position: relative;">
                 <h1>阿爾發智能理財</h1>
                 <h1>安養信託</h1>
                 <h1>試算工具</h1>
               </v-row>
             </div>
-            <div class="logo" style="padding-bottom: 100px;">
+            <div class="logo">
               <v-row class="justify-center">
                 <div>
-                  <img class="logo" style="width:130px; height:70px" :src="logo" />
+                  <img style="width:160px;" :src="logo" />
                 </div>
               </v-row>
             </div>
@@ -40,11 +40,11 @@
                 <v-btn
                 width="100%"
                 height="100%"
-                :color="plan === 0 ? 'white' : '#00000029'"
+                :color="plan === 0 ? btnChangeColor(company)[0] : btnChangeColor(company)[1]"
                 :style="plan === 0 ?  '' : 'opacity: 70%'"
                 @click="choosePlan(0)"
                 >
-                  <span :class="plan === 0 ? 'clickOn' : 'hoverOn'" class="btn">
+                  <span :class="plan === 0 ? `clickOn-${company}` : `hoverOn-${company}`" class="btn">
                     退休規劃
                   </span>
                 </v-btn>
@@ -53,11 +53,11 @@
                 <v-btn
                 width="100%"
                 height="100%"
-                :color="plan === 1 ? 'white' : '#00000029'"
+                :color="plan === 1 ? btnChangeColor(company)[0] : btnChangeColor(company)[1]"
                 :style="plan === 1 ?  '' : 'opacity: 70%'"
                 @click="choosePlan(1)"
                 >
-                  <span :class="plan === 1 ? 'clickOn' : 'hoverOn'" class="btn">
+                  <span :class="plan === 1 ? `clickOn-${company}` : `hoverOn-${company}`" class="btn">
                     累積財富
                   </span>
                 </v-btn>
@@ -67,66 +67,106 @@
         </v-container>
       </v-main>
       <!-- 退休計畫試算表 -->
-      <component v-bind:is="RetirePlan" v-if="plan === 0"></component>
+      <component v-bind:is="RetirePlan" :type="company" v-if="plan === 0"></component>
       <!-- 累積財富試算表 -->
-      <component v-bind:is="WealthPlan" v-if="plan === 1"></component>
+      <component v-bind:is="WealthPlan" :type="company" v-if="plan === 1"></component>
       <!-- <RetirePlan v-if="plan === 1"></RetirePlan>
       <WealthPlan v-if="plan === 2"></WealthPlan> -->
     </v-app>
 </template>
 
 <style lang="scss" scoped>
-.index {
-  // padding-bottom: 670px;
-  background-image: url(~@/assets/img/bg.png);
-  background-size: cover;
-  background-position: center center;
+$hover-colors: (
+  Golden: #CC9C50,
+  ENOCH: #FFFFFF,
+);
+
+$banner: (
+  Golden: url(~@/assets/img/bg.png),
+  ENOCH: url(~@/assets/img/enoch-bg.jpg),
+);
+
+$pieType:(Golden, ENOCH);
+$pieDashoffset:(498, 490, 560, -69, 10, 164);
+$pieDelay:(25ms, 50ms, 75ms, 100ms, 125ms, 150ms);
+$pieGolden:(#8E714F, #CC9C50, #E8B462, #F5D39C, #A6C7A5, #6BB169);
+$pieEnoch:(#507F93, #F9C2AE, #FF9C78, #FF8A57, #D35A23, #004266);
+
+@each $key, $value in $banner {
+  .index-#{$key} {
+    position: relative; 
+    // height: 100vh;
+    width: 100%;
+  }
+
+  .index-#{$key}::before {
+      content: "";
+      background-image: $value;
+      background-size: cover;
+      position: absolute;
+      top: 0px;
+      right: 0px;
+      bottom: 0px;
+      left: 0px;
+      opacity: 0.41;
+  }
 }
 
-.hoverOn {
-  display: inline-block;
-  position: relative;
+.logo {
+  padding-bottom: 100px; 
+  position: relative
 }
 
-.hoverOn::after {
-  background: none repeat scroll 0 0 transparent;
-  bottom:-20px;
-  content: "";
-  display: block;
-  height: 3px;
-  left: 50%;
-  position: absolute;
-  background: #CC9C50;
-  transition: width 0.3s ease 0s, left 0.3s ease 0s;
-  width: 0;
+.enoch {
+  color: #004266;
 }
 
-.hoverOn:hover::after {
-  width: 100%;
-  left: 0;
-}
+@each $key, $value in $hover-colors {
+  .hoverOn-#{$key} {
+    display: inline-block;
+    position: relative;
+  }
 
-.btn:hover {
-  color: #CC9C50;
-}
-
-.clickOn {
-  color: #CC9C50;
-  display: inline-block;
-  position: relative;
-}
-
-.clickOn::after {
+  .hoverOn-#{$key}::after {
     background: none repeat scroll 0 0 transparent;
-  bottom:-20px;
-  content: "";
-  display: block;
-  height: 3px;
-  left: 0;
-  position: absolute;
-  background: #CC9C50;
-  transition: width 0.3s ease 0s, left 0.3s ease 0s;
-  width: 100%;
+    bottom:-20px;
+    content: "";
+    display: block;
+    height: 3px;
+    left: 50%;
+    position: absolute;
+    background: $value;
+    transition: width 0.3s ease 0s, left 0.3s ease 0s;
+    width: 0;
+  }
+
+  .hoverOn-#{$key}:hover::after {
+    width: 100%;
+    left: 0;
+  }
+
+  .clickOn-#{$key} {
+    color: $value;
+    display: inline-block;
+    position: relative;
+  }
+
+  .clickOn-#{$key}::after {
+    background: none repeat scroll 0 0 transparent;
+    bottom:-20px;
+    content: "";
+    display: block;
+    height: 3px;
+    left: 0;
+    position: absolute;
+    background: $value;
+    transition: width 0.3s ease 0s, left 0.3s ease 0s;
+    width: 100%;
+  }
+
+  // .btn-#{$key}:hover {
+  //   color: $value;
+  // }
 }
 
 .v-btn {
@@ -152,52 +192,71 @@
   transition: all ease 450ms 1000ms;
 }
 
-.pie-1 {
-  stroke-dasharray: 0 628.32;
-  stroke-dashoffset: 498;
-  stroke: #8E714F;
-  transition-delay: 25ms;
-}
-.pie-2 {
-  stroke-dasharray: 0 628.32;
-  stroke-dashoffset: 490;
-  stroke: #CC9C50;
-  transition-delay: 50ms;
-}
-.pie-3 {
-  stroke-dasharray: 0 628.32;
-  stroke-dashoffset: 560;
-  stroke: #E8B462;
-  transition-delay: 75ms;
-}
-.pie-4 {
-  stroke-dasharray: 0 628.32;
-  stroke-dashoffset: -69;
-  stroke: #F5D39C;
-  transition-delay: 100ms;
-}
-.pie-5 {
-  stroke-dasharray: 0 628.32;
-  stroke-dashoffset:  10;
-  stroke: #A6C7A5;
-  transition-delay: 125ms;
-}
-.pie-6 {
-  stroke-dasharray: 0 628.32;
-  stroke-dashoffset: 164;
-  stroke: #6BB169;
-  transition-delay: 150ms;
+@for $i from 1 through 6 {
+  .pie-#{$i}-Golden {
+    stroke-dasharray: 0 628.32;
+    stroke-dashoffset: nth($pieDashoffset, $i);
+    stroke: nth($pieGolden, $i);
+    transition-delay: nth($pieDelay, $i);
+  }
+
+  .pie-#{$i}-ENOCH {
+    stroke-dasharray: 0 628.32;
+    stroke-dashoffset: nth($pieDashoffset, $i);
+    stroke: nth($pieEnoch, $i);
+    transition-delay: nth($pieDelay, $i);
+  }
+  
 }
 
-.animated {
+// .pie-1 {
+//   stroke-dasharray: 0 628.32;
+//   stroke-dashoffset: 498;
+//   stroke: #8E714F;
+//   transition-delay: 25ms;
+// }
+// .pie-2 {
+//   stroke-dasharray: 0 628.32;
+//   stroke-dashoffset: 490;
+//   stroke: #CC9C50;
+//   transition-delay: 50ms;
+// }
+// .pie-3 {
+//   stroke-dasharray: 0 628.32;
+//   stroke-dashoffset: 560;
+//   stroke: #E8B462;
+//   transition-delay: 75ms;
+// }
+// .pie-4 {
+//   stroke-dasharray: 0 628.32;
+//   stroke-dashoffset: -69;
+//   stroke: #F5D39C;
+//   transition-delay: 100ms;
+// }
+// .pie-5 {
+//   stroke-dasharray: 0 628.32;
+//   stroke-dashoffset:  10;
+//   stroke: #A6C7A5;
+//   transition-delay: 125ms;
+// }
+// .pie-6 {
+//   stroke-dasharray: 0 628.32;
+//   stroke-dashoffset: 164;
+//   stroke: #6BB169;
+//   transition-delay: 150ms;
+// }
+
+@for $i from 1 through 2 {
+  .animated {
   [class^="data"],
   .outline { opacity: 1; }
-  .pie-1 { stroke-dasharray: 208 628.32; }
-  .pie-2 { stroke-dasharray: 100 628.32; }
-  .pie-3 { stroke-dasharray:  85 628.32; }
-  .pie-4 { stroke-dasharray:  85 628.32; }
-  .pie-5 { stroke-dasharray:  80 628.32; }
-  .pie-6 { stroke-dasharray:  82 628.32; }
+  .pie-1-#{nth($pieType, $i)} { stroke-dasharray: 208 628.32; }
+  .pie-2-#{nth($pieType, $i)} { stroke-dasharray: 100 628.32; }
+  .pie-3-#{nth($pieType, $i)} { stroke-dasharray:  85 628.32; }
+  .pie-4-#{nth($pieType, $i)} { stroke-dasharray:  85 628.32; }
+  .pie-5-#{nth($pieType, $i)} { stroke-dasharray:  80 628.32; }
+  .pie-6-#{nth($pieType, $i)} { stroke-dasharray:  82 628.32; }
+}
 }
 
 // PRESENTATION
@@ -224,7 +283,6 @@
     transform: translate(-8vw, 0px);
   }
 }
-
 </style>
 
 <script lang="ts">
@@ -243,21 +301,19 @@ import {
 import RetirePlan from '@/views/trustCalculator/RetirePlan.vue';
 import WealthPlan from '@/views/trustCalculator/WealthPlan.vue';
 
-import logo from '@/assets/img/logo.png';
-import bg from '@/assets/img/bg.png';
+import logoGolden from '@/assets/img/logo.png';
+import logoEnoch from '@/assets/img/enoch_logo.png';
+import logoAttendance from '@/assets/img/attendance_logo.png';
+import logoGood from '@/assets/img/good_logo.png';
+import logoFP from '@/assets/img/good_logo.png';
+
+import bgGolden from '@/assets/img/bg.png';
 
 echarts.use([DatasetComponent, TooltipComponent, GridComponent, LegendComponent, ToolboxComponent, CanvasRenderer]);
 Vue.component('RetirePlan', RetirePlan);
 Vue.component('WealthPlan', WealthPlan);
 
-@Component({
-  setup () {
-    return {
-      logo: logo,
-      bg: bg
-    };
-  }
-})
+@Component
 export default class TrustCalculator extends Vue {
   private RetirePlan = RetirePlan;
   private WealthPlan = WealthPlan;
@@ -265,12 +321,44 @@ export default class TrustCalculator extends Vue {
   private isAnimated = false
 
   private plan = 0;
+  private company = '' as any;
+  private logo = '';
+  private bg = '';
 
   private choosePlan (val: any) {
     this.plan = val;
   }
 
+  private btnChangeColor(company: any)  {
+    if (company === 'ENOCH') {
+      return ['#074163', '#FFFFFF']
+    } else {
+      return ['white', '#00000029']
+    }
+  }
+
   private created () {
+    this.company = ['ENOCH', 'Attendance', 'GoodBigMoney', 'ForeverPeace'].indexOf(this.$route.query.type as any) === -1 ? 'Golden' : this.$route.query.type;
+    // 以諾 信託試算工具
+    if (this.company === 'ENOCH') {
+      this.logo = logoEnoch;
+      this.bg = bgGolden;
+    // 上勤 信託試算工具
+    } else if (this.company === 'Attendance') {
+      this.logo = logoAttendance;
+      this.bg = bgGolden;
+    // 公勝 信託試算工具
+    } else if (this.company === 'GoodBigMoney') {
+      this.logo = logoGood;
+      this.bg = bgGolden;
+    } else if (this.company === 'ForeverPeace') {
+      this.logo = logoFP;
+      this.bg = bgGolden;
+    } else {
+      this.logo = logoGolden;
+      this.bg = bgGolden;
+    }
+
     setTimeout(() => {
       this.isAnimated = true;
     }, 1000);

@@ -425,4 +425,3 @@ export function multiChartOption (markpointSVGpath: string, markpointXY: any, XL
   };
   return multiPlanChartOption;
 }
-

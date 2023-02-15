@@ -32,14 +32,14 @@ const inputBasic = {
   regMoney: 15000, // 元
   regMoneyChange: 1000, // 元
   regAgeChange: 40, // 歲
-  regYear: 300, // 年
+  regYear: 300 // 年
 };
 
 // 退休輸入參數: 退休年齡、退休每月提領、提領年限歲數
 const inputRetire = {
-  retireAge: 65,   // 歲
+  retireAge: 65, // 歲
   withdraw: 50000, // 元
-  withdrawAge: 85, // 歲
+  withdrawAge: 85 // 歲
 };
 
 // 買房輸入參數: 頭款提領年限、頭期款、頭期款是否折現、每年房貸、房貸繳交期間
@@ -48,7 +48,7 @@ const inputHouse = {
   downPayment: 500, // 萬
   isDiscount: true,
   loan: 24, // 萬
-  loanYear: 20  // 年
+  loanYear: 20 // 年
 };
 
 // 其他目標輸入參數
@@ -57,9 +57,8 @@ const inputCommon = {
   withdraw: 500, // 萬
   isDiscount: true,
   isRepeat: true,
-  repeatYear: 24, // 年
+  repeatYear: 24 // 年
 };
-
 
 // /** *****************************************  For 退休計畫  ****************************************/
 // //  退休前資產累積  (year為投資第幾年、r為投報率=>好、普通、差)
