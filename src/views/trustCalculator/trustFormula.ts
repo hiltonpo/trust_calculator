@@ -10,19 +10,42 @@ export const suffix = {
   percentage: '%'
 };
 
-// slider配色
+// slider配色 (要新增的地方)
 export function sliderColor(company: any) {
   if (company === 'ENOCH') {
     return {
       barColor: '#D35A23',
       trackColor: '#FFFFFF',
-      thumbColor: '#F2EADA'
+      thumbColor: '#F2EADA',
+      riskBtnColor: 'white--text'
+    }
+  } else if (company === 'Attendance') {
+    return {
+      barColor: '#CAAE8C',
+      trackColor: '#FFFFFF',
+      thumbColor: '#F2EADA',
+      riskBtnColor: 'white--text'
+    }
+  } else if (company === 'GoodBigMoney') {
+    return {
+      barColor: '#BE0000',
+      trackColor: '#FFFFFF',
+      thumbColor: '#F2EADA',
+      riskBtnColor: 'white--text'
+    }
+  } else if (company === 'ForeverPeace') {
+    return {
+      barColor: '#FFBE00',
+      trackColor: '#FFFFFF',
+      thumbColor: '#F2EADA',
+      riskBtnColor: 'black--text'
     }
   } else {
     return {
       barColor: '#CC9C50',
       trackColor: '#FFFFFF',
-      thumbColor: '#F2EADA'
+      thumbColor: '#F2EADA',
+      riskBtnColor: 'white--text'
     }
   }
 };

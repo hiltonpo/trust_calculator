@@ -20,7 +20,7 @@
               </div>
             <!-- </div> -->
             <div style="padding-bottom: 80px;">
-              <v-row :class="company === 'ENOCH' ? 'enoch': ''" class="flex-column align-center" style="font-size: 24px; position: relative;">
+              <v-row :class="company + '-header flex-column align-center'" style="font-size: 24px; position: relative;">
                 <h1>阿爾發智能理財</h1>
                 <h1>安養信託</h1>
                 <h1>試算工具</h1>
@@ -33,6 +33,7 @@
                 </div>
               </v-row>
             </div>
+            <!-- 塞scroll箭頭 -->
           </section>
           <section>
             <v-row style="height:70px" class="ma-0">
@@ -44,7 +45,7 @@
                 :style="plan === 0 ?  '' : 'opacity: 70%'"
                 @click="choosePlan(0)"
                 >
-                  <span :class="plan === 0 ? `clickOn-${company}` : `hoverOn-${company}`" class="btn">
+                  <span :class="plan === 0 ? `clickOn-${company}` : `hoverOn-${company}`">
                     退休規劃
                   </span>
                 </v-btn>
@@ -57,7 +58,7 @@
                 :style="plan === 1 ?  '' : 'opacity: 70%'"
                 @click="choosePlan(1)"
                 >
-                  <span :class="plan === 1 ? `clickOn-${company}` : `hoverOn-${company}`" class="btn">
+                  <span :class="plan === 1 ? `clickOn-${company}` : `hoverOn-${company}`">
                     累積財富
                   </span>
                 </v-btn>
@@ -76,21 +77,35 @@
 </template>
 
 <style lang="scss" scoped>
+/***各家的button hover底線顏色(要新增的地方)***/
 $hover-colors: (
   Golden: #CC9C50,
   ENOCH: #FFFFFF,
+  Attendance: #FFFFFF,
+  GoodBigMoney: #FFFFFF,
+  ForeverPeace: #FFFFFF,
 );
 
+/***各家的bg(要新增的地方)***/
 $banner: (
   Golden: url(~@/assets/img/bg.png),
   ENOCH: url(~@/assets/img/enoch-bg.jpg),
+  Attendance: url(~@/assets/img/attendance-bg.jpg),
+  GoodBigMoney: url(~@/assets/img/good-bg.jpg),
+  ForeverPeace: url(~@/assets/img/FP-bg.png),
 );
 
-$pieType:(Golden, ENOCH);
-$pieDashoffset:(498, 490, 560, -69, 10, 164);
+// 固定不用調
+$pieDashoffset:(328, 412, 507, -103, 0, 329);
 $pieDelay:(25ms, 50ms, 75ms, 100ms, 125ms, 150ms);
+
+/***各家的piechart調整(要新增的地方)***/
 $pieGolden:(#8E714F, #CC9C50, #E8B462, #F5D39C, #A6C7A5, #6BB169);
-$pieEnoch:(#507F93, #F9C2AE, #FF9C78, #FF8A57, #D35A23, #004266);
+$pieEnoch:(#005874, #0088AC, #ACEDFF, #EBC0AC, #D35A23, #004266);
+$pieAttendance:(#005874, #0088AC, #ACEDFF, #F3D39C, #D0AD87, #003146);
+$pieGoodBigMoney:(#FFDC74, #FDC725, #FF9A9A, #F5211F, #D80B04, #AE020B);
+$pieForeverPeace:(#3884DB, #68BFFA, #00AF95, #FF9204, #FE4358, #0052AE);
+$pieType:(Golden, ENOCH, Attendance, GoodBigMoney, ForeverPeace);
 
 @each $key, $value in $banner {
   .index-#{$key} {
@@ -112,13 +127,30 @@ $pieEnoch:(#507F93, #F9C2AE, #FF9C78, #FF8A57, #D35A23, #004266);
   }
 }
 
+/***各家的標題顏色(要新增的地方)***/
+.Golden-header {
+  color: black;
+}
+
+.ENOCH-header {
+  color: #004266;
+}
+
+.Attendance-header {
+  color: #004266;
+}
+
+.GoodBigMoney-header {
+  color: #393939;
+}
+
+.ForeverPeace-header {
+  color: black;
+}
+
 .logo {
   padding-bottom: 100px; 
   position: relative
-}
-
-.enoch {
-  color: #004266;
 }
 
 @each $key, $value in $hover-colors {
@@ -163,10 +195,6 @@ $pieEnoch:(#507F93, #F9C2AE, #FF9C78, #FF8A57, #D35A23, #004266);
     transition: width 0.3s ease 0s, left 0.3s ease 0s;
     width: 100%;
   }
-
-  // .btn-#{$key}:hover {
-  //   color: $value;
-  // }
 }
 
 .v-btn {
@@ -207,59 +235,41 @@ $pieEnoch:(#507F93, #F9C2AE, #FF9C78, #FF8A57, #D35A23, #004266);
     transition-delay: nth($pieDelay, $i);
   }
   
+  .pie-#{$i}-Attendance {
+    stroke-dasharray: 0 628.32;
+    stroke-dashoffset: nth($pieDashoffset, $i);
+    stroke: nth($pieAttendance, $i);
+    transition-delay: nth($pieDelay, $i);
+  }
+
+  .pie-#{$i}-GoodBigMoney {
+    stroke-dasharray: 0 628.32;
+    stroke-dashoffset: nth($pieDashoffset, $i);
+    stroke: nth($pieGoodBigMoney, $i);
+    transition-delay: nth($pieDelay, $i);
+  }
+
+  .pie-#{$i}-ForeverPeace {
+    stroke-dasharray: 0 628.32;
+    stroke-dashoffset: nth($pieDashoffset, $i);
+    stroke: nth($pieForeverPeace, $i);
+    transition-delay: nth($pieDelay, $i);
+  }
 }
 
-// .pie-1 {
-//   stroke-dasharray: 0 628.32;
-//   stroke-dashoffset: 498;
-//   stroke: #8E714F;
-//   transition-delay: 25ms;
-// }
-// .pie-2 {
-//   stroke-dasharray: 0 628.32;
-//   stroke-dashoffset: 490;
-//   stroke: #CC9C50;
-//   transition-delay: 50ms;
-// }
-// .pie-3 {
-//   stroke-dasharray: 0 628.32;
-//   stroke-dashoffset: 560;
-//   stroke: #E8B462;
-//   transition-delay: 75ms;
-// }
-// .pie-4 {
-//   stroke-dasharray: 0 628.32;
-//   stroke-dashoffset: -69;
-//   stroke: #F5D39C;
-//   transition-delay: 100ms;
-// }
-// .pie-5 {
-//   stroke-dasharray: 0 628.32;
-//   stroke-dashoffset:  10;
-//   stroke: #A6C7A5;
-//   transition-delay: 125ms;
-// }
-// .pie-6 {
-//   stroke-dasharray: 0 628.32;
-//   stroke-dashoffset: 164;
-//   stroke: #6BB169;
-//   transition-delay: 150ms;
-// }
-
-@for $i from 1 through 2 {
+@for $i from 1 through 5 {
   .animated {
   [class^="data"],
   .outline { opacity: 1; }
-  .pie-1-#{nth($pieType, $i)} { stroke-dasharray: 208 628.32; }
-  .pie-2-#{nth($pieType, $i)} { stroke-dasharray: 100 628.32; }
-  .pie-3-#{nth($pieType, $i)} { stroke-dasharray:  85 628.32; }
-  .pie-4-#{nth($pieType, $i)} { stroke-dasharray:  85 628.32; }
-  .pie-5-#{nth($pieType, $i)} { stroke-dasharray:  80 628.32; }
-  .pie-6-#{nth($pieType, $i)} { stroke-dasharray:  82 628.32; }
+  .pie-1-#{nth($pieType, $i)} { stroke-dasharray: 85 628.32; }
+  .pie-2-#{nth($pieType, $i)} { stroke-dasharray: 85 628.32; }
+  .pie-3-#{nth($pieType, $i)} { stroke-dasharray: 90 628.32; }
+  .pie-4-#{nth($pieType, $i)} { stroke-dasharray: 110 628.32; }
+  .pie-5-#{nth($pieType, $i)} { stroke-dasharray: 105 628.32; }
+  .pie-6-#{nth($pieType, $i)} { stroke-dasharray: 170 628.32; }
 }
 }
 
-// PRESENTATION
 #wrap {
   margin: 0 auto;
   width: 420px;
@@ -305,9 +315,7 @@ import logoGolden from '@/assets/img/logo.png';
 import logoEnoch from '@/assets/img/enoch_logo.png';
 import logoAttendance from '@/assets/img/attendance_logo.png';
 import logoGood from '@/assets/img/good_logo.png';
-import logoFP from '@/assets/img/good_logo.png';
-
-import bgGolden from '@/assets/img/bg.png';
+import logoFP from '@/assets/img/FP_logo.png';
 
 echarts.use([DatasetComponent, TooltipComponent, GridComponent, LegendComponent, ToolboxComponent, CanvasRenderer]);
 Vue.component('RetirePlan', RetirePlan);
@@ -323,16 +331,26 @@ export default class TrustCalculator extends Vue {
   private plan = 0;
   private company = '' as any;
   private logo = '';
-  private bg = '';
 
   private choosePlan (val: any) {
     this.plan = val;
   }
 
+  // 各家的button底色
   private btnChangeColor(company: any)  {
     if (company === 'ENOCH') {
       return ['#074163', '#FFFFFF']
-    } else {
+    } 
+    else if (company === 'Attendance') {
+      return ['#074163', '#FFFFFF']
+    } 
+    else if (company === 'GoodBigMoney') {
+      return ['#E63A36', '#FFFFFF']
+    } 
+    else if (company === 'ForeverPeace') {
+      return ['#0050A8', '#FFFFFF']
+    } 
+    else {
       return ['white', '#00000029']
     }
   }
@@ -342,21 +360,18 @@ export default class TrustCalculator extends Vue {
     // 以諾 信託試算工具
     if (this.company === 'ENOCH') {
       this.logo = logoEnoch;
-      this.bg = bgGolden;
     // 上勤 信託試算工具
     } else if (this.company === 'Attendance') {
       this.logo = logoAttendance;
-      this.bg = bgGolden;
-    // 公勝 信託試算工具
+    // 好險有錢 信託試算工具
     } else if (this.company === 'GoodBigMoney') {
       this.logo = logoGood;
-      this.bg = bgGolden;
+    // 永平 信託試算工具
     } else if (this.company === 'ForeverPeace') {
       this.logo = logoFP;
-      this.bg = bgGolden;
+    // 公勝 信託試算工具
     } else {
       this.logo = logoGolden;
-      this.bg = bgGolden;
     }
 
     setTimeout(() => {

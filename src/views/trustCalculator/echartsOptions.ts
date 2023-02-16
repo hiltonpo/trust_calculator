@@ -1,7 +1,6 @@
 import * as echarts from 'echarts/core';
 import { map, template } from 'lodash-es';
 
-// import smileFace from '@/assets/img/smileFace.svg';
 import { toThousand } from '@/utility/utility';
 import { preffix } from '@/views/trustCalculator/trustFormula';
 import 'echarts/lib/component/markLine';
@@ -14,43 +13,36 @@ const chartColor: any = {
   grid: '#eee'
 };
 
-// function situationColor() {
-//   const type = company();
-//   if (type === 'ENOCH') {
-//     return enochColor
-//   } 
-//   // else if (type === 'Attendance') {
-
-//   // } else if (type === 'GoodBigMoney') {
-    
-//   // } else if (type === 'ForeverPeace') {
-    
-//   // } 
-//   else {
-//     return goldenColor
-//   }
-// }
-
+// 退休計畫 較好、一般、較差投報顏色
 const retireColor: any = {
   better: '#438B41',
   normal: '#6BB169',
   poor: '#A6C7A5'
 };
 
+// 累積資產計畫 較好、一般、較差投報顏色
 const assetColor: any = {
   better: '#FF7696',
   normal: '#FF9FB5',
   poor: '#FCBECA'
 };
 
+// 輔助線顏色 依公司分(要新增的地方)
 const markLineColor: any = {
   golden: '#CC9C50',
-  ENOCH: '#D35A23'
+  ENOCH: '#D35A23',
+  Attendance: '#CAAE8C',
+  GoodBigMoney: '#BE0000',
+  ForeverPeace: '#0050A8',
 }
 
+// chart area顏色 依公司分 (通常為景色) (要新增的地方)
 const bgColor: any = {
   golden: '#F2EADA',
-  ENOCH: '#F7F8F7'
+  ENOCH: '#F7F8F7',
+  Attendance: '#F7F8F7',
+  GoodBigMoney: '#FFF7F7',
+  ForeverPeace: '#F7F8F7',
 }
 
 function colorSet(color: any) {
@@ -611,7 +603,7 @@ export function assetLineChartOption (markpointSVGpath: string, markpointXY: any
           show: false
         },
         max: max,
-        z: 0
+        z: 40
       }
     ],
     series: [
@@ -738,7 +730,7 @@ export function assetLineChartOption (markpointSVGpath: string, markpointXY: any
         emphasis: {
           disabled: true
         },
-        z: 10,
+        z: 30,
         data: YLinedata.poor
       },
       {

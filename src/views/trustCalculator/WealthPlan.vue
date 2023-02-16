@@ -14,7 +14,7 @@
                   height="60px"
                   depressed
                   :style="input.kyc === item.value ? '' : 'opacity:40%'"
-                  :class="input.kyc === item.value ? 'white--text' : ''"
+                  :class="input.kyc === item.value ? `${sliderColor.riskBtnColor}` : ''"
                   :color="input.kyc === item.value ? `${sliderColor.barColor}` : '#F7F2E8'"
                   v-for="(item, index) in riskText"
                   :key="index"
@@ -94,6 +94,7 @@
                             dense
                             :rules="[rules.singleMoney]"
                             @change="sliderFinish"
+                            @keydown.enter.prevent="switchEditState('single')"
                             >
                           </v-text-field>
                         </v-form>
@@ -144,6 +145,7 @@
                             outlined
                             :rules="[rules.regularMoney]"
                             @change="sliderFinish"
+                            @keydown.enter.prevent="switchEditState('regular')"
                             >
                           </v-text-field>
                         </v-form>
@@ -215,19 +217,31 @@
 </template>
 
 <style lang="scss" scoped>
+/***各家的背景顏色(要新增的地方)***/
 $area-colors: (
   Golden: #f2eada,
   ENOCH: #F7F8F7,
+  Attendance: #F7F8F7,
+  GoodBigMoney: #FFF7F7,
+  ForeverPeace: #F7F8F7,
 );
 
+/***各家的文字顏色(要新增的地方)***/
 $text-colors: (
   Golden: black,
   ENOCH: #074163,
+  Attendance: #074163,
+  GoodBigMoney: #393939,
+  ForeverPeace: black,
 );
 
+/***各家的slider thumb(要新增的地方)***/
 $thumb-colors: (
   Golden: #cc9c50,
   ENOCH: #D35A23,
+  Attendance: #CAAE8C,
+  GoodBigMoney: #BE0000,
+  ForeverPeace: #FFBE00,
 );
 
 .optionSet, .switch, .single, .regular {
@@ -571,26 +585,8 @@ export default class WealthPlan extends Vue {
   @Watch('switchSet.single')
   @Watch('switchSet.regular')
   @Watch('input.kyc')
-  // @Watch('input.nowAge')
-  // @Watch('input.invYear')
-  // @Watch('input.invMoney')
-  // @Watch('input.regMoney')
   private change () {
     this.sliderFinish();
-    // if (!this.switchSet.single) {
-    //   this.input.invMoney = 0;
-    // };
-    // if (!this.switchSet.regular) {
-    //   this.input.regMoney = 0;
-    // };
-    // this.textRegular = addCommas(this.input.regMoney);
-    // this.textSingle = addCommas(this.input.invMoney);
-
-    // (this.$refs.form as Vue & { validate: () => boolean }).validate();
-    // this.validation = (this.$refs.form as Vue & { validate: () => boolean }).validate();
-    // setTimeout(() => {
-    //   this.setLineChartData();
-    // }, 700);
   }
 
   @Watch('input.invMoney')
@@ -610,12 +606,7 @@ export default class WealthPlan extends Vue {
   private mounted () {
     this.lineChartWidth = (this.$refs.trustLineChart as any).lineChart.getWidth();
     this.setLineChartData();
-    // this.change();
     this.sliderFinish();
-
-    // setTimeout(() => {
-    //   this.chartsResize();
-    // }, 800);
     window.addEventListener('resize', () => {
       this.lineChartWidth = (this.$refs.trustLineChart as any).lineChart.getWidth();
       this.chartsResize();

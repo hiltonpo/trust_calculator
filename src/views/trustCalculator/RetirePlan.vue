@@ -15,7 +15,7 @@
                   height="60px"
                   depressed
                   :style="input.kyc === item.value ? '' : 'opacity:40%'"
-                  :class="input.kyc === item.value ? 'white--text' : ''"
+                  :class="input.kyc === item.value ? `${sliderColor.riskBtnColor}` : ''"
                   :color="input.kyc === item.value ? `${sliderColor.barColor}` : '#F7F2E8'"
                   v-for="(item, index) in riskText"
                   :key="index"
@@ -109,6 +109,7 @@
                         outlined
                         :rules="[rules.singleMoney]"
                         @change="sliderFinish"
+                        @keydown.enter.prevent="switchEditState('single')"
                       >
                       </v-text-field>
                     </v-form>
@@ -169,6 +170,7 @@
                         outlined
                         :rules="[rules.regularMoney]"
                         @change="sliderFinish"
+                        @keydown.enter.prevent="switchEditState('regular')"
                       >
                       </v-text-field>
                     </v-form>
@@ -281,7 +283,7 @@
           <v-row
             v-if="warning"
             class="justify-center py-10 text-center font-weight-bold"
-            :class="`text-${company}`"
+            :class="company === 'ForeverPeace' ? 'foreverPeaceText' : `noticeText-${company}`"
           >
             <div>距離您需要的退休金還有一點點距離</div>
             <div>請參考以下建議調整參數，提高達成機率！</div>
@@ -322,24 +324,40 @@
 </template>
 
 <style lang="scss" scoped>
+/***各家的背景顏色(要新增的地方)***/
 $area-colors: (
   Golden: #f2eada,
   ENOCH: #F7F8F7,
+  Attendance: #F7F8F7,
+  GoodBigMoney: #FFF7F7,
+  ForeverPeace: #F7F8F7,
 );
 
+/***各家的提醒框(要新增的地方)***/
 $notice-colors: (
   Golden: #837151,
   ENOCH: #074163,
+  Attendance: #074163,
+  GoodBigMoney: #BE0000,
+  ForeverPeace: #0050A8,
 );
 
+/***各家的文字顏色(要新增的地方)***/
 $text-colors: (
   Golden: black,
   ENOCH: #074163,
+  Attendance: #074163,
+  GoodBigMoney: #393939,
+  ForeverPeace: black,
 );
 
+/***各家的slider thumb(要新增的地方)***/
 $thumb-colors: (
   Golden: #cc9c50,
   ENOCH: #D35A23,
+  Attendance: #CAAE8C,
+  GoodBigMoney: #BE0000,
+  ForeverPeace:#FFBE00,
 );
 
 .optionSet, .switch, .single, .regular, .deposit {
@@ -365,6 +383,12 @@ $thumb-colors: (
 
 @each $key, $value in $text-colors {
   .text-#{$key} {
+    color: $value;
+  }
+}
+
+@each $key, $value in $thumb-colors {
+  .noticeText-#{$key} {
     color: $value;
   }
 }
@@ -399,6 +423,10 @@ $thumb-colors: (
 ::v-deep .theme--light.v-input input {
   text-align: center;
 
+}
+
+.foreverPeaceText {
+  color: #0050A8
 }
 </style>
 
