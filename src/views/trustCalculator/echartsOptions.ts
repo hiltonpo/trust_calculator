@@ -33,7 +33,7 @@ const markLineColor: any = {
   ENOCH: '#D35A23',
   Attendance: '#CAAE8C',
   GoodBigMoney: '#BE0000',
-  ForeverPeace: '#0050A8',
+  ForeverPeace: '#0050A8'
 }
 
 // chart area顏色 依公司分 (通常為景色) (要新增的地方)
@@ -42,20 +42,26 @@ const bgColor: any = {
   ENOCH: '#F7F8F7',
   Attendance: '#F7F8F7',
   GoodBigMoney: '#FFF7F7',
-  ForeverPeace: '#F7F8F7',
+  ForeverPeace: '#F7F8F7'
 }
 
-function colorSet(color: any) {
-  const type = location.search.split('?type=');
-  if (type.length === 1) {
-    return color['golden']
-  } else {
-    return color[type[1]];
-  }
+// function colorSet(color: any) {
+//   const type = location.search.split('?type=');
+//   if (type.length === 1) {
+//     return color['golden']
+//   } else {
+//     return color[type[1]];
+//   }
+// }
+
+export function colorSet(color: any, typeNow: any) {
+  // const type = typeNow;
+  return typeNow in color ? color[typeNow] : color['golden'];
 }
 
 // 退休計畫 圖表的 echart 設定檔
-export function retireLineChartOption (markpointSVGpath: string, markpointXY: any, XLinedata: any, YLinedata: any, max: number, chartWidth: any) {
+export function retireLineChartOption (this: Vue, markpointSVGpath: string, markpointXY: any, XLinedata: any, YLinedata: any, max: number, chartWidth: any) {
+  // console.log(this, this.$route.query.type);
   const breakpoint = 1000;
 
   const labelResizer = function () {
@@ -360,7 +366,7 @@ export function retireLineChartOption (markpointSVGpath: string, markpointXY: an
           color: 'none'
         },
         areaStyle: {
-          color: colorSet(bgColor), // color of the background
+          color: colorSet(bgColor, this.$route.query.type), // color of the background
           opacity: 1 // <--- solution
         },
         emphasis: {
@@ -382,7 +388,7 @@ export function retireLineChartOption (markpointSVGpath: string, markpointXY: an
             }
           ],
           itemStyle: {
-            color: colorSet(markLineColor)
+            color: colorSet(markLineColor, this.$route.query.type)
           }
         },
         symbolSize: 50,
@@ -422,7 +428,7 @@ export function retireLineChartOption (markpointSVGpath: string, markpointXY: an
                 lineStyle: {
                   type: 'dotted',
                   width: 2,
-                  color: colorSet(markLineColor)
+                  color: colorSet(markLineColor, this.$route.query.type)
                 },
                 label: {
                   show: true,
@@ -431,7 +437,7 @@ export function retireLineChartOption (markpointSVGpath: string, markpointXY: an
                   fontSize: '15px',
                   // distance: 2,
                   color: '#FFFFFF',
-                  backgroundColor: colorSet(markLineColor),
+                  backgroundColor: colorSet(markLineColor, this.$route.query.type),
                   borderRadius: 5,
                   padding: 10,
                   borderWidth: 2,
@@ -448,7 +454,7 @@ export function retireLineChartOption (markpointSVGpath: string, markpointXY: an
           lineStyle: {
             type: 'solid',
             width: 3,
-            color: colorSet(markLineColor)
+            color: colorSet(markLineColor, this.$route.query.type)
           }
         },
         itemStyle: {
@@ -461,7 +467,7 @@ export function retireLineChartOption (markpointSVGpath: string, markpointXY: an
 }
 
 // 累積財富計畫 圖表的 echart 設定檔
-export function assetLineChartOption (markpointSVGpath: string, markpointXY: any, XLinedata: any, YLinedata: any, max: number, chartWidth: any) {
+export function assetLineChartOption (this: Vue, markpointSVGpath: string, markpointXY: any, XLinedata: any, YLinedata: any, max: number, chartWidth: any) {
   const breakpoint = 1000;
 
   const labelResizer = function () {
@@ -724,7 +730,7 @@ export function assetLineChartOption (markpointSVGpath: string, markpointXY: any
           color: assetColor.poor
         },
         areaStyle: {
-          color: colorSet(bgColor), // color of the background
+          color: colorSet(bgColor, this.$route.query.type), // color of the background
           opacity: 1 // <--- solution
         },
         emphasis: {

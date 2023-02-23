@@ -115,14 +115,16 @@
                     </v-form>
                   </span>
                   <span>{{ investOptions[0].unit }} </span>
-                  <v-icon
-                    class="ml-2 cursor-pointer"
-                    color="black"
-                    small
-                    @click.stop="switchEditState('single')"
-                  >
-                    {{ edit.single === false ? "fas fa-edit" : "fas fa-sliders-h" }}
-                  </v-icon>
+                  <div class="d-flex justify-center align-center ml-2 btnBox">
+                    <v-icon
+                      class="cursor-pointer"
+                      color="black"
+                      small
+                      @click.stop="switchEditState('single')"
+                    >
+                      {{ edit.single === false ? "fas fa-edit" : "fa-duotone fa-check" }}
+                    </v-icon>
+                  </div>
                 </div>
               </v-row>
               <v-row v-show="edit.single === false" class="justify-center">
@@ -176,14 +178,16 @@
                     </v-form>
                   </span>
                   <span>{{ investOptions[1].unit }} </span>
-                  <v-icon
-                    class="ml-2 cursor-pointer"
-                    color="black"
-                    small
-                    @click.stop="switchEditState('regular')"
-                  >
-                    {{ edit.regular === false ? "fas fa-edit" : "fas fa-sliders-h" }}
-                  </v-icon>
+                  <div class="d-flex justify-center align-center ml-2 btnBox">
+                    <v-icon
+                      class="cursor-pointer"
+                      color="black"
+                      small
+                      @click.stop="switchEditState('regular')"
+                    >
+                      {{ edit.regular === false ? "fas fa-edit" : "fa-duotone fa-check" }}
+                    </v-icon>
+                  </div>
                 </div>
               </v-row>
               <v-row v-show="edit.regular === false" class="justify-center">
@@ -355,7 +359,7 @@ $text-colors: (
 $thumb-colors: (
   Golden: #cc9c50,
   ENOCH: #D35A23,
-  Attendance: #CAAE8C,
+  Attendance: #074163,
   GoodBigMoney: #BE0000,
   ForeverPeace:#FFBE00,
 );
@@ -425,6 +429,12 @@ $thumb-colors: (
 
 }
 
+.btnBox {
+  background-color:#FFF;
+  box-shadow: 3px 2px 3px rgba(0, 0, 0, 0.5);
+  width: 30px; height: 23px;
+}
+
 .foreverPeaceText {
   color: #0050A8
 }
@@ -444,6 +454,7 @@ import {
 import * as echarts from 'echarts/core';
 import { CanvasRenderer } from 'echarts/renderers';
 import { retireLineChartOption } from '@/views/trustCalculator/echartsOptions';
+import { colorSet } from '@/views/trustCalculator/echartsOptions';
 
 echarts.use([
   DatasetComponent,
@@ -707,7 +718,8 @@ export default class RetirePlan extends Vue {
     };
 
     // 帶入echartOptions => 五個參數代表: 圖表檔案、標記座標(累積資產最大值)、X軸資料陣列、Y軸資料陣列、Y軸最大值
-    this.lineChartOption = retireLineChartOption(
+    this.lineChartOption = retireLineChartOption.call(
+      this,
       'graph',
       markpointXY,
       XLineData,

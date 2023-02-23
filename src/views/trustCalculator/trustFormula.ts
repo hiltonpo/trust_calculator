@@ -21,7 +21,7 @@ export function sliderColor(company: any) {
     }
   } else if (company === 'Attendance') {
     return {
-      barColor: '#CAAE8C',
+      barColor: '#074163',
       trackColor: '#FFFFFF',
       thumbColor: '#F2EADA',
       riskBtnColor: 'white--text'

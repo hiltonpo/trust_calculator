@@ -100,9 +100,11 @@
                         </v-form>
                       </span>
                       <span>{{ investOptions[0].unit }} </span>
-                      <v-icon class="ml-2 cursor-pointer" color="black" small @click.stop="switchEditState('single')">
-                        {{ edit.single === false ? 'fas fa-edit' : 'fas fa-sliders-h'}}
-                      </v-icon>
+                      <div class="d-flex justify-center align-center ml-2 btnBox">
+                        <v-icon class="cursor-pointer" color="black" small @click.stop="switchEditState('single')">
+                          {{ edit.single === false ? 'fas fa-edit' : 'fa-duotone fa-check'}}
+                        </v-icon>
+                      </div>
                     </div>
                   </v-row>
                   <v-row v-show="edit.single === false" class="justify-center">
@@ -151,9 +153,11 @@
                         </v-form>
                       </span>
                       <span>{{ investOptions[1].unit }} </span>
-                      <v-icon class="ml-2 cursor-pointer" color="black" small @click.stop="switchEditState('regular')">
-                        {{ edit.regular === false ? 'fas fa-edit' : 'fas fa-sliders-h'}}
-                      </v-icon>
+                      <div class="d-flex justify-center align-center ml-2 btnBox">
+                        <v-icon class="cursor-pointer" color="black" small @click.stop="switchEditState('regular')">
+                          {{ edit.regular === false ? 'fas fa-edit' : 'fa-duotone fa-check'}}
+                        </v-icon>
+                      </div>
                     </div>
                   </v-row>
                   <v-row v-show="edit.regular === false" class="justify-center">
@@ -239,7 +243,7 @@ $text-colors: (
 $thumb-colors: (
   Golden: #cc9c50,
   ENOCH: #D35A23,
-  Attendance: #CAAE8C,
+  Attendance: #074163,
   GoodBigMoney: #BE0000,
   ForeverPeace: #FFBE00,
 );
@@ -277,6 +281,12 @@ $thumb-colors: (
 // .optionArea {
 //   background-color: #F2EADA;
 // }
+
+.btnBox {
+  background-color:#FFF;
+  box-shadow: 3px 2px 3px rgba(0, 0, 0, 0.5);
+  width: 30px; height: 23px;
+}
 
 i, button {
   &.cursor-pointer:hover {
@@ -326,9 +336,9 @@ import {
 } from 'echarts/renderers';
 import { assetLineChartOption } from '@/views/trustCalculator/echartsOptions';
 import { ScatterChart } from 'echarts/charts';
+import { colorSet } from '@/views/trustCalculator/echartsOptions';
 
 echarts.use([DatasetComponent, TooltipComponent, GridComponent, LegendComponent, ToolboxComponent, CanvasRenderer, ScatterChart]);
-
 @Component
 export default class WealthPlan extends Vue {
   @Prop({ default: 'Golden' }) type!: string;
@@ -511,7 +521,7 @@ export default class WealthPlan extends Vue {
     };
 
     // 帶入echartOptions => 五個參數代表: 圖表檔案、標記座標(累積資產最大值)、X軸資料陣列、Y軸資料陣列、Y軸最大值
-    this.lineChartOption = assetLineChartOption('graph', markpointXY, XLineData, YLineData, maximum(YLineData.better), this.lineChartWidth);
+    this.lineChartOption = assetLineChartOption.call(this, 'graph', markpointXY, XLineData, YLineData, maximum(YLineData.better), this.lineChartWidth);
 
     // 文字渲染 右上角 還有 中間
     this.$nextTick(() => {
