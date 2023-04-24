@@ -34,7 +34,7 @@
                   </div>
                 </v-row>
                 <v-row class="justify-center">
-                  <v-col cols="12" class="pr-0">
+                  <v-col cols="12" class="pr-5">
                     <div :class="`slider-${company}`">
                       <v-slider
                       v-model="input[option.prop]"
@@ -108,7 +108,7 @@
                     </div>
                   </v-row>
                   <v-row v-show="edit.single === false" class="justify-center">
-                    <v-col cols="12" class="pr-0">
+                    <v-col cols="12" class="pr-5">
                       <div :class="`slider-${company}`">
                         <v-slider
                         v-model="input.invMoney"
@@ -161,7 +161,7 @@
                     </div>
                   </v-row>
                   <v-row v-show="edit.regular === false" class="justify-center">
-                    <v-col cols="12" class="pr-0">
+                    <v-col cols="12" class="pr-5">
                       <div :class="`slider-${company}`">
                         <v-slider
                         v-model="input.regMoney"
@@ -315,6 +315,10 @@ i, button {
 
 ::v-deep .theme--light.v-input input {
   text-align: center;
+}
+
+::v-deep .v-text-field--rounded .v-input__control .v-input__slot {
+  padding: 0;
 }
 </style>
 

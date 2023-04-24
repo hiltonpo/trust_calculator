@@ -42,7 +42,7 @@
                   </div>
                 </v-row>
                 <v-row class="justify-center">
-                  <v-col cols="12" class="pr-0">
+                  <v-col cols="12" class="pr-5">
                     <div :class="`slider-${company}`">
                       <v-slider
                         v-model="input[option.prop]"
@@ -128,7 +128,7 @@
                 </div>
               </v-row>
               <v-row v-show="edit.single === false" class="justify-center">
-                <v-col cols="12" class="pr-0">
+                <v-col cols="12" class="pr-5">
                   <div :class="`slider-${company}`">
                     <v-slider
                       v-model="input.invMoney"
@@ -191,7 +191,7 @@
                 </div>
               </v-row>
               <v-row v-show="edit.regular === false" class="justify-center">
-                <v-col cols="12" class="pr-0">
+                <v-col cols="12" class="pr-5">
                   <div :class="`slider-${company}`">
                     <v-slider
                       v-model="input.regMoney"
@@ -220,7 +220,7 @@
               </div>
             </v-row>
             <v-row class="justify-center">
-              <v-col cols="12" class="pr-0">
+              <v-col cols="12" class="pr-5">
                 <div :class="`slider-${company}`">
                   <v-slider
                     v-model="input.deposit"
@@ -426,7 +426,10 @@ $thumb-colors: (
 
 ::v-deep .theme--light.v-input input {
   text-align: center;
+}
 
+::v-deep .v-text-field--rounded .v-input__control .v-input__slot {
+  padding: 0;
 }
 
 .btnBox {
@@ -616,7 +619,7 @@ export default class RetirePlan extends Vue {
     {
       name: '單筆投入金額',
       prop: 'invMoney',
-      max: 1000000,
+      max: 100000000,
       min: 35000,
       unit: '元',
       step: 1000
@@ -754,11 +757,11 @@ export default class RetirePlan extends Vue {
   @Watch('edit.single')
   private singleTurnText () {
     if (this.edit.single) {
-      this.investOptions[0].max = 3500000;
+      this.investOptions[0].max = 100000000;
       this.investOptions[0].min = 0;
       this.investOptions[0].step = 1;
     } else {
-      this.investOptions[0].max = 1000000;
+      this.investOptions[0].max = 100000000;
       this.investOptions[0].min = 35000;
       this.investOptions[0].step = 1000;
     }

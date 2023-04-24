@@ -6,7 +6,7 @@
       </div>
       <div>
         <div class="text-center text-caption">由 阿爾發證券投資顧問(股)公司 提供</div>
-        <div class="text-center text-caption">110金管投顧新字第027號</div>
+        <div class="text-center text-caption">112金管投顧新字第006號</div>
       </div>
       <!-- <v-col cols="6" sm="4" class="d-flex justify-start align-center">
         <a :href="hrefHome('./Home.html')" class="d-sm-none">
