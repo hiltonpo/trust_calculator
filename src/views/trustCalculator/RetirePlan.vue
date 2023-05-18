@@ -456,8 +456,7 @@ import {
 } from 'echarts/components';
 import * as echarts from 'echarts/core';
 import { CanvasRenderer } from 'echarts/renderers';
-import { retireLineChartOption } from '@/views/trustCalculator/echartsOptions';
-import { colorSet } from '@/views/trustCalculator/echartsOptions';
+import { retireLineChartOption, colorSet } from '@/views/trustCalculator/echartsOptions';
 
 echarts.use([
   DatasetComponent,
@@ -610,7 +609,7 @@ export default class RetirePlan extends Vue {
       max: 20000,
       min: 0,
       unit: '元',
-      step: 1000
+      step: 100
     }
   ];
 

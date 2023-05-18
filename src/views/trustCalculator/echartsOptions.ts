@@ -34,7 +34,7 @@ const markLineColor: any = {
   Attendance: '#CAAE8C',
   GoodBigMoney: '#BE0000',
   ForeverPeace: '#0050A8'
-}
+};
 
 // chart area顏色 依公司分 (通常為景色) (要新增的地方)
 const bgColor: any = {
@@ -43,7 +43,7 @@ const bgColor: any = {
   Attendance: '#F7F8F7',
   GoodBigMoney: '#FFF7F7',
   ForeverPeace: '#F7F8F7'
-}
+};
 
 // function colorSet(color: any) {
 //   const type = location.search.split('?type=');
@@ -54,9 +54,9 @@ const bgColor: any = {
 //   }
 // }
 
-export function colorSet(color: any, typeNow: any) {
+export function colorSet (color: any, typeNow: any) {
   // const type = typeNow;
-  return typeNow in color ? color[typeNow] : color['golden'];
+  return typeNow in color ? color[typeNow] : color.golden;
 }
 
 // 退休計畫 圖表的 echart 設定檔

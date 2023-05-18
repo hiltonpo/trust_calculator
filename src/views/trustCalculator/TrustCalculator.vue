@@ -81,10 +81,26 @@
       <component v-bind:is="WealthPlan" :type="company" v-if="plan === 1"></component>
       <!-- <RetirePlan v-if="plan === 1"></RetirePlan>
       <WealthPlan v-if="plan === 2"></WealthPlan> -->
+      <section :class="`optionArea-${company}`" style="padding-bottom:40px">
+        <div class="mt-1 d-flex justify-center">
+          <a :href="href()" target="_blank">
+            <v-btn class="white--text rounded-xl" color="#BE0000" style="height: 48px">了解更多</v-btn>
+          </a>
+        </div>
+      </section>
     </v-app>
 </template>
 
 <style lang="scss" scoped>
+/***各家的背景顏色(要新增的地方)***/
+$area-colors: (
+  Golden: #f2eada,
+  ENOCH: #F7F8F7,
+  Attendance: #F7F8F7,
+  GoodBigMoney: #FFF7F7,
+  ForeverPeace: #F7F8F7,
+);
+
 /***各家的button hover底線顏色(要新增的地方)***/
 $hover-colors: (
   Golden: #CC9C50,
@@ -132,6 +148,12 @@ $pieType:(Golden, ENOCH, Attendance, GoodBigMoney, ForeverPeace);
       bottom: 0px;
       left: 0px;
       opacity: 0.41;
+  }
+}
+
+@each $key, $value in $area-colors {
+  .optionArea-#{$key} {
+    background-color: $value;
   }
 }
 
@@ -373,22 +395,24 @@ export default class TrustCalculator extends Vue {
     this.plan = val;
   }
 
+  private href () {
+    if (this.company === 'GoodBigMoney') {
+      return 'https://bigmoney.goodins.life/uncategorized/32163/c-future-life';
+    }
+  }
+
   // 各家的button底色
-  private btnChangeColor(company: any)  {
+  private btnChangeColor (company: any) {
     if (company === 'ENOCH') {
-      return ['#074163', '#FFFFFF']
-    } 
-    else if (company === 'Attendance') {
-      return ['#074163', '#FFFFFF']
-    } 
-    else if (company === 'GoodBigMoney') {
-      return ['#E63A36', '#FFFFFF']
-    } 
-    else if (company === 'ForeverPeace') {
-      return ['#0050A8', '#FFFFFF']
-    } 
-    else {
-      return ['white', '#00000029']
+      return ['#074163', '#FFFFFF'];
+    } else if (company === 'Attendance') {
+      return ['#074163', '#FFFFFF'];
+    } else if (company === 'GoodBigMoney') {
+      return ['#E63A36', '#FFFFFF'];
+    } else if (company === 'ForeverPeace') {
+      return ['#0050A8', '#FFFFFF'];
+    } else {
+      return ['white', '#00000029'];
     }
   }
 

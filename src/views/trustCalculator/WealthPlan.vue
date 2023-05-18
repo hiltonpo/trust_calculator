@@ -338,9 +338,8 @@ import * as echarts from 'echarts/core';
 import {
   CanvasRenderer
 } from 'echarts/renderers';
-import { assetLineChartOption } from '@/views/trustCalculator/echartsOptions';
+import { assetLineChartOption, colorSet } from '@/views/trustCalculator/echartsOptions';
 import { ScatterChart } from 'echarts/charts';
-import { colorSet } from '@/views/trustCalculator/echartsOptions';
 
 echarts.use([DatasetComponent, TooltipComponent, GridComponent, LegendComponent, ToolboxComponent, CanvasRenderer, ScatterChart]);
 @Component

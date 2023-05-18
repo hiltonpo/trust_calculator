@@ -1,5 +1,12 @@
 <template>
   <v-app-bar class="bar" app color="white" height="70px" elevation="4" hide-on-scroll>
+    <transition name="fade" mode="out-in">
+      <FixedButton
+        v-if="type === 'GoodBigMoney'"
+        :href="landingPage()"
+        >
+      </FixedButton>
+    </transition>
     <v-row class="mx-0 pa-sm-5 font-weight-medium justify-space-between align-center">
       <div>
         <img class="logo" :src="logo" />
@@ -51,12 +58,22 @@
   }
 }
 
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .2s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+}
+
 </style>
 
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator';
 
 import alphaLogo from '@/assets/img/alpha-logo.png';
+import FixedButton from '../FixedButton.vue';
+
+Vue.component('FixedButton', FixedButton);
 
 @Component({
   setup () {
@@ -72,6 +89,15 @@ import alphaLogo from '@/assets/img/alpha-logo.png';
   }
 })
 export default class MainTopBar extends Vue {
+  private type: any = null
+  private landingPage () {
+    if (this.type === 'GoodBigMoney') {
+      return 'https://bigmoney.goodins.life/uncategorized/32163/c-future-life';
+    }
+  }
 
+  private created () {
+    this.type = this.$route.query.type;
+  }
 }
 </script>
