@@ -1,7 +1,13 @@
 import * as echarts from 'echarts/core';
 import { toThousand } from '@/utility/utility';
 
-export const preffix = 'USD$';
+export function preffix(isNTD= false) {
+  if (isNTD) {
+    return 'NTD$';
+  } else {
+    return 'USD$';
+  };
+};
 export const suffix = {
   year: '年',
   old: '歲',
@@ -39,6 +45,13 @@ export function sliderColor (company: any) {
       trackColor: '#FFFFFF',
       thumbColor: '#F2EADA',
       riskBtnColor: 'black--text'
+    };
+  } else if (company === 'JyuMei') {
+    return {
+      barColor: '#BE0000',
+      trackColor: '#FFFFFF',
+      thumbColor: '#F2EADA',
+      riskBtnColor: 'white--text'
     };
   } else {
     return {
@@ -82,6 +95,18 @@ const retireConstant = {
   Rdeposit: 0
 };
 
+// 華銀 固定參數 三種投資報酬率(較好、一般、較差)、通膨率、定存利率
+export const retireConstantV2 = {
+  Rinvest: [
+    [0.037, 0.027, 0.017], // 保守
+    [0.065, 0.051, 0.037], // 穩健
+    [0.087, 0.068, 0.049], // 成長
+    [0.098, 0.074, 0.051] // 積極
+  ],
+  Rinflation: 0.02,
+  Rdeposit: 0
+};
+
 // 退休計畫輸入參數 (給予初始預設值): 風險等級、年齡區間、預期壽命、單筆投入、定期定額、其他退休準備(定存)、退休後每月提領金額
 const retireInput = {
   kyc: 1,
@@ -99,6 +124,11 @@ const wealthConstant = {
   Rinvest: retireConstant.Rinvest
 };
 
+// 華銀 累積財富計畫固定參數 三種投資報酬率(較好、一般、較差)
+export const wealthConstantV2 = {
+  Rinvest: retireConstantV2.Rinvest
+};
+
 // 累積財富輸入參數 (給予初始預設值): 風險等級、現在年齡、預計投資期間、單筆投入、定期定額
 const wealthInput = {
   kyc: 1,
@@ -109,22 +139,41 @@ const wealthInput = {
 };
 
 // 參數設置
-export function parameter (planType: string, constORinut: string) {
-  switch (planType) {
-    case 'retire':
-      switch (constORinut) {
-        case 'constant':
-          return retireConstant;
-        case 'input':
-          return retireInput;
-      }
-    case 'wealth':
-      switch (constORinut) {
-        case 'constant':
-          return wealthConstant;
-        case 'input':
-          return wealthInput;
-      }
+export function parameter (planType: string, constORinut: string, kind = '') {
+  if (kind !== 'HuaNan') {
+    switch (planType) {
+      case 'retire':
+        switch (constORinut) {
+          case 'constant':
+            return retireConstant;
+          case 'input':
+            return retireInput;
+        }
+      case 'wealth':
+        switch (constORinut) {
+          case 'constant':
+            return wealthConstant;
+          case 'input':
+            return wealthInput;
+        }
+    }
+  } else {
+    switch (planType) {
+      case 'retire':
+        switch (constORinut) {
+          case 'constant':
+            return retireConstantV2;
+          case 'input':
+            return retireInput;
+        }
+      case 'wealth':
+        switch (constORinut) {
+          case 'constant':
+            return wealthConstantV2;
+          case 'input':
+            return wealthInput;
+        }
+    }
   }
 }
 

@@ -56,17 +56,9 @@
               <v-row class="switch align-center px-4 mb-3">
                 <h2 class="font-weight-bold mr-5">投入金額</h2>
                 <div class="d-flex mt-3">
-                  <v-switch
-                  class="mr-5"
-                  flat
-                  label="單筆"
-                  v-model="switchSet.single">
-                  </v-switch>
-                  <v-switch
-                  flat
-                  label="定期定額"
-                  v-model="switchSet.regular">
-                  </v-switch>
+                  <v-switch class="mr-5" flat label="單筆" v-model="switchSet.single"></v-switch>
+                  <v-switch flat label="定期定額" v-model="switchSet.regular"></v-switch>
+                  <v-switch v-if="company === 'JyuMei'" flat label="顯示台幣" v-model="switchNTD"></v-switch>
                 </div>
               </v-row>
               <div v-if="!(switchSet.single || switchSet.regular)" class="errorMsg red--text font-weight-bold text-center text-subtitle-1" >
@@ -228,6 +220,7 @@ $area-colors: (
   Attendance: #F7F8F7,
   GoodBigMoney: #FFF7F7,
   ForeverPeace: #F7F8F7,
+  JyuMei: #FFF7F7,
 );
 
 /***各家的文字顏色(要新增的地方)***/
@@ -237,6 +230,7 @@ $text-colors: (
   Attendance: #074163,
   GoodBigMoney: #393939,
   ForeverPeace: black,
+  JyuMei: #393939,
 );
 
 /***各家的slider thumb(要新增的地方)***/
@@ -246,6 +240,7 @@ $thumb-colors: (
   Attendance: #074163,
   GoodBigMoney: #BE0000,
   ForeverPeace: #FFBE00,
+  JyuMei: #BE0000,
 );
 
 .optionSet, .switch, .single, .regular {
@@ -349,7 +344,7 @@ export default class WealthPlan extends Vue {
   private company = this.type;
 
   // 貨幣單位
-  private preffix = preffix;
+  private preffix = '';
 
   // slider bar & track 顏色
   private sliderColor = sliderColor(this.company);
@@ -368,6 +363,9 @@ export default class WealthPlan extends Vue {
   // 風險屬性文字
   private riskText = riskText
 
+  // 顯示台幣
+  private switchNTD = false;
+
   // 單筆、定期開關
   private switchSet = {
     single: true,
@@ -385,7 +383,7 @@ export default class WealthPlan extends Vue {
   };
 
   // 固定內建參數: 各風險等級囊括三種投資報酬率([較好、一般、較差])、通膨率、定存利率
-  public constant: object | any = parameter('wealth', 'constant');
+  public constant: object | any = '';
 
   // 輸入參數 (給予初始預設值): 風險等級、現在年齡、預計投資期間、單筆投入、定期定額
   public input: object | any = parameter('wealth', 'input');
@@ -408,7 +406,7 @@ export default class WealthPlan extends Vue {
   };
 
   // 文字動態設置
-  private textRender = (assetData: any, type: any) => {
+  private textRender = (preffix: any, assetData: any, type: any) => {
     const assetFixedData = assetData.map((item: any) => { return (item / 10000).toFixed(0); });
     if (type === 'lint') {
       return [
@@ -524,7 +522,7 @@ export default class WealthPlan extends Vue {
     };
 
     // 帶入echartOptions => 五個參數代表: 圖表檔案、標記座標(累積資產最大值)、X軸資料陣列、Y軸資料陣列、Y軸最大值
-    this.lineChartOption = assetLineChartOption.call(this, 'graph', markpointXY, XLineData, YLineData, maximum(YLineData.better), this.lineChartWidth);
+    this.lineChartOption = assetLineChartOption.call(this, 'graph', markpointXY, XLineData, YLineData, maximum(YLineData.better), this.lineChartWidth, this.preffix);
 
     // 文字渲染 右上角 還有 中間
     this.$nextTick(() => {
@@ -532,7 +530,7 @@ export default class WealthPlan extends Vue {
         const { better, normal, poor } = YLineData;
         return [better[index], normal[index], poor[index]];
       };
-      this.text = this.textRender(retireAllData(this.input.invYear), 'lint');
+      this.text = this.textRender(this.preffix, retireAllData(this.input.invYear), 'lint');
     });
 
     // 圖表RWD
@@ -598,6 +596,7 @@ export default class WealthPlan extends Vue {
   @Watch('switchSet.single')
   @Watch('switchSet.regular')
   @Watch('input.kyc')
+  @Watch('switchNTD')
   private change () {
     this.sliderFinish();
   }
@@ -616,6 +615,11 @@ export default class WealthPlan extends Vue {
     }, 700);
   }
 
+  @Watch('switchNTD')
+  private changePreffix() {
+    this.preffix = preffix(this.switchNTD);
+  }
+
   private mounted () {
     this.lineChartWidth = (this.$refs.trustLineChart as any).lineChart.getWidth();
     this.setLineChartData();
@@ -624,6 +628,16 @@ export default class WealthPlan extends Vue {
       this.lineChartWidth = (this.$refs.trustLineChart as any).lineChart.getWidth();
       this.chartsResize();
     });
+  }
+
+  private created() {
+    this.changePreffix();
+    // 固定內建參數: 三種投資報酬率(較好、一般、較差)、通膨率、定存利率
+    if (this.company === 'JyuMei') {
+      this.constant = parameter('wealth', 'constant', 'HuaNan');
+    } else {
+      this.constant = parameter('wealth', 'constant');
+    }
   }
 }
 

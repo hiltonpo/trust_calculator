@@ -74,6 +74,7 @@
             <div class="d-flex mt-3">
               <v-switch class="mr-5" flat label="單筆" v-model="switchSet.single"> </v-switch>
               <v-switch flat label="定期定額" v-model="switchSet.regular"> </v-switch>
+              <v-switch v-if="company === 'JyuMei'" flat label="顯示台幣" v-model="switchNTD"> </v-switch>
             </div>
           </v-row>
           <div
@@ -335,6 +336,7 @@ $area-colors: (
   Attendance: #F7F8F7,
   GoodBigMoney: #FFF7F7,
   ForeverPeace: #F7F8F7,
+  JyuMei: #FFF7F7,
 );
 
 /***各家的提醒框(要新增的地方)***/
@@ -344,6 +346,7 @@ $notice-colors: (
   Attendance: #074163,
   GoodBigMoney: #BE0000,
   ForeverPeace: #0050A8,
+  JyuMei: #BE0000,
 );
 
 /***各家的文字顏色(要新增的地方)***/
@@ -353,6 +356,7 @@ $text-colors: (
   Attendance: #074163,
   GoodBigMoney: #393939,
   ForeverPeace: black,
+  JyuMei: #393939,
 );
 
 /***各家的slider thumb(要新增的地方)***/
@@ -362,6 +366,7 @@ $thumb-colors: (
   Attendance: #074163,
   GoodBigMoney: #BE0000,
   ForeverPeace:#FFBE00,
+  JyuMei: #BE0000,
 );
 
 .optionSet, .switch, .single, .regular, .deposit {
@@ -474,7 +479,7 @@ export default class RetirePlan extends Vue {
   private company = this.type
 
   // 貨幣單位
-  private preffix = preffix;
+  private preffix = '';
 
   // slider bar & track 顏色
   private sliderColor = sliderColor(this.company);
@@ -492,6 +497,9 @@ export default class RetirePlan extends Vue {
 
   // 參數建議 (如果未達標) [單筆金額、定期金額]
   private suggest: any = [];
+
+  // 顯示台幣
+  private switchNTD = false;
 
   // 單筆、定期開關
   private switchSet = {
@@ -516,7 +524,7 @@ export default class RetirePlan extends Vue {
   private riskText = riskText;
 
   // 固定內建參數: 三種投資報酬率(較好、一般、較差)、通膨率、定存利率
-  public constant: object | any = parameter('retire', 'constant')
+  public constant: object | any = ''
 
   // 輸入參數 (給予初始預設值): 風險等級、年齡區間、預期壽命、單筆投入、定期定額、其他退休準備(定存)、退休後每月提領金額
   public input: object | any = parameter('retire', 'input')
@@ -536,15 +544,15 @@ export default class RetirePlan extends Vue {
       return !(value < this.input.retireAge) || '不得小於退休年齡';
     },
     regularMoney: (value: any) => {
-      return commasToNumber(value) >= 3500 || `定期定額不得小於${preffix} 3,500元`;
+      return commasToNumber(value) >= 3500 || `定期定額不得小於${this.preffix} 3,500元`;
     },
     singleMoney: (value: any) => {
-      return commasToNumber(value) >= 35000 || `單筆投入不得小於${preffix} 35,000元`;
+      return commasToNumber(value) >= 35000 || `單筆投入不得小於${this.preffix} 35,000元`;
     }
   };
 
   // 文字動態設置
-  private textRender = (assetData: any, type: any) => {
+  private textRender = (preffix: any, assetData: any, type: any) => {
     const assetFixedData = assetData.map((item: any) => {
       return (item / 10000).toFixed(0);
     });
@@ -727,7 +735,8 @@ export default class RetirePlan extends Vue {
       XLineData,
       YLineData,
       maximum(YLineData.better, withdrawAll),
-      this.lineChartWidth
+      this.lineChartWidth,
+      this.preffix
     );
 
     // 文字渲染 右上角 還有 中間
@@ -736,7 +745,7 @@ export default class RetirePlan extends Vue {
         const { better, normal, poor } = YLineData;
         return [better[index], normal[index], poor[index]];
       };
-      this.text = this.textRender(retireAllData(this.input.retireAge - this.input.nowAge), 'lint');
+      this.text = this.textRender(this.preffix, retireAllData(this.input.retireAge - this.input.nowAge), 'lint');
     });
 
     // 當總退休資產小於總提領金額，提醒需要調整單筆或定期之金額
@@ -827,30 +836,10 @@ export default class RetirePlan extends Vue {
   @Watch('switchSet.single')
   @Watch('switchSet.regular')
   @Watch('input.kyc')
-  // @Watch('input.nowAge')
-  // @Watch('input.retireAge')
-  // @Watch('input.lifeAge')
-  // @Watch('input.invMoney')
-  // @Watch('input.regMoney')
-  // @Watch('input.deposit')
-  // @Watch('input.withdraw')
+  @Watch('switchNTD')
   private change () {
     this.sliderFinish();
-    // if (!this.switchSet.single) {
-    //   this.input.invMoney = 0;
-    // }
-    // if (!this.switchSet.regular) {
-    //   this.input.regMoney = 0;
-    // }
 
-    // this.textRegular = addCommas(this.input.regMoney);
-    // this.textSingle = addCommas(this.input.invMoney);
-
-    // (this.$refs.form as Vue & { validate: () => boolean }).validate();
-    // this.validation = (this.$refs.form as Vue & { validate: () => boolean }).validate();
-    // setTimeout(() => {
-    //   this.setLineChartData();
-    // }, 700);
   }
 
   @Watch('input.invMoney')
@@ -865,6 +854,21 @@ export default class RetirePlan extends Vue {
     setTimeout(() => {
       this.setLineChartData();
     }, 700);
+  }
+
+  @Watch('switchNTD')
+  private changePreffix() {
+    this.preffix = preffix(this.switchNTD);
+  }
+
+  private created() {
+    this.changePreffix();
+    // 固定內建參數: 三種投資報酬率(較好、一般、較差)、通膨率、定存利率
+    if (this.company === 'JyuMei') {
+      this.constant = parameter('retire', 'constant', 'HuaNan');
+    } else {
+      this.constant = parameter('retire', 'constant');
+    }
   }
 }
 </script>

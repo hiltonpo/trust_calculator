@@ -33,7 +33,8 @@ const markLineColor: any = {
   ENOCH: '#D35A23',
   Attendance: '#CAAE8C',
   GoodBigMoney: '#BE0000',
-  ForeverPeace: '#0050A8'
+  ForeverPeace: '#0050A8',
+  JyuMei: '#BE0000',
 };
 
 // chart area顏色 依公司分 (通常為景色) (要新增的地方)
@@ -42,7 +43,8 @@ const bgColor: any = {
   ENOCH: '#F7F8F7',
   Attendance: '#F7F8F7',
   GoodBigMoney: '#FFF7F7',
-  ForeverPeace: '#F7F8F7'
+  ForeverPeace: '#F7F8F7',
+  JyuMei: '#FFF7F7',
 };
 
 // function colorSet(color: any) {
@@ -60,7 +62,7 @@ export function colorSet (color: any, typeNow: any) {
 }
 
 // 退休計畫 圖表的 echart 設定檔
-export function retireLineChartOption (this: Vue, markpointSVGpath: string, markpointXY: any, XLinedata: any, YLinedata: any, max: number, chartWidth: any) {
+export function retireLineChartOption (this: Vue, markpointSVGpath: string, markpointXY: any, XLinedata: any, YLinedata: any, max: number, chartWidth: any, preffix: any) {
   // console.log(this, this.$route.query.type);
   const breakpoint = 1000;
 
@@ -467,7 +469,7 @@ export function retireLineChartOption (this: Vue, markpointSVGpath: string, mark
 }
 
 // 累積財富計畫 圖表的 echart 設定檔
-export function assetLineChartOption (this: Vue, markpointSVGpath: string, markpointXY: any, XLinedata: any, YLinedata: any, max: number, chartWidth: any) {
+export function assetLineChartOption (this: Vue, markpointSVGpath: string, markpointXY: any, XLinedata: any, YLinedata: any, max: number, chartWidth: any, preffix: any) {
   const breakpoint = 1000;
 
   const labelResizer = function () {

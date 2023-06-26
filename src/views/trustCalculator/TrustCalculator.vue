@@ -99,6 +99,7 @@ $area-colors: (
   Attendance: #F7F8F7,
   GoodBigMoney: #FFF7F7,
   ForeverPeace: #F7F8F7,
+  JyuMei: #FFF7F7,
 );
 
 /***各家的button hover底線顏色(要新增的地方)***/
@@ -108,6 +109,7 @@ $hover-colors: (
   Attendance: #FFFFFF,
   GoodBigMoney: #FFFFFF,
   ForeverPeace: #FFFFFF,
+  JyuMei: #FFFFFF,
 );
 
 /***各家的bg(要新增的地方)***/
@@ -117,6 +119,7 @@ $banner: (
   Attendance: url(~@/assets/img/attendance-bg.jpg),
   GoodBigMoney: url(~@/assets/img/good-bg.jpg),
   ForeverPeace: url(~@/assets/img/FP-bg.png),
+  JyuMei: url(~@/assets/img/good-bg.jpg),
 );
 
 // 固定不用調
@@ -129,7 +132,8 @@ $pieEnoch:(#005874, #0088AC, #ACEDFF, #EBC0AC, #D35A23, #004266);
 $pieAttendance:(#005874, #0088AC, #ACEDFF, #F3D39C, #D0AD87, #003146);
 $pieGoodBigMoney:(#FFDC74, #FDC725, #FF9A9A, #F5211F, #D80B04, #AE020B);
 $pieForeverPeace:(#3884DB, #68BFFA, #00AF95, #FF9204, #FE4358, #0052AE);
-$pieType:(Golden, ENOCH, Attendance, GoodBigMoney, ForeverPeace);
+$pieJyuMei:(#FFDC74, #FDC725, #FF9A9A, #F5211F, #D80B04, #AE020B);
+$pieType:(Golden, ENOCH, Attendance, GoodBigMoney, ForeverPeace, JyuMei);
 
 @each $key, $value in $banner {
   .index-#{$key} {
@@ -170,7 +174,7 @@ $pieType:(Golden, ENOCH, Attendance, GoodBigMoney, ForeverPeace);
   color: #004266;
 }
 
-.GoodBigMoney-header {
+.GoodBigMoney-header, .JyuMei-header{
   color: #393939;
 }
 
@@ -285,9 +289,16 @@ $pieType:(Golden, ENOCH, Attendance, GoodBigMoney, ForeverPeace);
     stroke: nth($pieForeverPeace, $i);
     transition-delay: nth($pieDelay, $i);
   }
+
+  .pie-#{$i}-JyuMei {
+    stroke-dasharray: 0 628.32;
+    stroke-dashoffset: nth($pieDashoffset, $i);
+    stroke: nth($pieJyuMei, $i);
+    transition-delay: nth($pieDelay, $i);
+  }
 }
 
-@for $i from 1 through 5 {
+@for $i from 1 through 6 {
   .animated {
   [class^="data"],
   .outline { opacity: 1; }
@@ -297,7 +308,7 @@ $pieType:(Golden, ENOCH, Attendance, GoodBigMoney, ForeverPeace);
   .pie-4-#{nth($pieType, $i)} { stroke-dasharray: 110 628.32; }
   .pie-5-#{nth($pieType, $i)} { stroke-dasharray: 105 628.32; }
   .pie-6-#{nth($pieType, $i)} { stroke-dasharray: 170 628.32; }
-}
+  }
 }
 
 #wrap {
@@ -344,7 +355,7 @@ $pieType:(Golden, ENOCH, Attendance, GoodBigMoney, ForeverPeace);
   }
 }
 
-@keyframes scroll {
+@keyframes scroll{
   0% {
     transform: translateY(0);
   }
@@ -352,6 +363,8 @@ $pieType:(Golden, ENOCH, Attendance, GoodBigMoney, ForeverPeace);
     transform: translateY(10px);
   }
 }
+
+
 </style>
 
 <script lang="ts">
@@ -375,6 +388,7 @@ import logoEnoch from '@/assets/img/enoch_logo.png';
 import logoAttendance from '@/assets/img/attendance_logo.png';
 import logoGood from '@/assets/img/good_logo.png';
 import logoFP from '@/assets/img/FP_logo.png';
+import logoJyuMei from '@/assets/img/JyuMei_logo.png';
 
 echarts.use([DatasetComponent, TooltipComponent, GridComponent, LegendComponent, ToolboxComponent, CanvasRenderer]);
 Vue.component('RetirePlan', RetirePlan);
@@ -407,7 +421,7 @@ export default class TrustCalculator extends Vue {
       return ['#074163', '#FFFFFF'];
     } else if (company === 'Attendance') {
       return ['#074163', '#FFFFFF'];
-    } else if (company === 'GoodBigMoney') {
+    } else if (company === 'GoodBigMoney' || company === 'JyuMei') {
       return ['#E63A36', '#FFFFFF'];
     } else if (company === 'ForeverPeace') {
       return ['#0050A8', '#FFFFFF'];
@@ -417,7 +431,7 @@ export default class TrustCalculator extends Vue {
   }
 
   private created () {
-    this.company = ['ENOCH', 'Attendance', 'GoodBigMoney', 'ForeverPeace'].indexOf(this.$route.query.type as any) === -1 ? 'Golden' : this.$route.query.type;
+    this.company = ['ENOCH', 'Attendance', 'GoodBigMoney', 'ForeverPeace', 'JyuMei'].indexOf(this.$route.query.type as any) === -1 ? 'Golden' : this.$route.query.type;
     // 以諾 信託試算工具
     if (this.company === 'ENOCH') {
       this.logo = logoEnoch;
@@ -430,6 +444,9 @@ export default class TrustCalculator extends Vue {
     // 永平 信託試算工具
     } else if (this.company === 'ForeverPeace') {
       this.logo = logoFP;
+    // 巨美 信託試算工具
+    } else if (this.company === 'JyuMei') {
+      this.logo = logoJyuMei;
     // 公勝 信託試算工具
     } else {
       this.logo = logoGolden;
